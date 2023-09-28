@@ -10,10 +10,21 @@ const getTripDetails = async (field) =>{
 }
 
 const getAllTripDetails = async ()=>{
-    return knex(table).select('id','type')
+    return knex(table).select('id','type').where('status',1)
 }
+
+const deleteTrip = async(field)=>{
+    return knex(table).update('status',2).where(field)
+}
+
+const updateTrip = async (id,type) =>{ 
+    return knex(table).update({type}).where({id})
+}
+
 export default {
     insertTrip,
     getTripDetails,
-    getAllTripDetails
+    getAllTripDetails,
+    deleteTrip,
+    updateTrip
 }

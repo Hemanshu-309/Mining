@@ -9,6 +9,7 @@ app.use(express.urlencoded({extended:false}))
 
 app.use('/trip',trip.router)
 
+
 app.listen(constant.PORT,()=>{
     console.log(`Server is running on http://localhost:${constant.PORT}`)
 })
