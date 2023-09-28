@@ -29,7 +29,7 @@ const createTrip = async(req,res) =>{
             type:trip_type
         }
 
-        const checkValidation = validation.createValidateTripType(data)
+        const checkValidation =await validation.createValidateTripType(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {
@@ -194,7 +194,7 @@ const updateTrip = async (req,res) =>{
         type
       }
 
-      const checkValidation = validation.updateValidateTripType(data)
+      const checkValidation =await validation.updateValidateTripType(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {
