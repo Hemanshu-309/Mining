@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const createValidateRole = async(create_data) =>{
+const createValidateRole = (create_data) =>{
     const JoiSchema = Joi.object({
         role_name :Joi.string().trim().min(1).max(255).required()
         .messages({
@@ -12,7 +12,7 @@ const createValidateRole = async(create_data) =>{
     return JoiSchema.validate(create_data)
 }
 
-const deleteValidateRole = async(delete_data) =>{
+const deleteValidateRole = (delete_data) =>{
     const JoiSchema = Joi.object({
         id :Joi.number().integer().min(1).required()
         .messages({
@@ -23,7 +23,7 @@ const deleteValidateRole = async(delete_data) =>{
     return JoiSchema.validate(delete_data)
 }
 
-const updateValidateRole = async(update_data) =>{
+const updateValidateRole = (update_data) =>{
     const JoiSchema = Joi.object({
         id :Joi.number().integer().min(1).required()
         .messages({

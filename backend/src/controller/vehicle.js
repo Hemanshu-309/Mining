@@ -144,7 +144,7 @@ const deleteVehicle = async(req,res)=>{
         id
       }
 
-      const checkValidation = validation.deleteValidateVehicle(data)
+      const checkValidation = await validation.deleteValidateVehicle(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {
@@ -210,7 +210,7 @@ const updateVehicle = async(req,res)=>{
         id,name
       }
 
-      const checkValidation = validation.updateValidateVehicle(data)
+      const checkValidation = await validation.updateValidateVehicle(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {

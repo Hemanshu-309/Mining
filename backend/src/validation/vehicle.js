@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const createValidateVehicle = async(create_data) =>{
+const createValidateVehicle = (create_data) =>{
     const JoiSchema = Joi.object({
         name :Joi.string().trim().min(1).max(255).required()
         .messages({
@@ -12,7 +12,7 @@ const createValidateVehicle = async(create_data) =>{
     return JoiSchema.validate(create_data)
 }
 
-const deleteValidateVehicle = async(delete_data) =>{
+const deleteValidateVehicle =(delete_data) =>{
     const JoiSchema = Joi.object({
         id :Joi.number().integer().min(1).required()
         .messages({
@@ -23,7 +23,7 @@ const deleteValidateVehicle = async(delete_data) =>{
     return JoiSchema.validate(delete_data)
 }
 
-const updateValidateVehicle = async(update_data) =>{
+const updateValidateVehicle = (update_data) =>{
     const JoiSchema = Joi.object({
         id :Joi.number().integer().min(1).required()
         .messages({
@@ -38,6 +38,7 @@ const updateValidateVehicle = async(update_data) =>{
 
     return JoiSchema.validate(update_data)
 }
+
 export default {
     createValidateVehicle,
     deleteValidateVehicle,
