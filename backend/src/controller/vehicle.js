@@ -1,35 +1,33 @@
-import validation from '../validation/trip.js'
-import model from '../model/trip.js'
+import model from '../model/vehicle.js'
 import Rolemodel from '../model/role.js'
+import validation from '../validation/vehicle.js'
 
-const createTrip = async(req,res) =>{
+const addVehicle = async(req,res)=>{
     try {
-
-       // const token = req.headers.authorization.split(" ")[1]
+        // const token = req.headers.authorization.split(" ")[1]
       //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-        const role = 1
+      const role = 1
 
-        const field = {
-            id:role
-        }
+      const field = {
+          id:role
+      }
 
-        const checkRole = await Rolemodel.getRoleDetail(field)
-        if(!checkRole.length || checkRole[0].role_name != 'admin'){
-            return res.json({
-                error: true,
-                message: "You don't have permission for this.",
-                data: []
-              }).end()
-          
-        }
+      const checkRole = await Rolemodel.getRoleDetail(field)
+      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+          return res.json({
+              error: true,
+              message: "You don't have permission for this.",
+              data: []
+            }).end()
+        
+      }
 
-        const {trip_type} = req.body
+      const {name} = req.body
+      const data = {
+         name
+      }
 
-        const data ={
-            type:trip_type
-        }
-
-        const checkValidation = validation.createValidateTripType(data)
+      const checkValidation = validation.createValidateVehicle(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {
@@ -42,21 +40,21 @@ const createTrip = async(req,res) =>{
             })
         }
 
-        const checkTrip = await model.getTripDetails(data)
-        if(checkTrip.length){
+        const checkVehicle = await model.getVehicle(data)
+        if(checkVehicle.length){
             return res.json({
                 error: true,
-                message: "Trip Type already Exists.",
+                message: "Vehicle entry already Exists.",
                 data: []
               }).end()
           
         }
 
-        const trip = await model.insertTrip(data)
-            if(trip){
+        const vehicle = await model.insertVehicle(data)
+            if(vehicle){
             res.status(200).json({
                 error: false,
-                message: "Trip Type has been created",
+                message: "Vehicle has been added",
                 data: []
             });
         }
@@ -73,10 +71,30 @@ const createTrip = async(req,res) =>{
     }
 }
 
-const getTrip = async(req,res)=>{
+const getVehicle = async(req,res)=>{
     try {
-        const trip = await model.getAllTripDetails()
-        if(!trip){
+        
+            // const token = req.headers.authorization.split(" ")[1]
+      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
+      const roles = 1
+
+      const field = {
+          id:roles
+      }
+
+      let vehicle;
+      const checkRole = await Rolemodel.getRoleDetail(field)
+      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+        const data = {
+            status:1
+        }
+        vehicle = await model.getAllVehicle(data) 
+      }
+      else{
+        vehicle = await model.getAllVehicle({})  
+      }
+      
+      if(!vehicle){
            return res.status(404).json({
                 error: false,
                 message: "No records found",
@@ -87,9 +105,8 @@ const getTrip = async(req,res)=>{
         return res.status(200).json({
             error:false,
             message:"Records found",
-            data:trip
+            data:vehicle
         })
-
     } catch (error) {
         return res.json({
             error: true,
@@ -102,9 +119,9 @@ const getTrip = async(req,res)=>{
     }
 }
 
-const deleteTrip = async(req,res)=>{
+const deleteVehicle = async(req,res)=>{
     try {
-        // const token = req.headers.authorization.split(" ")[1]
+           // const token = req.headers.authorization.split(" ")[1]
       //  const temp =  jwt.verify(token, constant.accessToken.secret).data
       const role = 1
 
@@ -127,7 +144,7 @@ const deleteTrip = async(req,res)=>{
         id
       }
 
-      const checkValidation = validation.deleteValidateTripType(data)
+      const checkValidation = validation.deleteValidateVehicle(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {
@@ -140,20 +157,19 @@ const deleteTrip = async(req,res)=>{
             })
         }
 
-
-      const checkTrip = await model.getTripDetails(data)
-      if(checkTrip){
+        const checkVehicle = await model.getVehicle(data)
+        if(!checkVehicle.length){
         return res.json({
             error:false,
-            message:"No data found"
+            message:"No records found. delete failed"
         })
       }
 
-      const deleteTrip = await model.deleteTrip(data)
-      if(deleteTrip){
+      const deleteVehicle = await model.deleteVehicle(data)
+      if(deleteVehicle){
        return res.json({
             error: false,
-            message: "Trip type has been deleted",
+            message: "Vehicle has been removed",
         })
       }
 
@@ -165,12 +181,13 @@ const deleteTrip = async(req,res)=>{
               error: error.message
             }
           }).end()
+      
     }
 }
 
-const updateTrip = async (req,res) =>{
+const updateVehicle = async(req,res)=>{
     try {
-           // const token = req.headers.authorization.split(" ")[1]
+              // const token = req.headers.authorization.split(" ")[1]
       //  const temp =  jwt.verify(token, constant.accessToken.secret).data
       const role = 1
 
@@ -188,13 +205,12 @@ const updateTrip = async (req,res) =>{
         
       }
 
-      const {id,type} = req.body
+      const {id, name} = req.body
       const data = {
-        id,
-        type
+        id,name
       }
 
-      const checkValidation =await validation.updateValidateTripType(data)
+      const checkValidation = validation.updateValidateVehicle(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {
@@ -207,13 +223,30 @@ const updateTrip = async (req,res) =>{
             })
         }
 
-        const updateTrip = await model.updateTrip(id,type)
-        if(updateTrip){
+        const vehicle = await model.getAllVehicle({id})
+        if(!vehicle.length){
             return res.json({
-                error: false,
-                message: "Trip type has been updated",
-            })
+                error: true,
+                message: "No records found. update failed",
+                data: []
+              }).end()
+        } 
+
+        const vehicles = await model.updateVehicle(id,name)
+        if(!vehicles){
+            return res.json({
+                error: true,
+                message: "Something went wrong. please try again later",
+                data: []
+              }).end()
         }
+
+        return res.json({
+            error: false,
+            message: "Vehicle Information updated successfully",
+            data: []
+          }).end()
+
 
     } catch (error) {
         return res.json({
@@ -227,8 +260,8 @@ const updateTrip = async (req,res) =>{
 }
 
 export default {
-    createTrip,
-    getTrip,
-    deleteTrip,
-    updateTrip
+    addVehicle,
+    getVehicle,
+    deleteVehicle,
+    updateVehicle
 }

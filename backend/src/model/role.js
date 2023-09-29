@@ -18,7 +18,6 @@ const deleteRole = async (id)=>{
 }
 
 const updateRole = async (id,role_name) =>{ 
-    console.log({role_name,"status":1})
     return knex(table).update({role_name,"status":1}).where({id})
 }
 
