@@ -7,6 +7,7 @@ import users from './src/routes/users.js'
 import cors from 'cors'
 import country from './src/middleware/country.js'
 
+
 const app = express()
 
 app.use(cors())

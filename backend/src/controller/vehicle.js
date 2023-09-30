@@ -1,12 +1,15 @@
 import model from '../model/vehicle.js'
 import Rolemodel from '../model/role.js'
 import validation from '../validation/vehicle.js'
+import jwt from 'jsonwebtoken'
+import constant from '../helpers/constant.js'
+
 
 const addVehicle = async(req,res)=>{
     try {
-        // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
 
       const field = {
           id:role
@@ -74,9 +77,9 @@ const addVehicle = async(req,res)=>{
 const getVehicle = async(req,res)=>{
     try {
         
-            // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const roles = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const roles = temp.role
 
       const field = {
           id:roles
@@ -121,9 +124,9 @@ const getVehicle = async(req,res)=>{
 
 const deleteVehicle = async(req,res)=>{
     try {
-           // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
 
       const field = {
           id:role
@@ -187,9 +190,9 @@ const deleteVehicle = async(req,res)=>{
 
 const updateVehicle = async(req,res)=>{
     try {
-              // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
 
       const field = {
           id:role

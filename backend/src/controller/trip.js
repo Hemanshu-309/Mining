@@ -1,13 +1,16 @@
 import validation from '../validation/trip.js'
 import model from '../model/trip.js'
 import Rolemodel from '../model/role.js'
+import jwt from 'jsonwebtoken'
+import constant from '../helpers/constant.js'
+
 
 const createTrip = async(req,res) =>{
     try {
 
-       // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-        const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
 
         const field = {
             id:role
@@ -104,9 +107,9 @@ const getTrip = async(req,res)=>{
 
 const deleteTrip = async(req,res)=>{
     try {
-        // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
 
       const field = {
           id:role
@@ -170,9 +173,9 @@ const deleteTrip = async(req,res)=>{
 
 const updateTrip = async (req,res) =>{
     try {
-           // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
 
       const field = {
           id:role

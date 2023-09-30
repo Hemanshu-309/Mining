@@ -1,11 +1,13 @@
 import model from '../model/role.js'
 import validation from '../validation/role.js'
+import jwt from 'jsonwebtoken'
+import constant from '../helpers/constant.js'
 
 const createRole = async(req,res)=>{
     try {
-          // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+         const temp =  jwt.verify(token, constant.jwtConfig.secret)
+       const role = temp.role
 
       const field = {
           id:role
@@ -72,9 +74,9 @@ const createRole = async(req,res)=>{
 const getRole = async(req,res) =>{
     try {
         
-            // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const roles = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const roles = temp.role
 
       const field = {
           id:roles
@@ -119,9 +121,9 @@ const getRole = async(req,res) =>{
 
 const deleteRole = async(req,res)=>{
     try {
-      // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+        const role = temp.role
 
       const field = {
           id:role
@@ -186,9 +188,10 @@ const deleteRole = async(req,res)=>{
 
 const updateRole = async(req,res)=>{
     try {
-         // const token = req.headers.authorization.split(" ")[1]
-      //  const temp =  jwt.verify(token, constant.accessToken.secret).data
-      const role = 1
+       
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
 
       const field = {
           id:role

@@ -4,6 +4,7 @@ import md5 from 'md5'
 import constant from '../helpers/constant.js'
 import jwt  from 'jsonwebtoken'
 import knex from '../config/mysql_db.js'
+import fs from '../helpers/functions.js'
 
 const createUser = async (req,res)=>{
     try {
@@ -54,10 +55,13 @@ const createUser = async (req,res)=>{
 
         const userId = await model.createUser({...data, password:md5(password)})
         if (userId) {
+            await fs.accountCreated(email)
             return res.status(200).json({
                 error: false,
                 message: "User has been created",
-                data: userId
+                data: userId,
+                
+
             })
         }
     } catch (error) {
@@ -146,7 +150,6 @@ const loginUser = async (req,res)=>{
           }).end()
     }
 }
-
 
 export default {
     createUser,

@@ -16,13 +16,12 @@ const mailConfig = {
     refreshTokenExpireTime: 1 * 90000,
   }
   
-const transpoter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service:process.env.EMAIL_HOST,
     auth:{
         user:mailConfig.mail,
         pass:mailConfig.password
     },
-    secure :true,
 })
 
 let dbconfig = {
@@ -37,5 +36,6 @@ export default {
     PORT,
     dbconfig,
     jwtConfig,
-    transpoter
+    transporter,
+    mailConfig
 }
