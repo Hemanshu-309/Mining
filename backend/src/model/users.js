@@ -6,8 +6,9 @@ const createUser = (data)=>{
 }
 
 const getUserDetail = (field) => {
-    return knex(table).select("id","firstname","lastname","email","status").where(field)
+    return knex.select("id","firstname","lastname","username","email","status","role",).from(table).where(field)
 }
+
 
 export default {
     createUser,

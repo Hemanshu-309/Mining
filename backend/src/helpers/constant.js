@@ -8,6 +8,13 @@ const mailConfig = {
     mail: process.env.EMAIL,
     password: process.env.EMAIL_PASSWORD,
   };
+
+  const jwtConfig = {
+    secret : "02c79048bc7e055385655953f5aa6e109ee92ebd15f683ca7fd9cfc6fed5985b",
+    refreshSecret : "731e4b0af71aa1583d6dbf369171dbb729a6488da346ed17d63a6984a904971a",
+    expireTime :1 * 60000,
+    refreshTokenExpireTime: 1 * 90000,
+  }
   
 const transpoter = nodemailer.createTransport({
     service:process.env.EMAIL_HOST,
@@ -28,5 +35,7 @@ let dbconfig = {
 
 export default {
     PORT,
-    dbconfig
+    dbconfig,
+    jwtConfig,
+    transpoter
 }

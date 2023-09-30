@@ -53,9 +53,9 @@ const createValidateUser = (create_data) => {
 
 const loginValidateUser = (login_data) => {
   const JoiSchema = Joi.object({
-    username: Joi.string().min(4).max(20).required().messages({
-      "string.empty": `"Username" is a required field.`,
-      "string.length": `"Username" must be between 4 to 20 character long.`,
+    email: Joi.string().email().trim().required().messages({
+      "string.empty": `"email" is a required field.`,
+      "email.base": `enter valid "email"`,
     }),
     password: Joi.string()
       .trim()
