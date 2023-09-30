@@ -4,7 +4,6 @@ import validation from '../validation/vehicle.js'
 import jwt from 'jsonwebtoken'
 import constant from '../helpers/constant.js'
 
-
 const addVehicle = async(req,res)=>{
     try {
         const token = req.headers.authorization.split(" ")[1]

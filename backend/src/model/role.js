@@ -21,7 +21,6 @@ const updateRole = async (id,role_name) =>{
     return knex(table).update({role_name,"status":1}).where({id})
 }
 
-
 export default {
     insertRole,
     getRoleDetail,

@@ -4,7 +4,6 @@ import Rolemodel from '../model/role.js'
 import jwt from 'jsonwebtoken'
 import constant from '../helpers/constant.js'
 
-
 const createTrip = async(req,res) =>{
     try {
 

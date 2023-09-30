@@ -60,8 +60,6 @@ const createUser = async (req,res)=>{
                 error: false,
                 message: "User has been created",
                 data: userId,
-                
-
             })
         }
     } catch (error) {
@@ -138,8 +136,6 @@ const loginUser = async (req,res)=>{
                     
                 }
             })
-
-
     } catch (error) {
         return res.json({
             error: true,
