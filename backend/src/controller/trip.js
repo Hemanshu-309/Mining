@@ -196,7 +196,7 @@ const updateTrip = async (req,res) =>{
         type
       }
 
-      const checkValidation =await validation.updateValidateTripType(data)
+      const checkValidation = validation.updateValidateTripType(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {
