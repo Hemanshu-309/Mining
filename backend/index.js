@@ -4,6 +4,7 @@ import trip from './src/routes/trip.js'
 import role from './src/routes/role.js'
 import vehicle from './src/routes/vehicle.js'
 import users from './src/routes/users.js'
+import daily_report from './src/routes/daily_report.js'
 import cors from 'cors'
 import country from './src/middleware/country.js'
 
@@ -18,6 +19,7 @@ app.use('/trip',trip.router)
 app.use('/role',role.router)
 app.use('/vehicle',vehicle.router)
 app.use('/users',users.router)
+app.use('/reports',daily_report.router)
 
 app.post('/cc',async(req,res)=>{
     res.send({
