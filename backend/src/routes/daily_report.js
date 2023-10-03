@@ -5,7 +5,8 @@ const router = express.Router()
 
 router.post('/addDailyReport',daily_report.insertDailyReport)
 router.post('/getDailyReport',daily_report.getAllDailyReport)
-router.post('/getDailyReportUser',daily_report.getDailyReport)
+router.post('/getDailyReportWhere',daily_report.getDailyReport)
+router.post('/deleteReport',daily_report.deleteReport)
 
 export default {
     router

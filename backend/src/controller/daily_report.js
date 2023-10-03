@@ -116,7 +116,7 @@ const getAllDailyReport = async (req,res) =>{
 
 const getDailyReport = async (req,res) =>{
   try {
-    let {id} = req.body
+    const {id} = req.body
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const roles = temp.id;
@@ -127,7 +127,10 @@ const getDailyReport = async (req,res) =>{
     let reports;
     
     if(id){
-     reports = await model.getDailyReport({id})
+      const data ={
+        id:id , userid :roles
+      }
+     reports = await model.getDailyReport(data)
     }else{
      reports = await model.getDailyReport(field)
     }
@@ -151,8 +154,72 @@ const getDailyReport = async (req,res) =>{
   }
 }
 
+const deleteReport = async (req,res) =>{
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const uid = temp.id;
+
+    const {id} = req.body
+    let data = {
+      id
+    }
+
+    const checkValidation = validations.deleteValidateDailyReport(data);
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    data.userid = uid
+
+    const checkReport = await model.getDailyReport(data)
+    if(!checkReport.length){
+      return res.json({
+        error:false,
+        message:"No report found",
+        data : []
+      })
+    }
+
+    const deleted_report = await model.deleteReport(data)
+    console.log(deleted_report)
+    if(deleted_report > 0){
+     return res.json({
+        error:false,
+        message:"Reports has been deleted",
+        data : deleted_report
+      })
+    }
+
+   return res.json({
+      error:false,
+      message:"Failed to delete report",
+      data : []
+    })
+
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
+
 export default {
   insertDailyReport,
   getAllDailyReport,
-  getDailyReport
+  getDailyReport,
+  deleteReport
 };

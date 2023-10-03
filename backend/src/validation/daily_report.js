@@ -47,8 +47,16 @@ const createValidateDailyReport = (dailyreport_data) => {
   return JoiSchema.validate(dailyreport_data);
 };
 
-
-
+const deleteValidateDailyReport = (delete_data) =>{
+  const JoiSchema = Joi.object({
+    id: Joi.number().min(1).integer().required().messages({
+      "number.empty": `"Id" is a required field.`,
+      "number.base": `"Id" must be a number.`,
+    })
+  }).options({abortEarly:false})
+  return JoiSchema.validate(delete_data)
+}
 export default {
-    createValidateDailyReport
+    createValidateDailyReport,
+    deleteValidateDailyReport
 }
