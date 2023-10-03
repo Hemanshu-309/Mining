@@ -130,10 +130,9 @@ const loginUser = async (req,res)=>{
                 error: false,
                 message: "User Logged In successfully",
                 data: {
+                    userData: userData[0],
                     accessToken,
                     refreshToken,
-                    userData: userData[0],
-                    
                 }
             })
     } catch (error) {

@@ -7,6 +7,7 @@ import users from './src/routes/users.js'
 import daily_report from './src/routes/daily_report.js'
 import cors from 'cors'
 import country from './src/middleware/country.js'
+import fileUpload from 'express-fileupload'
 
 
 const app = express()
@@ -14,6 +15,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended:false}))
+app.use(fileUpload())
 
 app.use('/trip',trip.router)
 app.use('/role',role.router)
