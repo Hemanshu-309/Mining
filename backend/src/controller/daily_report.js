@@ -49,6 +49,7 @@ const insertDailyReport = async (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const roles = temp.role;
+    const uid = temp.id
 
     const field = {
       id: roles,
@@ -64,7 +65,9 @@ const insertDailyReport = async (req, res) => {
         })
         .end();
     }
+
     data.amount = data.trips * (data.rate * data.quantity)
+    data.userid = uid
     const id = await model.insertDailyReport(data)
     if(id.length){
         return res.status(200).json({
@@ -86,6 +89,70 @@ const insertDailyReport = async (req, res) => {
   }
 };
 
+const getAllDailyReport = async (req,res) =>{
+  try {
+  
+    const reports = await model.getAllDailyReport()
+    if(reports){
+      res.json({
+        error:false,
+        message:"Reports has been fetched",
+        data : reports
+      })
+    }
+
+  } catch (error) {
+    return res
+    .json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
+
+const getDailyReport = async (req,res) =>{
+  try {
+    let {id} = req.body
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const roles = temp.id;
+
+    const field = {
+      userid: roles,
+    };
+    let reports;
+    
+    if(id){
+     reports = await model.getDailyReport({id})
+    }else{
+     reports = await model.getDailyReport(field)
+    }
+    
+    if(reports){
+      res.json({
+        error:false,
+        message:"Reports has been fetched",
+        data : reports
+      })
+    }
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
+
 export default {
   insertDailyReport,
+  getAllDailyReport,
+  getDailyReport
 };

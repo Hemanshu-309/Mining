@@ -47,6 +47,8 @@ const createValidateDailyReport = (dailyreport_data) => {
   return JoiSchema.validate(dailyreport_data);
 };
 
+
+
 export default {
     createValidateDailyReport
 }
