@@ -270,6 +270,7 @@ const updateTrip = async (req,res) =>{
             return res.json({
                 error: false,
                 message: "Trip type has been updated",
+                data:updateTrip
             })
         }
 

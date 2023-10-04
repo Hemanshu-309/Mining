@@ -26,7 +26,6 @@ const deletedMultipleVehicle = async(field)=>{
     return knex(table).whereIn('id',field).update('status',2)
 }
 
-
 export default {
     insertVehicle,
     getVehicle,
