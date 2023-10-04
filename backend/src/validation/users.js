@@ -73,7 +73,26 @@ const loginValidateUser = (login_data) => {
   return JoiSchema.validate(login_data);
 };
 
+const deleteValidateUser = (delete_data) =>{
+  const JoiSchema = Joi.object({
+    password: Joi.string()
+    .trim()
+    .min(8)
+    .max(32)
+    .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,35}$/)
+    .required()
+    .messages({
+      "string.empty": `"password" is a required field.`,
+      "string.length": `"password" must contain 35 characters`,
+      "string.pattern.base":
+        "Password must contain 1 Uppercase , 1 Lowercase , 1 Special character and between 8 to 32 characters long.",
+    }),
+  }).options({abortEarly:false})
+  return JoiSchema.validate(delete_data)
+}
+
 export default {
   createValidateUser,
-  loginValidateUser
+  loginValidateUser,
+  deleteValidateUser
 };

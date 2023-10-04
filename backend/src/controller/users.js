@@ -146,7 +146,73 @@ const loginUser = async (req,res)=>{
     }
 }
 
+const deleteUser = async (req,res)=>{
+    try {
+        const {password} = req.body
+        const data = {
+            password
+        }
+        const checkValidation = validation.deleteValidateUser(data)
+        if (checkValidation.error) {
+            const details = checkValidation.error.details;
+            const message = details.map(i => {
+                const err_msg = i.message;
+                return err_msg.replace(/\"/g, '');
+            });
+            return res.json({
+                error: true,
+                message: message
+            })
+        }
+
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+        const id = temp.id
+        const email = temp.email
+
+      const field = {
+        id ,email
+      }
+
+      field.password = md5(password)
+
+      const checkUser = await model.getUserDetail(field)
+      if(!checkUser.length){
+        return res.json({
+            error:true,
+            message:'Invalid credentials',
+            data:[]
+        })
+      }
+
+      const deleteUser = await model.deleteUser(field)
+      if(deleteUser){
+        return res.json({
+            error:false,
+            message:'User has been deleted.',
+            data:deleteUser
+        })
+      }
+
+      return res.json({
+        error:false,
+        message:'Failed to delete user.',
+        data:[]
+      })
+
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: "Something went wrong.",
+            data: {
+              error: error.message
+            }
+          }).end()
+    }
+}
+
 export default {
     createUser,
-    loginUser
+    loginUser,
+    deleteUser
 }
