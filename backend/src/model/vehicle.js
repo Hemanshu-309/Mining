@@ -7,7 +7,7 @@ const insertVehicle = async (data)=>{
 }
 
 const getVehicle = async(field)=>{
-    return knex(table).select('id','name').where(field).andWhere('status',1)
+    return knex(table).select('id','name').where(field)
 }
 
 const getAllVehicle = async(field)=>{
