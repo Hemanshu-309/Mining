@@ -39,8 +39,18 @@ const updateValidateRole = (update_data) =>{
     return JoiSchema.validate(update_data)
 }
 
+const deleteValidateMultipleRole = (delete_data)=>{
+    const JoiSchema = Joi.object({
+        ids: Joi.array().min(1).required().messages({
+            'array.empty':`"Ids" is a required field.`
+        })
+    }).options({abortEarly:false})
+    return JoiSchema.validate(delete_data)
+}
+
 export default {
     createValidateRole,
     deleteValidateRole,
-    updateValidateRole
+    updateValidateRole,
+    deleteValidateMultipleRole
 }

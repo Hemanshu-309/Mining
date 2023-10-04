@@ -22,10 +22,16 @@ const updateVehicle = async (id,name) =>{
     return knex(table).update({name,"status":1}).where({id})
 }
 
+const deletedMultipleVehicle = async(field)=>{
+    return knex(table).whereIn('id',field).update('status',2)
+}
+
+
 export default {
     insertVehicle,
     getVehicle,
     getAllVehicle,
     deleteVehicle,
-    updateVehicle
+    updateVehicle,
+    deletedMultipleVehicle
 }

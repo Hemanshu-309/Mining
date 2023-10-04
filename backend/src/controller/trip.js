@@ -144,7 +144,7 @@ const deleteTrip = async(req,res)=>{
 
 
       const checkTrip = await model.getTripDetails(data)
-      if(checkTrip){
+      if(!checkTrip.length){
         return res.json({
             error:false,
             message:"No data found"
@@ -158,6 +158,62 @@ const deleteTrip = async(req,res)=>{
             message: "Trip type has been deleted",
         })
       }
+
+    } catch (error) {
+        return res.json({
+            error: true,
+            message: "Something went wrong.",
+            data: {
+              error: error.message
+            }
+          }).end()
+    }
+}
+
+const deletedMultipleTrip = async(req,res)=>{
+    try {
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const role = temp.role
+
+      const field = {
+          id:role
+      }
+
+      const checkRole = await Rolemodel.getRoleDetail(field)
+      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+          return res.json({
+              error: true,
+              message: "You don't have permission for this.",
+              data: []
+            }).end()
+        
+      }
+
+        const {ids} = req.body
+        const checkValidation = validation.deleteValidateMultipleTripType({ids})
+        if (checkValidation.error) {
+            const details = checkValidation.error.details;
+            const message = details.map(i => {
+                const err_msg = i.message;
+                return err_msg.replace(/\"/g, '');
+            });
+            return res.json({
+                error: true,
+                message: message
+            })
+        }
+
+
+
+        const deletedMultipleTrip = await model.deletedMultipleTrip(ids)
+        if(deletedMultipleTrip){
+            return res.json({
+                error: false,
+                message: "Trip types has been deleted",
+                data:deletedMultipleTrip
+            })
+        }
 
     } catch (error) {
         return res.json({
@@ -232,5 +288,6 @@ export default {
     createTrip,
     getTrip,
     deleteTrip,
-    updateTrip
+    updateTrip,
+    deletedMultipleTrip
 }

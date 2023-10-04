@@ -17,6 +17,10 @@ const deleteTrip = async(field)=>{
     return knex(table).update('status',2).where(field)
 }
 
+const deletedMultipleTrip = async(field)=>{
+    return knex(table).whereIn('id',field).update('status',2)
+}
+
 const updateTrip = async (id,type) =>{ 
     return knex(table).update({type}).where({id})
 }
@@ -26,5 +30,6 @@ export default {
     getTripDetails,
     getAllTripDetails,
     deleteTrip,
-    updateTrip
+    updateTrip,
+    deletedMultipleTrip
 }

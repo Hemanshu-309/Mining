@@ -6,6 +6,7 @@ const router = express.Router()
 router.post('/addVehicle',vehicle.addVehicle)
 router.post('/getVehicles',vehicle.getVehicle)
 router.post('/deleteVehicle',vehicle.deleteVehicle)
+router.post('/deleteMultipleVehicle',vehicle.deleteMultipleVehicles)
 router.post('/updateVehicle',vehicle.updateVehicle)
 
 export default {

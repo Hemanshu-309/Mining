@@ -21,10 +21,15 @@ const updateRole = async (id,role_name) =>{
     return knex(table).update({role_name,"status":1}).where({id})
 }
 
+const deletedMultipleRoles = async(field)=>{
+    return knex(table).whereIn('id',field).update('status',2)
+}
+
 export default {
     insertRole,
     getRoleDetail,
     deleteRole,
     updateRole,
-    getAllRoleDetail
+    getAllRoleDetail,
+    deletedMultipleRoles
 }
