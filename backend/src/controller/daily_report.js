@@ -56,7 +56,7 @@ const insertDailyReport = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (!checkRole.length || checkRole[0].role_name == "admin") {
+    if (checkRole.length && checkRole[0].role_name == "admin") {
       return res
         .json({
           error: true,

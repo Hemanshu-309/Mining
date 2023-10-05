@@ -16,7 +16,7 @@ const createTrip = async(req,res) =>{
         }
 
         const checkRole = await Rolemodel.getRoleDetail(field)
-        if(!checkRole.length || checkRole[0].role_name != 'admin'){
+        if(checkRole.length && checkRole[0].role_name != 'admin'){
             return res.json({
                 error: true,
                 message: "You don't have permission for this.",
@@ -115,7 +115,7 @@ const deleteTrip = async(req,res)=>{
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -181,7 +181,7 @@ const deletedMultipleTrip = async(req,res)=>{
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -237,7 +237,7 @@ const updateTrip = async (req,res) =>{
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",

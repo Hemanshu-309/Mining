@@ -14,7 +14,7 @@ const createRole = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -84,7 +84,7 @@ const getRole = async(req,res) =>{
 
       let role;
       const checkRole = await model.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
         const data = {
             status:1
         }
@@ -130,7 +130,7 @@ const deleteRole = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -198,7 +198,7 @@ const updateRole = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -272,7 +272,7 @@ const deleteMultipleRoles = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",

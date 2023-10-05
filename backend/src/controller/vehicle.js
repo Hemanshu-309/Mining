@@ -15,7 +15,7 @@ const addVehicle = async(req,res)=>{
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -86,7 +86,7 @@ const getVehicle = async(req,res)=>{
 
       let vehicle;
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
         const data = {
             status:1
         }
@@ -132,7 +132,7 @@ const deleteVehicle = async(req,res)=>{
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -198,7 +198,7 @@ const updateVehicle = async(req,res)=>{
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -272,7 +272,7 @@ const deleteMultipleVehicles = async(req,res)=>{
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
-      if(!checkRole.length || checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -316,7 +316,6 @@ const deleteMultipleVehicles = async(req,res)=>{
           }).end()
     }
 }
-
 
 export default {
     addVehicle,
