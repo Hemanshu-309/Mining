@@ -228,18 +228,17 @@ const deletedMultipleMines = async (req, res) => {
       });
     }
 
-    const deletedMultipleMines = await model.(ids)
-        if(deletedMultipleRoles){
+    const deletedMultipleMines = await model.deletedMultipleMines(ids)
+        if(deletedMultipleMines){
             return res.json({
                 error: false,
                 message: "Vehicles has been deleted",
-                data:deletedMultipleRoles
+                data:deletedMultipleMines
             })
         }
 
   } catch (error) {
-    return res
-      .json({
+    return res.json({
         error: true,
         message: "Something went wrong.",
         data: {
@@ -253,4 +252,5 @@ export default {
   addMine,
   getAllMine,
   deleteMine,
+  deletedMultipleMines
 };

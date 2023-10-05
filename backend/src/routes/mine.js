@@ -5,6 +5,7 @@ const router = express.Router()
 router.post('/addMine',mine.addMine)
 router.post('/getAllMines',mine.getAllMine)
 router.post('/deleteMine',mine.deleteMine)
+router.post('/deleteAllMines',mine.deletedMultipleMines)
 
 export default {
     router

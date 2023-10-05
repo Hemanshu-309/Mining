@@ -17,9 +17,15 @@ const deleteMine = (id)=>{
     return knex(table).update('status',2).where(id)
 }
 
+const deletedMultipleMines = async(field)=>{
+    return knex(table).whereIn('id',field).update('status',2)
+}
+
+
 export default {
     addMineData,
     getAllMinesData,
     getMineData,
-    deleteMine
+    deleteMine,
+    deletedMultipleMines
 }
