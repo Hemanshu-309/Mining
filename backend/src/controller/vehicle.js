@@ -265,7 +265,7 @@ const deleteMultipleVehicles = async(req,res)=>{
     try {
         const token = req.headers.authorization.split(" ")[1]
         const temp =  jwt.verify(token, constant.jwtConfig.secret)
-      const role = temp.role
+        const role = temp.role
 
       const field = {
           id:role

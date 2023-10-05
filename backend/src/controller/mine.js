@@ -177,7 +177,7 @@ const deleteMine = async (req, res) => {
       return res.json({
         error: false,
         message: "Mine has been removed",
-        data : deleteMine
+        data: deleteMine,
       });
     }
   } catch (error) {
@@ -193,9 +193,64 @@ const deleteMine = async (req, res) => {
   }
 };
 
+const deletedMultipleMines = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const role = temp.role;
 
+    const field = {
+      id: role,
+    };
+
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role_name != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
+        })
+        .end();
+    }
+
+    const { ids } = req.body;
+    const checkValidation = validation.deleteValidateMultipleMines({ ids });
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    const deletedMultipleMines = await model.(ids)
+        if(deletedMultipleRoles){
+            return res.json({
+                error: false,
+                message: "Vehicles has been deleted",
+                data:deletedMultipleRoles
+            })
+        }
+
+  } catch (error) {
+    return res
+      .json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+  }
+};
 export default {
   addMine,
   getAllMine,
-  deleteMine
+  deleteMine,
 };
