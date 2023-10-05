@@ -5,6 +5,7 @@ import role from './src/routes/role.js'
 import vehicle from './src/routes/vehicle.js'
 import users from './src/routes/users.js'
 import daily_report from './src/routes/daily_report.js'
+import mine from './src/routes/mine.js'
 import cors from 'cors'
 import country from './src/middleware/country.js'
 import fileUpload from 'express-fileupload'
@@ -22,6 +23,7 @@ app.use('/role',role.router)
 app.use('/vehicle',vehicle.router)
 app.use('/users',users.router)
 app.use('/reports',daily_report.router)
+app.use('/mine',mine.router)
 
 app.post('/cc',async(req,res)=>{
     res.send({

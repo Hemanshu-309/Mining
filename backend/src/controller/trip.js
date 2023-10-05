@@ -9,7 +9,7 @@ const createTrip = async(req,res) =>{
 
         const token = req.headers.authorization.split(" ")[1]
         const temp =  jwt.verify(token, constant.jwtConfig.secret)
-      const role = temp.role
+        const role = temp.role
 
         const field = {
             id:role
@@ -31,7 +31,7 @@ const createTrip = async(req,res) =>{
             type:trip_type
         }
 
-        const checkValidation = await validation.createValidateTripType(data)
+        const checkValidation = validation.createValidateTripType(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {

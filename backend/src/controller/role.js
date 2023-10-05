@@ -29,7 +29,7 @@ const createRole = async(req,res)=>{
         role_name
       }
      
-      const checkValidation = await validation.createValidateRole(data)
+      const checkValidation =  validation.createValidateRole(data)
         if (checkValidation.error) {
             const details = checkValidation.error.details;
             const message = details.map(i => {

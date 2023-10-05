@@ -18,3 +18,19 @@ const addValidateMine = (add_data) =>{
 
     return JoiSchema.validate(add_data)
 }
+
+const deleteValidateMine =(delete_data) =>{
+    const JoiSchema = Joi.object({
+        id :Joi.number().integer().min(1).required()
+        .messages({
+          "number.empty": `"id" is a required field.`
+          }),
+    }).options({abortEarly:false})
+
+    return JoiSchema.validate(delete_data)
+}
+
+export default {
+    addValidateMine,
+    deleteValidateMine
+}
