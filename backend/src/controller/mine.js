@@ -248,6 +248,7 @@ const deletedMultipleMines = async (req, res) => {
       .end();
   }
 };
+
 export default {
   addMine,
   getAllMine,

@@ -9,8 +9,8 @@ const getTripDetails = async (field) =>{
     return knex(table).select('id','type').where(field)
 }
 
-const getAllTripDetails = async ()=>{
-    return knex(table).select('id','type').where('status',1)
+const getAllTripDetails = async (data)=>{
+    return knex(table).select('id','type').orWhere(data)
 }
 
 const deleteTrip = async(field)=>{

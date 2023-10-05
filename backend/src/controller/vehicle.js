@@ -1,326 +1,336 @@
-import model from '../model/vehicle.js'
-import Rolemodel from '../model/role.js'
-import validation from '../validation/vehicle.js'
-import jwt from 'jsonwebtoken'
-import constant from '../helpers/constant.js'
+import model from "../model/vehicle.js";
+import Rolemodel from "../model/role.js";
+import validation from "../validation/vehicle.js";
+import jwt from "jsonwebtoken";
+import constant from "../helpers/constant.js";
 
-const addVehicle = async(req,res)=>{
-    try {
-        const token = req.headers.authorization.split(" ")[1]
-        const temp =  jwt.verify(token, constant.jwtConfig.secret)
-      const role = temp.role
+const addVehicle = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const role = temp.role;
 
-      const field = {
-          id:role
-      }
+    const field = {
+      id: role,
+    };
 
-      const checkRole = await Rolemodel.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
-          return res.json({
-              error: true,
-              message: "You don't have permission for this.",
-              data: []
-            }).end()
-        
-      }
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role_name != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
+        })
+        .end();
+    }
 
-      const {name} = req.body
+    const { name } = req.body;
+    const data = {
+      name,
+    };
+
+    const checkValidation = validation.createValidateVehicle(data);
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    const checkVehicle = await model.getVehicle(data);
+    if (checkVehicle.length) {
+      return res
+        .json({
+          error: true,
+          message: "Vehicle entry already Exists.",
+          data: [],
+        })
+        .end();
+    }
+
+    const vehicle = await model.insertVehicle(data);
+    if (vehicle) {
+      res.status(200).json({
+        error: false,
+        message: "Vehicle has been added",
+        data: [],
+      });
+    }
+  } catch (error) {
+    return res
+      .json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+  }
+};
+
+const getVehicle = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const roles = temp.role;
+
+    const field = {
+      id: roles,
+    };
+
+    let vehicle;
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role_name != "admin") {
       const data = {
-         name
-      }
-
-      const checkValidation = validation.createValidateVehicle(data)
-        if (checkValidation.error) {
-            const details = checkValidation.error.details;
-            const message = details.map(i => {
-                const err_msg = i.message;
-                return err_msg.replace(/\"/g, '');
-            });
-            return res.json({
-                error: true,
-                message: message
-            })
-        }
-
-        const checkVehicle = await model.getVehicle(data)
-        if(checkVehicle.length){
-            return res.json({
-                error: true,
-                message: "Vehicle entry already Exists.",
-                data: []
-              }).end()
-          
-        }
-
-        const vehicle = await model.insertVehicle(data)
-            if(vehicle){
-            res.status(200).json({
-                error: false,
-                message: "Vehicle has been added",
-                data: []
-            });
-        }
-
-    } catch (error) {
-        return res.json({
-            error: true,
-            message: "Something went wrong.",
-            data: {
-              error: error.message
-            }
-          }).end()
-      
+        status: 1,
+      };
+      vehicle = await model.getAllVehicle(data);
+    } else {
+      vehicle = await model.getAllVehicle({});
     }
-}
 
-const getVehicle = async(req,res)=>{
-    try {
-        
-        const token = req.headers.authorization.split(" ")[1]
-        const temp =  jwt.verify(token, constant.jwtConfig.secret)
-      const roles = temp.role
+    if (!vehicle) {
+      return res.status(404).json({
+        error: false,
+        message: "No records found",
+        data: [],
+      });
+    }
 
-      const field = {
-          id:roles
-      }
+    return res.status(200).json({
+      error: false,
+      message: "Records found",
+      data: vehicle,
+    });
+  } catch (error) {
+    return res
+      .json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+  }
+};
 
-      let vehicle;
-      const checkRole = await Rolemodel.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
-        const data = {
-            status:1
-        }
-        vehicle = await model.getAllVehicle(data) 
-      }
-      else{
-        vehicle = await model.getAllVehicle({})  
-      }
-      
-      if(!vehicle){
-           return res.status(404).json({
-                error: false,
-                message: "No records found",
-                data: []
-            });
-        }
+const deleteVehicle = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const role = temp.role;
 
-        return res.status(200).json({
-            error:false,
-            message:"Records found",
-            data:vehicle
+    const field = {
+      id: role,
+    };
+
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role_name != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
         })
-    } catch (error) {
-        return res.json({
-            error: true,
-            message: "Something went wrong.",
-            data: {
-              error: error.message
-            }
-          }).end()
-      
+        .end();
     }
-}
 
-const deleteVehicle = async(req,res)=>{
-    try {
-        const token = req.headers.authorization.split(" ")[1]
-        const temp =  jwt.verify(token, constant.jwtConfig.secret)
-        const role = temp.role
+    const { id } = req.body;
+    const data = {
+      id,
+    };
 
-      const field = {
-          id:role
-      }
+    const checkValidation = validation.deleteValidateVehicle(data);
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
 
-      const checkRole = await Rolemodel.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
-          return res.json({
-              error: true,
-              message: "You don't have permission for this.",
-              data: []
-            }).end()
-        
-      }
+    const checkVehicle = await model.getVehicle(data);
+    if (!checkVehicle.length) {
+      return res.json({
+        error: false,
+        message: "No records found. delete failed",
+      });
+    }
 
-      const {id} = req.body
-      const data ={
-        id
-      }
+    const deleteVehicle = await model.deleteVehicle(data);
+    if (deleteVehicle) {
+      return res.json({
+        error: false,
+        message: "Vehicle has been removed",
+      });
+    }
+  } catch (error) {
+    return res
+      .json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+  }
+};
 
-      const checkValidation = validation.deleteValidateVehicle(data)
-        if (checkValidation.error) {
-            const details = checkValidation.error.details;
-            const message = details.map(i => {
-                const err_msg = i.message;
-                return err_msg.replace(/\"/g, '');
-            });
-            return res.json({
-                error: true,
-                message: message
-            })
-        }
+const updateVehicle = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const role = temp.role;
 
-        const checkVehicle = await model.getVehicle(data)
-        if(!checkVehicle.length){
-        return res.json({
-            error:false,
-            message:"No records found. delete failed"
+    const field = {
+      id: role,
+    };
+
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role_name != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
         })
-      }
+        .end();
+    }
 
-      const deleteVehicle = await model.deleteVehicle(data)
-      if(deleteVehicle){
-       return res.json({
-            error: false,
-            message: "Vehicle has been removed",
+    const { id, name } = req.body;
+    const data = {
+      id,
+      name,
+    };
+
+    const checkValidation = await validation.updateValidateVehicle(data);
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    const vehicle = await model.getAllVehicle({ id });
+    if (!vehicle.length) {
+      return res
+        .json({
+          error: true,
+          message: "No records found. update failed",
+          data: [],
         })
-      }
-
-    } catch (error) {
-        return res.json({
-            error: true,
-            message: "Something went wrong.",
-            data: {
-              error: error.message
-            }
-          }).end()
-      
+        .end();
     }
-}
 
-const updateVehicle = async(req,res)=>{
-    try {
-        const token = req.headers.authorization.split(" ")[1]
-        const temp =  jwt.verify(token, constant.jwtConfig.secret)
-      const role = temp.role
-
-      const field = {
-          id:role
-      }
-
-      const checkRole = await Rolemodel.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
-          return res.json({
-              error: true,
-              message: "You don't have permission for this.",
-              data: []
-            }).end()
-        
-      }
-
-      const {id, name} = req.body
-      const data = {
-        id,name
-      }
-
-      const checkValidation = await validation.updateValidateVehicle(data)
-        if (checkValidation.error) {
-            const details = checkValidation.error.details;
-            const message = details.map(i => {
-                const err_msg = i.message;
-                return err_msg.replace(/\"/g, '');
-            });
-            return res.json({
-                error: true,
-                message: message
-            })
-        }
-
-        const vehicle = await model.getAllVehicle({id})
-        if(!vehicle.length){
-            return res.json({
-                error: true,
-                message: "No records found. update failed",
-                data: []
-              }).end()
-        } 
-
-        const vehicles = await model.updateVehicle(id,name)
-        if(!vehicles){
-            return res.json({
-                error: true,
-                message: "Something went wrong. please try again later",
-                data: []
-              }).end()
-        }
-
-        return res.json({
-            error: false,
-            message: "Vehicle Information updated successfully",
-            data: []
-          }).end()
-
-
-    } catch (error) {
-        return res.json({
-            error: true,
-            message: "Something went wrong.",
-            data: {
-              error: error.message
-            }
-          }).end()
+    const vehicles = await model.updateVehicle(id, name);
+    if (!vehicles) {
+      return res
+        .json({
+          error: true,
+          message: "Something went wrong. please try again later",
+          data: [],
+        })
+        .end();
     }
-}
 
-const deleteMultipleVehicles = async(req,res)=>{
-    try {
-        const token = req.headers.authorization.split(" ")[1]
-        const temp =  jwt.verify(token, constant.jwtConfig.secret)
-        const role = temp.role
+    return res
+      .json({
+        error: false,
+        message: "Vehicle Information updated successfully",
+        data: [],
+      })
+      .end();
+  } catch (error) {
+    return res
+      .json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+  }
+};
 
-      const field = {
-          id:role
-      }
+const deleteMultipleVehicles = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const role = temp.role;
 
-      const checkRole = await Rolemodel.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
-          return res.json({
-              error: true,
-              message: "You don't have permission for this.",
-              data: []
-            }).end()
-        
-      }
+    const field = {
+      id: role,
+    };
 
-        const {ids} = req.body
-        const checkValidation = validation.deleteValidateMultipleVehicle({ids})
-        if (checkValidation.error) {
-            const details = checkValidation.error.details;
-            const message = details.map(i => {
-                const err_msg = i.message;
-                return err_msg.replace(/\"/g, '');
-            });
-            return res.json({
-                error: true,
-                message: message
-            })
-        }
-
-
-
-        const deletedMultipleRoles = await model.deletedMultipleVehicle(ids)
-        if(deletedMultipleRoles){
-            return res.json({
-                error: false,
-                message: "Vehicles has been deleted",
-                data:deletedMultipleRoles
-            })
-        }
-
-    } catch (error) {
-        return res.json({
-            error: true,
-            message: "Something went wrong.",
-            data: {
-              error: error.message
-            }
-          }).end()
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role_name != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
+        })
+        .end();
     }
-}
+
+    const { ids } = req.body;
+    const checkValidation = validation.deleteValidateMultipleVehicle({ ids });
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    const deletedMultipleRoles = await model.deletedMultipleVehicle(ids);
+    if (deletedMultipleRoles) {
+      return res.json({
+        error: false,
+        message: "Vehicles has been deleted",
+        data: deletedMultipleRoles,
+      });
+    }
+  } catch (error) {
+    return res
+      .json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+  }
+};
 
 export default {
-    addVehicle,
-    getVehicle,
-    deleteVehicle,
-    updateVehicle,
-    deleteMultipleVehicles
-}
+  addVehicle,
+  getVehicle,
+  deleteVehicle,
+  updateVehicle,
+  deleteMultipleVehicles,
+};

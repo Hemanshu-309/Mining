@@ -77,8 +77,30 @@ const createTrip = async(req,res) =>{
 
 const getTrip = async(req,res)=>{
     try {
-        const trip = await model.getAllTripDetails()
-        if(!trip){
+
+        const token = req.headers.authorization.split(" ")[1]
+        const temp =  jwt.verify(token, constant.jwtConfig.secret)
+      const roles = temp.role
+
+      const field = {
+          id:roles
+      }
+
+      let trip;
+      const checkRole = await Rolemodel.getRoleDetail(field)
+      if(checkRole.length && checkRole[0].role_name != 'admin'){
+        const data = {
+            status:1
+        }
+        trip = await model.getAllTripDetails(data) 
+      }
+      else{
+        trip = await model.getAllTripDetails({})  
+      }
+
+
+        
+        if(!trip.length){
            return res.status(404).json({
                 error: false,
                 message: "No records found",
