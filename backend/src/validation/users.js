@@ -92,60 +92,8 @@ const deleteValidateUser = (delete_data) =>{
   return JoiSchema.validate(delete_data)
 }
 
-
-//Mahima's Code
-const login = (data) => {
-  const JoiSchema = Joi.object({
-      email: Joi.string().min(4).trim().required().messages({
-          "string.empty": `"Email" is a required field.`,
-          "string.length": `"Email" must be between 4 to 20 character long.`,
-      }),
-      password: Joi.string().trim().min(8).max(35).required().messages({
-          "string.empty": `"Password" is a required field.`,
-          "string.length": `"Password" must contain 8 to 35 characteers.`
-      })
-  })
-
-  const validation = JoiSchema.validate(data);
-  return validation
-}
-
-const passwordResetEmail = (data) => {
-  const JoiSchema = Joi.object({
-      email: Joi.string().min(8).max(255).email().trim().required().messages({
-        "string.empty": `"Email" is a required field.`,
-        "string.length": `"Email" must be between 4 to 20 character long.`,    })
-    })
-    
-    const validation = JoiSchema.validate(data);
-  return validation
-}
-
-const resetpass =(data)=>{
-  const JoiSchema = Joi.object({
-
-      // email: Joi.string().min(8).max(255).email().trim().required().messages({
-      //     "string.empty": `"Email" is a required field.`,
-      //     "string.length": `"Email" must be between 4 to 20 character long.`,})
-      // ,
-      newpass: Joi.string().trim().min(8).max(35).required().messages({
-          "string.empty": `"newpass" is a required field.`,
-          "string.length": `"newpass" must contain 8 to 35 characteers.`
-      }),
-      confirmePass :Joi.string().trim().min(8).max(35).required().messages({
-          "string.empty": `"enterednewpass" is a required field.`,
-          "string.length": `"enterednewpass" must contain 8 to 35 characteers.`
-      })
-  })
-  const validation = JoiSchema.validate(data);
-  return validation
-}
-
 export default {
   createValidateUser,
   loginValidateUser,
   deleteValidateUser,
-  passwordResetEmail,
-  resetpass,
-  login
 };
