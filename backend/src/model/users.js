@@ -1,7 +1,7 @@
 import knex from '../config/mysql_db.js'
 const table = "users"
 
-//Rahul's Code
+
 const createUser = (data)=>{
     return knex(table).insert(data)
 }

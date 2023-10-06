@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-//Rahul's Code
+
 const createValidateUser = (create_data) => {
   const JoiSchema = Joi.object({
     firstname: Joi.string().trim().min(1).max(255).required().messages({

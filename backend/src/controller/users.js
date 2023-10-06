@@ -6,7 +6,7 @@ import jwt  from 'jsonwebtoken'
 import knex from '../config/mysql_db.js'
 import fs from '../helpers/functions.js'
 
-//Rahul's Code
+
 const createUser = async (req,res)=>{
     try {
         const { firstname, lastname, email, password, role, username, mobile, code } = req.body
