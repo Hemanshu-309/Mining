@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer'
 import dotenv from "dotenv";
 dotenv.config()
 
+//Rahul's Code
 const PORT = 8000
 
 const mailConfig = {
@@ -32,10 +33,33 @@ let dbconfig = {
     database: "mines",
   };
 
+//Mahima's Code
+
+const accessToken = {
+  exp: 1 * 60,
+  secret: "hdfgrfyug6327467",
+};
+
+const refreshToken = {
+  exp: 1 * 90,
+  secret: "jduewh8736785647",
+};
+
+const service = "gmail"
+const auth = {
+  user: "mining2709@gmail.com",
+  pass: "wsrt jzgy jfho gkgo"
+}
+
+
 export default {
     PORT,
     dbconfig,
     jwtConfig,
     transporter,
-    mailConfig
+    mailConfig,
+    accessToken,
+    refreshToken,
+    service,
+    auth
 }

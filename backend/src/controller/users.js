@@ -5,6 +5,7 @@ import constant from '../helpers/constant.js'
 import jwt  from 'jsonwebtoken'
 import knex from '../config/mysql_db.js'
 import fs from '../helpers/functions.js'
+import randomstring from "randomstring";
 
 //Rahul's Code
 const createUser = async (req,res)=>{
