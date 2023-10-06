@@ -14,8 +14,13 @@ const deleteUser = (field)=>{
     return knex(table).update('status',2).where(field)
 }
 
+const updateUser = (where,field)=>{
+    return knex(table).where(where).update(field)
+}
+
 export default {
     createUser,
     getUserDetail,
     deleteUser,
+    updateUser
 }

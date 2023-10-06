@@ -7,8 +7,11 @@ const router = express.Router()
 router.post('/addUser',users.createUser)
 router.post('/loginUser',users.loginUser)
 router.post('/deleteUser',users.deleteUser)
+router.post('/updatePassword',users.changePassword)
+
 
 
 export default {
     router
 }
+

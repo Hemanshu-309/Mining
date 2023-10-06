@@ -39,7 +39,22 @@ const accountCreated = async(sendTo) =>{
         return "Email Sent"
 }
 
+const passwordChange = async(sendTo)=>{
+    const body = `<h1>Password Changed Successfully.</h1>
+    <p>Your password has been updated successfully <p>
+    <p>please contact our support if it was not done by you.</p>`
+
+    const subject = "Password Updated !!"
+
+    const sended = await sendEmail(subject,sendTo,body)
+    if (sended.error) {
+        return sended
+    }
+        return "Email Sent"
+}
+
 export default {
     sendEmail,
-    accountCreated
+    accountCreated,
+    passwordChange
 }

@@ -92,8 +92,40 @@ const deleteValidateUser = (delete_data) =>{
   return JoiSchema.validate(delete_data)
 }
 
+
+//Tanvi's Code
+const passwordValidate = (data) => {
+  //added vaalidation for current Password
+  const JoiSchema = Joi.object({
+    newPassword: Joi.string()
+      .trim()
+      .min(8)
+      .max(35)
+      .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,35}$/)
+      .required()
+      .messages({
+        "string.empty": `"New password" is a required field.`,
+        "string.length": `"New password" must contain 35 characters`,
+      }),
+      currentPassword: Joi.string()
+      .trim()
+      .min(8)
+      .max(35)
+      .regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,35}$/)
+      .required()
+      .messages({
+        "string.empty": `"Current password" is a required field.`,
+        "string.length": `"Current password" must contain 35 characters`,
+      }),
+  }).options({abortEarly:false})
+
+  const validation = JoiSchema.validate(data);
+  return validation;
+};
+
 export default {
   createValidateUser,
   loginValidateUser,
   deleteValidateUser,
+  passwordValidate
 };
