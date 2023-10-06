@@ -6,6 +6,7 @@ import jwt  from 'jsonwebtoken'
 import knex from '../config/mysql_db.js'
 import fs from '../helpers/functions.js'
 
+//Rahul's Code
 const createUser = async (req,res)=>{
     try {
         const { firstname, lastname, email, password, role, username, mobile, code } = req.body
@@ -211,8 +212,187 @@ const deleteUser = async (req,res)=>{
     }
 }
 
+
+//Mahima's Code
+const userLogin = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+  
+      const data = {
+        email: email,
+        password: password,
+      };
+  
+      const { error } = validation.login(data);
+      if (error) {
+        return res.status(404).json({
+          error: true,
+          message: error.message,
+        });
+      }
+  
+      const user = await model.UserDetail({ email });
+  
+      if (!user.length) {
+        return res.status(404).json({
+          error: true,
+          message: "User not found",
+        });
+      }
+  
+      const md5password = md5(password);
+      if (user[0].password !== md5password) {
+        return res.status(401).json({
+          error: true,
+          message: "Invalid password",
+        });
+      }
+  
+      const userdata = {
+        id: user[0].id,
+      };
+      console.log(userdata);
+  
+      const access = jwt.sign(
+        {
+          userdata,
+          exp: Math.floor(Date.now() / 1000) + constant.accessToken.exp,
+        },
+        constant.accessToken.secret
+      );
+      const refresh = jwt.sign(
+        {
+          userdata,
+          exp: Math.floor(Date.now() / 1000) + constant.refreshToken.exp,
+        },
+        constant.refreshToken.secret
+      );
+  
+      return res.status(202).json({
+        error: true,
+        message: "Logged in successfully",
+        data: userdata,
+        AccessToken: access,
+        RefreshToken: refresh,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        Error: true,
+        Message: error.message,
+      });
+    }
+  };
+
+const forgotpassword = async (req, res) => {
+    try {
+      const { email } = req.body;
+      const data = {
+        email:email
+      }
+      const { error } = validation.passwordResetEmail(data);
+  
+      if (error) {
+        return res.status(404).json({
+          error: true,
+          message: error.message,
+        });
+      }
+  
+      const user = await model.UserDetail({ email });
+  
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found.",
+        });
+      }
+    
+      
+  
+      const token = randomstring.generate();
+  
+      // console.log(token)
+      // const tokenExpiration = new Date;
+      // tokenExpiration.setMinutes(tokenExpiration.getMinutes() + 1);
+  
+      
+      if(!token.length){
+        return res.status(404).json({
+          error: true,
+          message: "token not generated",
+        });
+      }
+  
+  
+      await model.resetpassToken(email,token)
+    
+  
+      const emailSent = await middleware.sendMail(email,token);
+  
+  
+      if(!emailSent){
+        return res.status(200).json({
+          error:true,
+        message:"Email not sent. Process failed"
+        })
+      }
+      return res.status(400).json({
+      error:false,
+      message:"Email sent :) :) "})
+  
+  
+  
+      
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error." });
+    }
+  };
+  
+const resetpass = async (req, res) => {
+    try {
+      const { newpass , confirmePass } = req.body;
+      const data = {
+        newpass:newpass,
+        confirmePass:confirmePass
+      }
+      const { error } = validation.resetpass(data);
+  
+      if(error){
+        return res.status(404).json({
+          error: true,
+          message: error.message,
+        });
+      }
+      if(newpass==confirmePass){
+  
+  
+        const newHashedPass = md5(newpass)
+  
+        await model.updatepass(email,newHashedPass)
+        
+        return res.status(200).json({
+          error: false,
+          message: "password reset sucessfully",
+        });
+  
+      }
+      return res.status(404).json({
+        error: true,
+        message: "password not matched",
+      });
+  
+    }catch(error) {
+        console.error(error);
+        return res.status(500).json({ message: "password not reset" });
+      }
+  }
+
 export default {
     createUser,
     loginUser,
-    deleteUser
+    deleteUser,
+    userLogin,
+    forgotpassword,
+    resetpass
+
 }
