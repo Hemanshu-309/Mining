@@ -68,6 +68,7 @@ const insertDailyReport = async (req, res) => {
 
     data.amount = data.trips * (data.rate * data.quantity)
     data.userid = uid
+    console.log(data)
     const id = await model.insertDailyReport(data)
     if(id.length){
         return res.status(200).json({
@@ -217,9 +218,50 @@ const deleteReport = async (req,res) =>{
   }
 }
 
+const paginateDailyReport = async(req,res) =>{
+  try {
+    let { offset = 0, limit = 3, order = "desc", sort = "id", search, status } = req.body;
+
+    const rows = await model.paginateDailyReport(limit,offset,sort,order)
+
+    return res.json({
+      error: false,
+      message: "Data has been fetched",
+      data: {
+        rows
+      },
+    })
+    
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+  }
+}
+
+const paginateDailyReportTotal = async(req,res)=>{
+  try {
+    
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+  }
+}
+
 export default {
   insertDailyReport,
   getAllDailyReport,
   getDailyReport,
-  deleteReport
+  deleteReport,
+  paginateDailyReport,
+  paginateDailyReportTotal
 };

@@ -10,13 +10,13 @@ const createValidateDailyReport = (dailyreport_data) => {
       "number.empty": `"Mine No" is a required field.`,
       "number.base": `"Mine No" must be a number.`,
     }),
-    vehicle: Joi.string().trim().min(1).max(255).required().messages({
-      "string.empty": `"Vehicle Name" is a required field.`,
-      "string.length": `"Vehicle Name" must contain 255 characters`,
+    vehicle:Joi.number().integer().required().messages({
+      "number.empty": `"Vehicle" is a required field.`,
+      "number.base": `"Vehicle" must be a number.`,
     }),
-    trip_type: Joi.string().trim().min(1).max(255).required().messages({
-      "string.empty": `"Trip Type" is a required field.`,
-      "string.length": `"Trip Type" must contain 255 characters`,
+    trip_type:Joi.number().integer().required().messages({
+      "number.empty": `"Trip Type" is a required field.`,
+      "number.base": `"Trip Type" must be a number.`,
     }),
     date: Joi.string().regex(/^\d{2}\/\d{2}\/\d{4}$/).required().messages({
       "string.empty": `"Date" is a required field.`,
