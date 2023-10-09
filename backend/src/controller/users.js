@@ -106,9 +106,9 @@ const loginUser = async (req, res) => {
       });
     }
     
-    data.status = 1;
+    
     data.password = md5(password);
-    let userData = await model.getUserDetail(data);
+    let userData = await model.getUserDetail(data,1);
     if (!userData.length) {
       return res.json({
         Error: true,

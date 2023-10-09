@@ -1,13 +1,21 @@
 import knex from '../config/mysql_db.js'
 const table = "users"
-
+const role = "users_role"
 
 const createUser = (data)=>{
     return knex(table).insert(data)
 }
 
-const getUserDetail = (field) => {
-    return knex.select("id","firstname","lastname","username","email","status","role").from(table).where(field)
+const getUserDetail = (field,status) => {
+    let rows = knex(table)
+    .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.status`,`${role}.role_name as roles`)
+    .leftJoin(role,`${role}.id`,"=",`${table}.role`)
+   
+    if (status) rows.where(`${table}.status`,status)
+
+   rows =  rows.where(field)
+
+   return rows
 }
 
 const deleteUser = (field)=>{
