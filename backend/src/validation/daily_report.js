@@ -42,7 +42,7 @@ const createValidateDailyReport = (dailyreport_data) => {
   }).options({ abortEarly: false });
 
   return JoiSchema.validate(dailyreport_data);
-}
+};
 
 const deleteValidateDailyReport = (delete_data) =>{
   const JoiSchema = Joi.object({
@@ -52,7 +52,8 @@ const deleteValidateDailyReport = (delete_data) =>{
     })
   }).options({abortEarly:false})
   return JoiSchema.validate(delete_data)
-}
+};
+
 export default {
     createValidateDailyReport,
     deleteValidateDailyReport
