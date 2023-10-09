@@ -218,7 +218,7 @@ const paginateDailyReport = async(req,res) =>{
     let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
 
     let searchFrom = [
-        "mine_no","role_name","vehicle","type",,"name","with_lead","date"
+        "mine_no","role_name","vehicle","type","name","with_lead","date"
     ]
 
     const total = await model.paginateDailyReportTotal(searchFrom,search,status)

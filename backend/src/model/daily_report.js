@@ -77,8 +77,6 @@ const paginateDailyReportTotal = async(searchFrom, search, status) =>{
     .leftJoin(trip, `${trip}.id`, "=", `${table}.trip_type`)
     .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`)
     
-    
-
     if (status) results = results.where("status", status)
     
     results = results.where((query) => {
