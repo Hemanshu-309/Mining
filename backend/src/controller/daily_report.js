@@ -118,18 +118,15 @@ const getDailyReport = async (req,res) =>{
     const {id} = req.body
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
-    const roles = temp.id;
+    const userid = temp.id;
 
     const field = {
-      userid: roles,
+      userid
     };
     let reports;
     
     if(id){
-      const data ={
-        id:id , userid :roles
-      }
-     reports = await model.getDailyReport(data)
+      reports = await model.getDailyReport(id,userid)
     }else{
      reports = await model.getDailyReport(field)
     }

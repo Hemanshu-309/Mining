@@ -11,41 +11,34 @@ const insertDailyReport = (data) => {
   return knex(table).insert(data);
 };
 
-const getDailyReport = (where) => {
-  return knex(table)
-    .select(
-      "id",
-      "userid",
-      "role_id",
-      "mine_no",
-      "vehicle",
-      "trip_type",
-      "with_lead",
-      "trips",
-      "quantity",
-      "date",
-      "remarks"
-    )
-    .where(where)
-    .andWhere("status", 1);
+const getDailyReport = (id,userid) => {
+  let rows = knex(table)
+    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip type`,`${mine}.mine_name as mine name`,`${table}.with_lead as with lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
+    .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
+    .leftJoin(role, `${role}.id`, "=", `${table}.role_id`)
+    .leftJoin(vehicle, `${vehicle}.id`, "=", `${table}.vehicle`)
+    .leftJoin(trip, `${trip}.id`, "=", `${table}.trip_type`)
+    .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`)
+    
+    rows = rows.where(`${table}.status`,1).andWhere(`${table}.id`,id).andWhere(`${table}.userid`,userid)
+
+    return rows
+
 };
 
 const getAllDailyReport = () => {
-  return knex(table)
-    .select(
-      "id",
-      "role_id",
-      "userid",
-      "mine_no",
-      "vehicle",
-      "trip_type",
-      "with_lead",
-      "trips",
-      "quantity",
-      "date",
-      "remarks"
-    )
-    .andWhere("status", 1);
+  let rows = knex(table)
+    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip type`,`${mine}.mine_name as mine name`,`${table}.with_lead as with lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
+    .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
+    .leftJoin(role, `${role}.id`, "=", `${table}.role_id`)
+    .leftJoin(vehicle, `${vehicle}.id`, "=", `${table}.vehicle`)
+    .leftJoin(trip, `${trip}.id`, "=", `${table}.trip_type`)
+    .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`)
+    
+    rows = rows.where(`${table}.status`,1)
+
+    return rows
+
 };
 
 const deleteReport = async (field) => {
