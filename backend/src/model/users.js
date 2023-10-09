@@ -7,7 +7,7 @@ const createUser = (data)=>{
 }
 
 const getUserDetail = (field) => {
-    return knex.select("id","firstname","lastname","username","email","status","role",).from(table).where(field)
+    return knex.select("id","firstname","lastname","username","email","status","role").from(table).where(field)
 }
 
 const deleteUser = (field)=>{

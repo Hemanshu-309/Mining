@@ -7,7 +7,6 @@ import constant from "../helpers/constant.js";
 const insertDailyReport = async (req, res) => {
   try {
     const {
-      role,
       mine_no,
       vehicle,
       trip_type,
@@ -20,7 +19,6 @@ const insertDailyReport = async (req, res) => {
       remarks,
     } = req.body;
     const data = {
-      role,
       mine_no,
       vehicle,
       trip_type,
@@ -68,7 +66,7 @@ const insertDailyReport = async (req, res) => {
 
     data.amount = data.trips * (data.rate * data.quantity)
     data.userid = uid
-    console.log(data)
+    data.role_id = roles
     const id = await model.insertDailyReport(data)
     if(id.length){
         return res.status(200).json({
@@ -220,15 +218,37 @@ const deleteReport = async (req,res) =>{
 
 const paginateDailyReport = async(req,res) =>{
   try {
-    let { offset = 0, limit = 3, order = "desc", sort = "id", search, status } = req.body;
+    let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
 
-    const rows = await model.paginateDailyReport(limit,offset,sort,order)
+    let searchFrom = [
+        "mine_no","role_name","vehicle","type",,"name","with_lead","date"
+    ]
+
+    const total = await model.paginateDailyReportTotal(searchFrom,search,status)
+    const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search)
+    
+    let data_rows = []
+    if(order === 'asc'){
+      let sr = total.total - (offset*limit)
+      rows.forEach(row =>{
+        row.sr = sr
+        data_rows.push(row)
+        sr--
+      })
+    }else{
+      let sr = offset + 1
+      rows.forEach(row =>{
+        row.sr = sr
+        data_rows.push(row)
+        sr++
+      })
+    }
 
     return res.json({
       error: false,
       message: "Data has been fetched",
       data: {
-        rows
+        rows:data_rows
       },
     })
     

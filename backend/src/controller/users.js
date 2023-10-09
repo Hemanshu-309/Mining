@@ -105,18 +105,19 @@ const loginUser = async (req, res) => {
         message: message,
       });
     }
-
+    
     data.status = 1;
     data.password = md5(password);
     let userData = await model.getUserDetail(data);
-    if (!userData) {
+    if (!userData.length) {
       return res.json({
         Error: true,
         Message: "No user found.",
         Data: [],
       });
     }
-
+    
+    
     delete userData[0].status;
 
     const { jwtConfig } = constant;
@@ -142,7 +143,7 @@ const loginUser = async (req, res) => {
         expiresIn: jwtConfig.refreshTokenExpireTime,
       }
     );
-
+  
     const get_user_role_name = await knex("users_role").where({
       id: userData[0].role,
     });

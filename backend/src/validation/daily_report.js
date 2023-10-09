@@ -2,10 +2,7 @@ import Joi from "joi";
 
 const createValidateDailyReport = (dailyreport_data) => {
   const JoiSchema = Joi.object({
-    role: Joi.number().integer().required().messages({
-      "number.empty": `"Role" is a required field.`,
-      "number.base": `"Role" must be a number.`,
-    }),
+
     mine_no: Joi.number().integer().required().messages({
       "number.empty": `"Mine No" is a required field.`,
       "number.base": `"Mine No" must be a number.`,
@@ -18,7 +15,7 @@ const createValidateDailyReport = (dailyreport_data) => {
       "number.empty": `"Trip Type" is a required field.`,
       "number.base": `"Trip Type" must be a number.`,
     }),
-    date: Joi.string().regex(/^\d{2}\/\d{2}\/\d{4}$/).required().messages({
+    date: Joi.string().regex(/^\d{4}\-\d{2}\-\d{2}$/).required().messages({
       "string.empty": `"Date" is a required field.`,
     }),
     with_lead: Joi.boolean().valid('Yes','No').required().messages({
