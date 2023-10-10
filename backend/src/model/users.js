@@ -28,7 +28,7 @@ const updateUser = (where,field)=>{
 
 const paginateUser = (limit, offset, sort, order, status, searchFrom, search) =>{
     let rows = knex(table)
-    .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.email`,`${table}.mobile`,`${table}.code`,`${table}.status`,`${role}.role_name as role`)
+    .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.email`,`${table}.mobile`,`${table}.code`,`${role}.role_name as role`)
     .leftJoin(role,`${role}.id`,"=",`${table}.role`)
 
     if (status) rows.where(`${table}.status`,status)

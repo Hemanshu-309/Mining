@@ -236,6 +236,9 @@ const deleteUser = async (req, res) => {
 
 const paginateUser = async (req, res) =>{
   try {
+
+
+
     let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
 
     let searchFrom = [
@@ -246,14 +249,14 @@ const paginateUser = async (req, res) =>{
     const rows = await model.paginateUser(limit,offset,sort,order,status,searchFrom,search)
 
     let data_rows = []
-    if(order === 'asc'){
+    if(order)/*{
       let sr = total.total - (offset*limit)
       rows.forEach(row =>{
         row.sr = sr
         data_rows.push(row)
         sr--
       })
-    }else{
+    }else*/{
       let sr = offset + 1
       rows.forEach(row =>{
         row.sr = sr

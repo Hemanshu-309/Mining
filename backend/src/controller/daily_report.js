@@ -225,14 +225,14 @@ const paginateDailyReport = async(req,res) =>{
     const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search)
     
     let data_rows = []
-    if(order === 'asc'){
+    if(order /*=== 'asc'*/)/*{
       let sr = total.total - (offset*limit)
       rows.forEach(row =>{
         row.sr = sr
         data_rows.push(row)
         sr--
       })
-    }else{
+    }else*/{
       let sr = offset + 1
       rows.forEach(row =>{
         row.sr = sr
