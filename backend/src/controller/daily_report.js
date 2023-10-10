@@ -297,25 +297,10 @@ const paginateDailyReport = async(req,res) =>{
   }
 }
 
-const paginateDailyReportTotal = async(req,res)=>{
-  try {
-    
-  } catch (error) {
-    return res.json({
-      error: true,
-      message: "Something went wrong.",
-      data: {
-        error: error.message,
-      },
-    })
-  }
-}
-
 export default {
   insertDailyReport,
   getAllDailyReport,
   getDailyReport,
   deleteReport,
   paginateDailyReport,
-  paginateDailyReportTotal
 };

@@ -6,7 +6,6 @@ import jwt from "jsonwebtoken";
 import Rolemodel from '../model/role.js'
 import fs from "../helpers/functions.js";
 
-
 const createUser = async (req, res) => {
   try {
     const {
