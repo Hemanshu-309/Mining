@@ -346,8 +346,7 @@ const paginateRole = async (req, res) =>{
   
       const checkRole = await model.getRoleDetail(field);
       if (checkRole.length && checkRole[0].role_name != "admin") {
-        return res
-          .json({
+        return res.json({
             error: true,
             message: "You don't have permission for this.",
             data: [],
