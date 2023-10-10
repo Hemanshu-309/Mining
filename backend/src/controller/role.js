@@ -314,10 +314,97 @@ const deleteMultipleRoles = async(req,res)=>{
     }
 }
 
+const paginateRole = async (req, res) =>{
+    try {
+      let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
+  
+      const data = {
+        offset,limit,order,sort,status
+      }
+  
+      const checkValidation = validation.paginationValidateRole(data);
+      if (checkValidation.error) {
+        const details = checkValidation.error.details;
+        const message = details.map((i) => {
+          const err_msg = i.message;
+          return err_msg.replace(/\"/g, "");
+        });
+        return res.json({
+          error: true,
+          message: message,
+        });
+      }
+  
+      const token = req.headers.authorization.split(" ")[1];
+      const temp = jwt.verify(token, constant.jwtConfig.secret);
+      const roles = temp.role;
+      const uid = temp.id
+  
+      const field = {
+        id: roles,
+      };
+  
+      const checkRole = await model.getRoleDetail(field);
+      if (checkRole.length && checkRole[0].role_name != "admin") {
+        return res
+          .json({
+            error: true,
+            message: "You don't have permission for this.",
+            data: [],
+          })
+          .end();
+      }
+  
+      let searchFrom = [
+        "name"
+      ]
+  
+      const total = await model.paginateRoleTotal(searchFrom,search,status)
+      const rows = await model.paginateRole(limit,offset,sort,order,status,searchFrom,search)
+      
+      let data_rows = []
+      if(order /*=== 'asc'*/)/*{
+        let sr = total.total - (offset*limit)
+        rows.forEach(row =>{
+          row.sr = sr
+          data_rows.push(row)
+          sr--
+        })
+      }else*/{
+        let sr = offset + 1
+        rows.forEach(row =>{
+          row.sr = sr
+          data_rows.push(row)
+          sr++
+        })
+      }
+  
+      return res.json({
+        error: false,
+        message: "Data has been fetched",
+        data: {
+          rows:data_rows
+        },
+      })
+      
+  
+    } catch (error) {
+      return res.json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+    }
+  }
+
 export default {
     createRole,
     getRole,
     deleteRole,
     updateRole,
-    deleteMultipleRoles
+    deleteMultipleRoles,
+    paginateRole
 }
