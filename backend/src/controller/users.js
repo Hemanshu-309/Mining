@@ -109,6 +109,7 @@ const loginUser = async (req, res) => {
     
     data.password = md5(password);
     let userData = await model.getUserDetail(data,1);
+    
     if (!userData.length) {
       return res.json({
         Error: true,
@@ -144,11 +145,6 @@ const loginUser = async (req, res) => {
       }
     );
   
-    const get_user_role_name = await knex("users_role").where({
-      id: userData[0].role,
-    });
-    userData[0].role_name = get_user_role_name[0].role_name;
-
     res.status(200).json({
       error: false,
       message: "User Logged In successfully",
