@@ -64,10 +64,12 @@ const paginationValidateTrip = (data) =>{
       sort : Joi.string().required().messages({
         "string.empty":`"sort" is a required field.`
       }),
-      status: Joi.number().integer().valid(1,2)
+      status: Joi.number().integer().valid(1,2),
+      search : Joi.string()
     }).options({abortEarly:false})
     return JoiSchema.validate(data)
-  }
+}
+
 export default {
     createValidateTripType,
     deleteValidateTripType,
