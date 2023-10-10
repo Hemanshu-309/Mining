@@ -393,7 +393,7 @@ const paginateTrip = async (req, res) =>{
       })
       .end();
     }
-  }
+}
 
 export default {
     createTrip,

@@ -25,9 +25,8 @@ const updateTrip = async (id,type) =>{
     return knex(table).update({type,'status':1}).where({id})
 }
 
-
 const paginateTrip = (limit, offset, sort, order, status, searchFrom, search) =>{
-    let rows = knex(table).select('*')
+    let rows = knex(table).select(`${table}.id`,`${table}.type as Trip Type`)
 
     if (status) rows.where(`${table}.status`,`${status}`) 
 
@@ -45,7 +44,7 @@ const paginateTrip = (limit, offset, sort, order, status, searchFrom, search) =>
 }
 
 const paginateTripTotal = async(searchFrom,search,status) => {
-    let rows = knex(table).select('*')
+    let rows = knex(table).select(`${table}.id`,`${table}.type as Trip Type`)
 
     if (status) rows.where(`${table}.status`,`${status}`) 
 
