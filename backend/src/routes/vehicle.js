@@ -8,6 +8,7 @@ router.post('/getVehicles',vehicle.getVehicle)
 router.post('/deleteVehicle',vehicle.deleteVehicle)
 router.post('/deleteMultipleVehicle',vehicle.deleteMultipleVehicles)
 router.post('/updateVehicle',vehicle.updateVehicle)
+router.post('/paginateVehicle',vehicle.paginateVehicle)
 
 export default {
     router

@@ -351,7 +351,7 @@ const paginateTrip = async (req, res) =>{
   
   
       let searchFrom = [
-        "mine_name","code"
+        "type"
       ]
   
       const total = await model.paginateTripTotal(searchFrom,search,status)

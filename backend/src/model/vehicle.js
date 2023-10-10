@@ -26,11 +26,49 @@ const deletedMultipleVehicle = async(field)=>{
     return knex(table).whereIn('id',field).update('status',2)
 }
 
+const paginateVehicle = (limit, offset, sort, order, status, searchFrom, search) =>{
+    let rows = knex(table).select(`${table}.id`,`${table}.name as Vehicle Name`)
+
+    if (status) rows.where(`${table}.status`,`${status}`) 
+
+    rows = rows.where((query)=>{
+        if(search){
+          searchFrom.map(val =>{
+            query.orWhereILike(val, `%${search}%`)
+          })
+        }
+    })
+
+  rows = rows.orderBy(sort,order).limit(limit).offset(offset)
+
+  return rows
+}
+
+const paginateVehicleTotal = async(searchFrom,search,status) => {
+    let rows = knex(table).select(`${table}.id`,`${table}.name as Vehicle Name`)
+
+    if (status) rows.where(`${table}.status`,`${status}`) 
+
+    rows = rows.where((query)=>{
+        if(search){
+          searchFrom.map(val =>{
+            query.orWhereILike(val, `%${search}%`)
+          })
+        }
+    })
+
+    const total = await rows.count(`${table}.id as total`).first()
+    return total
+}
+
+
 export default {
     insertVehicle,
     getVehicle,
     getAllVehicle,
     deleteVehicle,
     updateVehicle,
-    deletedMultipleVehicle
+    deletedMultipleVehicle,
+    paginateVehicle,
+    paginateVehicleTotal
 }
