@@ -3,7 +3,7 @@ import model from "../model/users.js";
 import md5 from "md5";
 import constant from "../helpers/constant.js";
 import jwt from "jsonwebtoken";
-import knex from "../config/mysql_db.js";
+import Rolemodel from '../model/role.js'
 import fs from "../helpers/functions.js";
 
 
@@ -236,14 +236,49 @@ const deleteUser = async (req, res) => {
 
 const paginateUser = async (req, res) =>{
   try {
-
-
-
     let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
+
+    const data = {
+      offset,limit,order,sort,status
+    }
+
+    const checkValidation = validation.paginationValidateUser(data);
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const roles = temp.role;
+    const uid = temp.id
+
+    const field = {
+      id: roles,
+    };
+
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role_name != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
+        })
+        .end();
+    }
 
     let searchFrom = [
       "firstname","lastname","email","mobile","role_name","code","username"    
     ]
+
 
     const total = await model.paginateUserTotal(searchFrom,search,status)
     const rows = await model.paginateUser(limit,offset,sort,order,status,searchFrom,search)
