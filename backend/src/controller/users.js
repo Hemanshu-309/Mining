@@ -245,10 +245,31 @@ const paginateUser = async (req, res) =>{
     const total = await model.paginateUserTotal(searchFrom,search,status)
     const rows = await model.paginateUser(limit,offset,sort,order,status,searchFrom,search)
 
-    res.json({
+    let data_rows = []
+    if(order === 'asc'){
+      let sr = total.total - (offset*limit)
+      rows.forEach(row =>{
+        row.sr = sr
+        data_rows.push(row)
+        sr--
+      })
+    }else{
+      let sr = offset + 1
+      rows.forEach(row =>{
+        row.sr = sr
+        data_rows.push(row)
+        sr++
+      })
+    }
+
+    return res.json({
       error: false,
-      rows
+      message: "Data has been fetched",
+      data: {
+        rows:data_rows
+      },
     })
+    
 
   } catch (error) {
     return res
