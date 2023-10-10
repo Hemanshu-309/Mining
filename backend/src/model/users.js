@@ -8,7 +8,7 @@ const createUser = (data)=>{
 
 const getUserDetail = (field,status) => {
     let rows = knex(table)
-    .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${role}.role_name as role`)
+    .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${table}.status`,`${role}.role_name as role`)
     .leftJoin(role,`${role}.id`,"=",`${table}.role`)
    
     if (status) rows.where(`${table}.status`,status)
@@ -26,9 +26,52 @@ const updateUser = (where,field)=>{
     return knex(table).where(where).update(field)
 }
 
+const paginateUser = (limit, offset, sort, order, status, searchFrom, search) =>{
+    let rows = knex(table)
+    .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.email`,`${table}.mobile`,`${table}.code`,`${table}.status`,`${role}.role_name as role`)
+    .leftJoin(role,`${role}.id`,"=",`${table}.role`)
+
+    if (status) rows.where(`${table}.status`,status)
+
+    rows = rows.where((query)=>{
+        if(search){
+          searchFrom.map(val =>{
+            query.orWhereILike(val, `%${search}%`)
+          })
+        }
+    })
+
+    
+  rows = rows.orderBy(sort,order).limit(limit).offset(offset)
+
+  return rows
+}
+
+const paginateUserTotal = async(searchFrom, search, status) =>{
+    let rows = knex(table)
+    .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.mobile`,`${table}.code`,`${table}.status`,`${role}.role_name as role`)
+    .leftJoin(role,`${role}.id`,"=",`${table}.role`)
+
+    if (status) rows.where(`${table}.status`,status)
+
+    rows = rows.where((query)=>{
+        if(search){
+          searchFrom.map(val =>{
+            query.orWhereILike(val, `%${search}%`)
+          })
+        }
+    })
+
+    const total = await rows.count(`${table}.id as total`).first()
+
+    return total
+}
+
 export default {
     createUser,
     getUserDetail,
     deleteUser,
-    updateUser
+    updateUser,
+    paginateUser,
+    paginateUserTotal
 }

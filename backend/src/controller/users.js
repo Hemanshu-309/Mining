@@ -234,6 +234,35 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const paginateUser = async (req, res) =>{
+  try {
+    let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
+
+    let searchFrom = [
+      "firstname","lastname","email","mobile","role_name","code","username"    
+    ]
+
+    const total = await model.paginateUserTotal(searchFrom,search,status)
+    const rows = await model.paginateUser(limit,offset,sort,order,status,searchFrom,search)
+
+    res.json({
+      error: false,
+      rows
+    })
+
+  } catch (error) {
+    return res
+    .json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
+
 //Tanvi's code
 const changePassword = async (req, res) => {
   try {
@@ -319,4 +348,5 @@ export default {
   loginUser,
   deleteUser,
   changePassword,
+  paginateUser
 };

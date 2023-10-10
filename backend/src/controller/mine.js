@@ -10,7 +10,7 @@ const addMine = async (req, res) => {
     const data = {
       id,
       code,
-      name,
+     mine_name: name,
     };
 
     const checkValidation = validation.addValidateMine(data);
@@ -26,7 +26,7 @@ const addMine = async (req, res) => {
       });
     }
 
-    console.log("1");
+    
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const role = temp.role;
