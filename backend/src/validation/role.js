@@ -2,10 +2,10 @@ import Joi from "joi";
 
 const createValidateRole = (create_data) =>{
     const JoiSchema = Joi.object({
-        role_name :Joi.string().trim().min(1).max(255).required()
+        role_name :Joi.string().trim().min(3).max(255).required()
         .messages({
           "string.empty": `"Role Name" is a required field.`,
-          "string.length": `"Role Name" must contain 255 characters`
+          "string.length": `"Role Name" must contain 3 to 255 characters`
           }),
     }).options({abortEarly:false})
 

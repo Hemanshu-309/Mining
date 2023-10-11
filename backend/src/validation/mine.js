@@ -10,9 +10,9 @@ const addValidateMine = (add_data) =>{
             "string.empty":`"Code" is a required field.`,
             "string.length": `"Code" must contain atleast 1 character.`
         }),
-       mine_name: Joi.string().trim().min(1).max(255).required().messages({
+       mine_name: Joi.string().trim().min(3).max(255).required().messages({
             "string.empty":`"Name" is a required field.`,
-            "string.length": `"Name" must contain 255 characters`
+            "string.length": `"Name" must contain 3 to 255 characters`
         }),
     }).options({abortEarly:false})
 
