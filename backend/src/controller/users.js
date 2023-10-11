@@ -116,8 +116,7 @@ const loginUser = async (req, res) => {
         Data: [],
       });
     }
-    
-    
+        
     delete userData[0].status;
 
     const { jwtConfig } = constant;

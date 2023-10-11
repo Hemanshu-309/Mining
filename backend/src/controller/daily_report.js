@@ -49,6 +49,7 @@ const insertDailyReport = async (req, res) => {
     const roles = temp.role;
     const uid = temp.id
 
+    console.log(roles)
     const field = {
       id: roles,
     };
@@ -90,7 +91,6 @@ const insertDailyReport = async (req, res) => {
 
 const getAllDailyReport = async (req,res) =>{
   try {
-  
     const reports = await model.getAllDailyReport()
     if(reports){
       res.json({
@@ -99,7 +99,6 @@ const getAllDailyReport = async (req,res) =>{
         data : reports
       })
     }
-
   } catch (error) {
     return res
     .json({
@@ -237,7 +236,7 @@ const paginateDailyReport = async(req,res) =>{
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const roles = temp.role;
-    const uid = temp.id
+    
 
     const field = {
       id: roles,

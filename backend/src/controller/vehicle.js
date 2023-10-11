@@ -54,6 +54,7 @@ const addVehicle = async (req, res) => {
         .end();
     }
 
+    
     const vehicle = await model.insertVehicle(data);
     if (vehicle) {
       res.status(200).json({

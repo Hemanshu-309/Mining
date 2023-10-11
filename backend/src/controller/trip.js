@@ -248,7 +248,7 @@ const deletedMultipleTrip = async(req,res)=>{
     }
 }
 
-const updateTrip = async (req,res) =>{
+const updateTrip = async(req,res) =>{
     try {
         const token = req.headers.authorization.split(" ")[1]
         const temp =  jwt.verify(token, constant.jwtConfig.secret)
@@ -307,7 +307,7 @@ const updateTrip = async (req,res) =>{
     }
 }
 
-const paginateTrip = async (req, res) =>{
+const paginateTrip = async(req, res) =>{
     try {
       let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
   
