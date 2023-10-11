@@ -70,7 +70,12 @@ const paginationValidateDailyReport = (data) =>{
     sort : Joi.string().required().messages({
       "string.empty":`"sort" is a required field.`
     }),
-    status: Joi.number().integer().valid(1,2)
+    status: Joi.number().integer().valid(1,2).messages({
+      "number.base":`"Status" must be either 1 or 2.`
+    }),
+    id: Joi.number().min(1).integer().messages({
+      "number.base": `"Id" must be a number.`,
+    })
   }).options({abortEarly:false})
   return JoiSchema.validate(data)
 }

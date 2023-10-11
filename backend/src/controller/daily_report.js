@@ -214,10 +214,10 @@ const deleteReport = async (req,res) =>{
 
 const paginateDailyReport = async(req,res) =>{
   try {
-    let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
+    let { offset = 0, limit = 10, order = "asc", sort = "id", search, status,id } = req.body;
 
     const data = {
-      offset,limit,order,sort,status
+      offset,limit,order,sort,status,id
     }
 
     const checkValidation = validations.paginationValidateDailyReport(data);
@@ -236,14 +236,14 @@ const paginateDailyReport = async(req,res) =>{
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const roles = temp.role;
-    
+    const userid = temp.id
 
     const field = {
       id: roles,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role_name == "admin") {
       return res
         .json({
           error: true,
@@ -254,11 +254,11 @@ const paginateDailyReport = async(req,res) =>{
     }
 
     let searchFrom = [
-        "mine_no","role_name","vehicle","type","name","with_lead","date"
+        "mine_name","role_name","vehicle","type","name","with_lead","date"
     ]
 
     const total = await model.paginateDailyReportTotal(searchFrom,search,status)
-    const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search)
+    const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search,id,userid)
     
     let data_rows = []
     if(order /*=== 'asc'*/)/*{
