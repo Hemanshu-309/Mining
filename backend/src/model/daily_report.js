@@ -57,8 +57,8 @@ const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, sea
     if (status) rows = rows.where(`${table}.status`,`${status}`)
 
     if(date1 && date2){
-      date2 = new Date(date2+"T00:00:00Z")
-      date2.setDate(date2.getDate() +1)
+      date2 = new Date(date2+"T00:00:00Z") // Use 'T00:00:00Z' to set the time to midnight in UTC
+      date2.setDate(date2.getDate() +1) // Added 1 date above the get data from user's choice
       rows = rows.whereBetween(`${table}.date`,[new Date(date1+"T00:00:00Z"), date2])
     }
 
