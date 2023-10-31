@@ -283,7 +283,6 @@ const paginateUser = async (req, res) =>{
       "firstname","lastname","email","mobile","role_name","code","username"    
     ]
 
-
     const total = await model.paginateUserTotal(searchFrom,search,status)
     const rows = await model.paginateUser(limit,offset,sort,order,status,searchFrom,search)
 
