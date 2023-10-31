@@ -62,14 +62,10 @@ const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, sea
 
     if(id && userid)
     {
-      
       rows = rows.where(`${table}.id`,`${id}`).andWhere(`${userTable}.id`,`${userid}`)
-
       return rows
     }
      
-
-    
     rows = rows.where((query)=>{
         if(search){
           searchFrom.map(val =>{
