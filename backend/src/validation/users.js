@@ -1,6 +1,5 @@
 import Joi from "joi";
 
-
 const createValidateUser = (create_data) => {
   const JoiSchema = Joi.object({
     firstname: Joi.string().trim().regex(/^[A-Za-z]+(?: [A-Za-z]+)?$/).min(1).max(255).required().messages({
@@ -97,6 +96,27 @@ const deleteValidateUser = (delete_data) =>{
   return JoiSchema.validate(delete_data)
 }
 
+const resetPasswordEmail = (data) =>{
+  const JoiSchema = Joi.object({
+    email: Joi.string().email().trim().required().messages({
+      "string.empty": `"email" is a required field.`,
+      "email.base": `enter valid "email"`,
+    })
+  }).options({abortEarly:false})
+  return JoiSchema.validate(data)
+}
+
+const resetPassword = (data)=>{
+  const JoiSchema = Joi.object({
+  token:Joi.string().required(),
+  newPassword: Joi.string().trim().min(8).max(35).regex(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,35}$/).required().messages({
+    "string.empty": `"Password" is a required field.`,
+    "string.length": `"Password" must contain 8 to 35 characters.`,
+  })
+  }).options({abortEarly:false})
+
+  return JoiSchema.validate(data)
+}
 const paginationValidateUser = (data) =>{
   const JoiSchema = Joi.object({
     offset : Joi.number().integer().required().messages({
@@ -153,5 +173,7 @@ export default {
   loginValidateUser,
   deleteValidateUser,
   passwordValidate,
-  paginationValidateUser
+  paginationValidateUser,
+  resetPasswordEmail,
+  resetPassword
 };

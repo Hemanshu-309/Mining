@@ -9,6 +9,8 @@ router.post('/loginUser',users.loginUser)
 router.post('/deleteUser',users.deleteUser)
 router.post('/updatePassword',users.changePassword)
 router.post('/paginateUser',users.paginateUser)
+router.post('/resetPasswordEmail',users.resetPasswordEmail)
+router.post('/resetPassword',users.resetPassword)
 
 
 

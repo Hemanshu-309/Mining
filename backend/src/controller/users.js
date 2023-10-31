@@ -107,8 +107,7 @@ const loginUser = async (req, res) => {
     
     
     data.password = md5(password);
-    let userData = await model.getUserDetail(data,1);
-    
+    let userData = await model.getUserDetail({email},1);
     if (!userData.length) {
       return res.json({
         Error: true,
@@ -116,8 +115,16 @@ const loginUser = async (req, res) => {
         Data: [],
       });
     }
-        
+
+    if(userData[0].password != md5(password)){
+      return  res.json({
+        Error: true,
+        Message: "Invalid credentials",
+        Data: [],
+      });
+    } 
     delete userData[0].status;
+    delete userData[0].password;
 
     const { jwtConfig } = constant;
 
@@ -320,6 +327,124 @@ const paginateUser = async (req, res) =>{
   }
 }
 
+const resetPasswordEmail = async (req,res) =>{
+  try {
+
+    const {email} = req.body
+    const data = {
+      email
+    }
+
+    const checkValidation = validation.resetPasswordEmail(data);
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    const getUser = await model.getUserDetail(data)
+    if(!getUser.length){
+      return res.status(404).json({
+        Error:true,
+        Message:'User not found'
+      })
+    }
+    
+    const payload = {
+      id:getUser[0].id
+    }
+
+    const resetToken = jwt.sign(payload,constant.resetPassword.secret, { expiresIn: '1h' })
+
+    const response =await fs.sendPasswordResetEmail(email,resetToken)
+    if(response.error == true){
+      return res.status(404).json({
+        error:true,
+        Message:error.message
+      })
+    }
+
+    res.json({
+      error:false,
+      data : response
+    })
+
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
+
+const resetPassword = async (req,res) =>{
+  try {
+    const {token,newPassword} = req.body
+    const data ={
+      token,newPassword
+    }
+
+    const checkValidation = validation.resetPassword(data);
+    if (checkValidation.error) {
+      const details = checkValidation.error.details;
+      const message = details.map((i) => {
+        const err_msg = i.message;
+        return err_msg.replace(/\"/g, "");
+      });
+      return res.json({
+        error: true,
+        message: message,
+      });
+    }
+
+    const decodeToken = jwt.verify(token,constant.resetPassword.secret)
+    const where = {
+      id:decodeToken.id
+    }
+    const getUser = await model.checkUser(where)
+    if(!getUser.length){
+      return res.status(404).json({
+        Error:true,
+        Message:'User not found'
+      })
+    }
+
+    const updatePassword = await model.updateUser(where,{password:md5(newPassword)})
+    if(updatePassword == 0){
+        return res.json({
+          error: true,
+          message:"Password has not been reseted"
+        })
+    }
+
+    return res.json({
+        error :false,
+        message:"Password has been reseted"
+    })
+
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
+
+
 //Tanvi's code
 const changePassword = async (req, res) => {
   try {
@@ -405,5 +530,7 @@ export default {
   loginUser,
   deleteUser,
   changePassword,
-  paginateUser
+  paginateUser,
+  resetPasswordEmail,
+  resetPassword
 };

@@ -53,8 +53,36 @@ const passwordChange = async(sendTo)=>{
         return "Email Sent"
 }
 
+const sendPasswordResetEmail = async(email,resetToken) =>{
+    //Mail Content
+    const mailOptions = {
+        from: constants.mailConfig.mail,
+        to: email,
+        subject: 'Password Reset',
+        html: `
+          <p>You requested a password reset for your account.</p>
+          <p>Click the following link to reset your password:</p>
+          <a href="http://10.201.1.195:3000/pages/reset-password/reset-password3?token=${resetToken}">Reset Password</a>
+          <p>If you didn't request this, please ignore this email.</p>
+        `,
+      };
+    
+      //sending email with the help of transponter
+    const data =await constants.transporter.sendMail(mailOptions).then(info =>{
+        return info.response
+    }).catch(error =>{
+        return {
+            error:true,
+            message:error.message
+        }
+    })
+        
+      return data
+}
+
 export default {
     sendEmail,
     accountCreated,
-    passwordChange
+    passwordChange,
+    sendPasswordResetEmail
 }
