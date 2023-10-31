@@ -20,9 +20,9 @@ const createUser = async (req, res) => {
     } = req.body;
 
     const data = {
-      username: username,
-      firstname: firstname,
-      lastname: lastname,
+      username: username.toLowerCase().trim(),
+      firstname: firstname.charAt(0).toUpperCase() + firstname.slice(1).trim(),
+      lastname: lastname.charAt(0).toUpperCase() + lastname.slice(1).trim(),
       email: email,
       mobile: mobile,
       password: password,

@@ -214,7 +214,7 @@ const deleteReport = async (req,res) =>{
 
 const paginateDailyReport = async(req,res) =>{
   try {
-    let { offset = 0, limit = 10, order = "asc", sort = "id", search, status,id } = req.body;
+    let { offset = 0, limit = 10, order = "asc", sort = "id", search, status,id,date1,date2 } = req.body;
 
     const data = {
       offset,limit,order,sort,status,id
@@ -258,7 +258,7 @@ const paginateDailyReport = async(req,res) =>{
     ]
 
     const total = await model.paginateDailyReportTotal(searchFrom,search,status)
-    const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search,id,userid)
+    const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search,id,userid,date1,date2)
     
     let data_rows = []
     if(order /*=== 'asc'*/)/*{

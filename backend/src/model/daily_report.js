@@ -45,7 +45,7 @@ const deleteReport = async (field) => {
   return knex(table).update("status", 2).where(field).andWhere("status", 1);
 };
 
-const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, search,id,userid) => {
+const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, search,id,userid,date1,date2) => {
   let rows = knex(table)
     .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip type`,`${mine}.mine_name as mine name`,`${table}.with_lead as with lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
     .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
@@ -55,6 +55,10 @@ const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, sea
     .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`)
     
     if (status) rows = rows.where(`${table}.status`,`${status}`)
+
+    if(date1 && date2){
+      rows = rows.whereBetween(`${table}.date`,[date1,date2])
+    }
 
     if(id && userid)
     {
