@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { forwardRef, useEffect, useRef, useState } from 'react';
-import getVehicle from './index';
+import getContractor from './index';
 
 // material-ui
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Slide, Snackbar, TextField } from '@mui/material';
@@ -20,23 +20,23 @@ const Transition = forwardRef((props, ref) => <Slide direction="left" ref={ref} 
 
 // ==============================|| TRIP ADD DIALOG ||============================== //
 
-const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
+const ContractorAdd = ({ open, handleCloseDialog, setOpen }) => {
     const token = localStorage.getItem('accessToken');
 
     const [progress, setProgress] = useState(0);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [vehicle, setVehicle] = useState({
-        name: ''
+    const [contractor, setContractor] = useState({
+        role_name: ''
     });
     const [error, setError] = useState({});
     const [snackmode, setSnackMode] = useState('');
 
     const validationSchema = Yup.object({
-        name: Yup.string()
+        role_name: Yup.string()
             .min(3)
-            .required('Vehicle Name is required')
-            .matches(/^[a-zA-Z]+$/, 'vehicle Name must contain only letters')
+            .required('Contractor Name is required')
+            .matches(/^[a-zA-Z]+$/, 'Contractor Name must contain only letters')
     });
 
     const validateField = async (name, value) => {
@@ -78,15 +78,15 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
     const handleChange = async (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setVehicle({ [name]: value });
+        setContractor({ [name]: value });
         await validateField(name, value);
     };
 
     const handleSubmit = async () => {
-        console.log(vehicle);
+        console.log(contractor);
         setOpen(false);
         try {
-            const response = await axios.post('http://localhost:8000/vehicle/addVehicle', vehicle, {
+            const response = await axios.post('http://localhost:8000/role/createRole', contractor, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -95,18 +95,17 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
             console.log(response);
 
             if (!response.data.error) {
-                setVehicle({
+                setContractor({
                     name: ''
                 });
-                setSnackbarMessage('Vehicle Added Successfully!');
-                // alert('Trip created successfully!!!!!!!');
+                setSnackbarMessage('Contractor Added Successfully!');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getVehicle();
+                getContractor();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
-                setSnackMode('warning');
+                setSnackMode('Warning');
             }
         } catch (e) {
             console.log(e);
@@ -148,19 +147,19 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
             >
                 {open && (
                     <>
-                        <DialogTitle>Add Vehicle Name</DialogTitle>
+                        <DialogTitle>Add Contractor Name</DialogTitle>
                         <DialogContent>
                             <Grid style={{ width: '400px' }} container spacing={gridSpacing} sx={{ mt: 0.25 }}>
                                 <Grid item xs={12}>
                                     <TextField
                                         id="outlined-basic1"
-                                        value={vehicle.name}
-                                        name="name"
+                                        value={contractor.role_name}
+                                        name="role_name"
                                         onChange={(e) => {
                                             handleChange(e);
                                         }}
                                         fullWidth
-                                        label="Enter Vehicle Name"
+                                        label="Enter Contractor Name"
                                         inputProps={{ inputMode: 'text', pattern: '[a-z]' }}
                                         error={Boolean(error.vehicle)}
                                         helperText={error.vehicle}
@@ -174,9 +173,9 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
                                     Add
                                 </Button>
                             </AnimateButton>
-                            <Button variant="text" color="error" onClick={handleCloseDialog}>
+                            {/* <Button variant="text" color="error" onClick={handleCloseDialog}>
                                 Close
-                            </Button>
+                            </Button> */}
                         </DialogActions>
                     </>
                 )}
@@ -185,10 +184,10 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
     );
 };
 
-VehicleAdd.propTypes = {
+ContractorAdd.propTypes = {
     open: PropTypes.bool,
     handleCloseDialog: PropTypes.func,
     setOpen: PropTypes.func
 };
 
-export default VehicleAdd;
+export default ContractorAdd;

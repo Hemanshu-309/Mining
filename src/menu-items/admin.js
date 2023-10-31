@@ -31,6 +31,14 @@ const admin = {
             url: '/admin/Vehicle',
             icon: icons.IconTruck,
             breadcrumbs: true
+        },
+        {
+            id: 'contractor',
+            title: <FormattedMessage id="Contractor" />,
+            type: 'item',
+            url: '/admin/Contractor',
+            icon: icons.IconTruck,
+            breadcrumbs: true
         }
     ]
 };

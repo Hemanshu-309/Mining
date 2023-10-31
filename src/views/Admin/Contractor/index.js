@@ -27,7 +27,7 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 // project imports
-import VehicleAdd from './VehicleAdd';
+import ContractorAdd from './ContractorAdd';
 import MainCard from 'ui-component/cards/MainCard';
 
 // assets
@@ -71,9 +71,15 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'vehicle',
+        id: 'contractor',
         numeric: false,
-        label: 'Vehicle',
+        label: 'Contractor',
+        align: 'left'
+    },
+    {
+        id: 'status',
+        numeric: false,
+        label: 'Status',
         align: 'left'
     }
 ];
@@ -190,7 +196,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| PRODUCT LIST ||============================== //
 
-const VehicleList = () => {
+const ContractorList = () => {
     const theme = useTheme();
 
     const token = localStorage.getItem('accessToken');
@@ -212,10 +218,10 @@ const VehicleList = () => {
     // const { products } = useSelector((state) => state.customer);
     // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
 
-    const getVehicle = async () => {
+    const getContractor = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/vehicle/getVehicles',
+                'http://localhost:8000/role/getRole',
                 {},
                 {
                     headers: {
@@ -234,7 +240,7 @@ const VehicleList = () => {
     };
 
     React.useEffect(() => {
-        getVehicle();
+        getContractor();
     }, [token]);
     React.useEffect(() => {
         setRows(rows);
@@ -245,7 +251,7 @@ const VehicleList = () => {
     };
     const handleCloseDialog = () => {
         setOpen(false);
-        getVehicle();
+        getContractor();
     };
 
     const handleSearch = (event) => {
@@ -253,12 +259,15 @@ const VehicleList = () => {
         setSearch(newString);
 
         if (!newString) {
-            getVehicle();
+            getContractor();
             return;
         }
 
         const newFilteredRows = rows.filter(
-            (row) => row.id.toString().includes(newString) || row.name.toLowerCase().includes(newString.toLowerCase())
+            (row) =>
+                row.id.toString().includes(newString) ||
+                row.role_name.toLowerCase().includes(newString.toLowerCase()) ||
+                row.status.toLowerCase().includes(newString.toLowerCase())
         );
 
         setRows(newFilteredRows);
@@ -277,7 +286,7 @@ const VehicleList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://localhost:8000/vehicle/updateVehicle', editedData, {
+            const response = await axios.post('http://localhost:8000/role/updateRole', editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -304,7 +313,7 @@ const VehicleList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/vehicle/deleteMultipleVehicle',
+                'http://localhost:8000/role/deleteMultipleRoles',
                 { ids: selected },
                 {
                     headers: {
@@ -379,7 +388,7 @@ const VehicleList = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     return (
-        <MainCard title="Vehicle List" content={false}>
+        <MainCard title="Contractor List" content={false}>
             <CardContent>
                 <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -392,14 +401,13 @@ const VehicleList = () => {
                                 )
                             }}
                             onChange={handleSearch}
-                            placeholder="Search Vehicles"
+                            placeholder="Search Contractor"
                             value={search}
                             size="small"
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        {/* product add & dialog */}
-                        <Tooltip title="Add Vehicles">
+                        <Tooltip title="Add Contractor">
                             <Fab
                                 color="primary"
                                 size="small"
@@ -409,7 +417,7 @@ const VehicleList = () => {
                                 <AddIcon fontSize="small" />
                             </Fab>
                         </Tooltip>
-                        <VehicleAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
+                        <ContractorAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
                     </Grid>
                 </Grid>
             </CardContent>
@@ -479,13 +487,6 @@ const VehicleList = () => {
                                             onClick={(event) => handleClick(event, row.id)}
                                             sx={{ cursor: 'pointer' }}
                                         >
-                                            {/* <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.type}{' '}
-                                            </Typography> */}
                                             {isEditing ? (
                                                 <TextField
                                                     value={editedData.name}
@@ -496,12 +497,32 @@ const VehicleList = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.name}
+                                                    {row.role_name}
                                                 </Typography>
                                             )}
                                         </TableCell>
+                                        <TableCell
+                                            component="th"
+                                            id={labelId}
+                                            scope="row"
+                                            onClick={(event) => handleClick(event, row.id)}
+                                            sx={{ cursor: 'pointer' }}
+                                        >
+                                            {/* {isEditing ? (
+                                                <TextField
+                                                    value={editedData.name}
+                                                    onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
+                                                />
+                                            ) : ( */}
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            >
+                                                {row.status === '1' ? 'Active' : 'Inactive'}
+                                            </Typography>
+                                            {/* )} */}
+                                        </TableCell>
                                         <TableCell align="center" sx={{ pr: 3 }}>
-                                            {/* Conditionally render Edit or Save button */}
                                             {isEditing ? (
                                                 <IconButton size="large" onClick={handleEditSubmit}>
                                                     <SaveAltIcon />
@@ -542,4 +563,4 @@ const VehicleList = () => {
     );
 };
 
-export default VehicleList;
+export default ContractorList;

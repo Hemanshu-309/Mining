@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+// import Slide from '@mui/material/Slide';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -28,6 +28,7 @@ import {
 // third-party
 import { FormattedMessage } from 'react-intl';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import * as React from 'react';
 
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
@@ -35,12 +36,21 @@ import Transitions from 'ui-component/extended/Transitions';
 import UpgradePlanCard from './UpgradePlanCard';
 import useAuth from 'hooks/useAuth';
 import User1 from 'assets/images/users/user-round.svg';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
 import useConfig from 'hooks/useConfig';
 
 // ==============================|| PROFILE MENU ||============================== //
+
+const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const ProfileSection = () => {
     const theme = useTheme();
@@ -53,13 +63,34 @@ const ProfileSection = () => {
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const { logout, user } = useAuth();
     const [open, setOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const userData = localStorage.getItem('userData');
+    const userinfo = JSON.parse(userData);
+
+    const firstname = userinfo.firstname;
+    // console.log(firstname);
+    const lastname = userinfo.lastname;
+
+    // const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+
+    const handleClickOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
+
     /**
      * anchorRef is used on different components and specifying one type leads to other components throwing an error
      * */
     const anchorRef = useRef(null);
     const handleLogout = async () => {
+        // console.log('brfore logout');
         try {
             await logout();
+            // console.log('after logout');
         } catch (err) {
             console.error(err);
         }
@@ -77,6 +108,7 @@ const ProfileSection = () => {
 
         if (route && route !== '') {
             navigate(route);
+            // window.location.href = route;
         }
     };
     const handleToggle = () => {
@@ -94,6 +126,22 @@ const ProfileSection = () => {
 
     return (
         <>
+            <Dialog
+                open={dialogOpen}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle>Logout</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">Are you sure! you want to logout</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>No</Button>
+                    <Button onClick={handleLogout}>Yes</Button>
+                </DialogActions>
+            </Dialog>
             <Chip
                 sx={{
                     height: '48px',
@@ -168,24 +216,8 @@ const ProfileSection = () => {
                                                         {user?.name}
                                                     </Typography>
                                                 </Stack>
-                                                <Typography variant="subtitle2">Project Admin</Typography>
+                                                <Typography variant="subtitle2">{`${firstname} ${lastname}`}</Typography>
                                             </Stack>
-                                            <OutlinedInput
-                                                sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
-                                                id="input-search-profile"
-                                                value={value}
-                                                onChange={(e) => setValue(e.target.value)}
-                                                placeholder="Search profile options"
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                        <IconSearch stroke={1.5} size="16px" color={theme.palette.grey[500]} />
-                                                    </InputAdornment>
-                                                }
-                                                aria-describedby="search-helper-text"
-                                                inputProps={{
-                                                    'aria-label': 'weight'
-                                                }}
-                                            />
                                             <Divider />
                                         </Box>
                                         <PerfectScrollbar
@@ -196,7 +228,7 @@ const ProfileSection = () => {
                                             }}
                                         >
                                             <Box sx={{ p: 2, pt: 0 }}>
-                                                <UpgradePlanCard />
+                                                {/* <UpgradePlanCard /> */}
                                                 <Divider />
                                                 <Card
                                                     sx={{
@@ -312,7 +344,7 @@ const ProfileSection = () => {
                                                     <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 4}
-                                                        onClick={handleLogout}
+                                                        onClick={handleClickOpen}
                                                     >
                                                         <ListItemIcon>
                                                             <IconLogout stroke={1.5} size="20px" />

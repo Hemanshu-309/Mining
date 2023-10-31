@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { AppBar, Box, Container, useScrollTrigger } from '@mui/material';
 
 // project imports
-import MenuList from './MenuList/NavCollapse';
+import MenuList from './MenuList/index';
 import useConfig from 'hooks/useConfig';
 
 // ==============================|| HORIZONTAL MENU LIST ||============================== //

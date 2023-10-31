@@ -51,6 +51,10 @@ const JWTLogin = ({ loginProp, ...others }) => {
         event.preventDefault();
     };
 
+    const onClickSubmit = () => {
+        console.log('clicked');
+    };
+
     return (
         <Formik
             initialValues={{
@@ -64,6 +68,7 @@ const JWTLogin = ({ loginProp, ...others }) => {
             })}
             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {
+                    console.log('sign in clicked!!!!');
                     await login(values.email, values.password);
 
                     if (scriptedRef.current) {
@@ -81,7 +86,7 @@ const JWTLogin = ({ loginProp, ...others }) => {
             }}
         >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-                <form noValidate onSubmit={handleSubmit} {...others}>
+                <form onSubmit={handleSubmit} {...others}>
                     <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
                         <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
                         <OutlinedInput
@@ -170,15 +175,7 @@ const JWTLogin = ({ loginProp, ...others }) => {
                     )}
                     <Box sx={{ mt: 2 }}>
                         <AnimateButton>
-                            <Button
-                                to="/dashboard/default"
-                                color="secondary"
-                                disabled={isSubmitting}
-                                fullWidth
-                                size="large"
-                                type="submit"
-                                variant="contained"
-                            >
+                            <Button color="secondary" fullWidth size="large" type="submit" variant="contained">
                                 Sign In
                             </Button>
                         </AnimateButton>
@@ -194,3 +191,56 @@ JWTLogin.propTypes = {
 };
 
 export default JWTLogin;
+
+// import React from 'react';
+// import { Formik, Form, Field, ErrorMessage } from 'formik';
+// import * as Yup from 'yup';
+
+// const LoginForm = () => {
+// const [checked, setChecked] = React.useState(true);
+
+// const [showPassword, setShowPassword] = React.useState(false);
+
+// const handleClickShowPassword = () => {
+//     setShowPassword(!showPassword);
+// };
+
+// const handleMouseDownPassword = (event) => {
+//     event.preventDefault();
+// };
+
+// return (
+// <Formik
+//       initialValues={{
+//         email: '',
+//         password: '',
+//       }}
+//       validationSchema={Yup.object({
+//         email: Yup.string()
+//           .email('Invalid email address')
+//           .required('Required'),
+//         password: Yup.string()
+//           .min(8, 'Must be at least 8 characters')
+//           .required('Required'),
+//       })}
+//       onSubmit={(values, { setSubmitting }) => {
+//         setTimeout(() => {
+//           alert(JSON.stringify(values, null, 2));
+//           setSubmitting(false);
+//         }, 400);
+//       }}
+// >
+
+//       {({ isSubmitting }) =>(
+// <Form>
+// <Field name="email" type="email" placeholder="Email" />
+// <ErrorMessage name="email" component="div" />
+// <br />
+// <Field name="password" type={showPassword ? 'text' : 'password'} placeholder="Password" />
+// <ErrorMessage name="password" component="div" />
+// <br />
+// <input type="checkbox" checked={checked} onChange={() => setChecked(!checked)} />
+// <label htmlFor="checkbox"> Remember me</label>
+// <br />
+// <button type="submit" disabled={isSubmitting}>Login</button>
+// </Form>

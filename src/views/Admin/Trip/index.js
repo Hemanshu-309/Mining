@@ -5,12 +5,20 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
     Box,
+    Button,
+    Card,
     CardContent,
     Checkbox,
+    Dialog,
     Fab,
+    FormControl,
     Grid,
     IconButton,
     InputAdornment,
+    MenuItem,
+    Modal,
+    Rating,
+    Select,
     Table,
     TableBody,
     TableCell,
@@ -29,6 +37,7 @@ import { visuallyHidden } from '@mui/utils';
 // project imports
 import TripAdd from './TripAdd';
 import MainCard from 'ui-component/cards/MainCard';
+// import { GridFilterForm } from '@mui/x-data-grid/components';
 
 // assets
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -36,7 +45,10 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/AddTwoTone';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import axios from 'axios';
+import { DataGrid } from '@mui/x-data-grid';
+import { Container } from '@mui/system';
 
 // table sort
 function descendingComparator(a, b, orderBy) {
@@ -53,6 +65,7 @@ const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
 function stableSort(array, comparator) {
+    console.log(array);
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
@@ -65,16 +78,18 @@ function stableSort(array, comparator) {
 // table header options
 const headCells = [
     {
-        id: 'id',
+        id: 'ID',
         numeric: true,
         label: 'ID',
-        align: 'center'
+        align: 'center',
+        editable: true
     },
     {
-        id: 'trip',
+        id: 'Triptype',
         numeric: false,
         label: 'Triptype',
-        align: 'left'
+        align: 'left',
+        editable: true
     }
 ];
 
@@ -86,55 +101,57 @@ function EnhancedTableHead({ onSelectAllClick, order, orderBy, numselected, rowC
     };
 
     return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox" sx={{ pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numselected > 0 && numselected < rowCount}
-                        checked={rowCount > 0 && numselected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
-                {numselected > 0 && (
-                    <TableCell padding="none" colSpan={7}>
-                        <EnhancedTableToolbar numselected={selected.length} handleDelete={handleDelete} />
+        <>
+            <TableHead>
+                <TableRow>
+                    <TableCell padding="checkbox" sx={{ pl: 3 }}>
+                        <Checkbox
+                            color="primary"
+                            indeterminate={numselected > 0 && numselected < rowCount}
+                            checked={rowCount > 0 && numselected === rowCount}
+                            onChange={onSelectAllClick}
+                            inputProps={{
+                                'aria-label': 'select all desserts'
+                            }}
+                        />
                     </TableCell>
-                )}
-                {numselected <= 0 &&
-                    headCells.map((headCell) => (
-                        <TableCell
-                            key={headCell.id}
-                            align={headCell.align}
-                            padding={headCell.disablePadding ? 'none' : 'normal'}
-                            sortDirection={orderBy === headCell.id ? order : false}
-                        >
-                            <TableSortLabel
-                                active={orderBy === headCell.id}
-                                direction={orderBy === headCell.id ? order : 'asc'}
-                                onClick={createSortHandler(headCell.id)}
-                            >
-                                {headCell.label}
-                                {orderBy === headCell?.id ? (
-                                    <Box component="span" sx={visuallyHidden}>
-                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
-                            </TableSortLabel>
+                    {numselected > 0 && (
+                        <TableCell padding="none" colSpan={7}>
+                            <EnhancedTableToolbar numselected={selected.length} handleDelete={handleDelete} />
                         </TableCell>
-                    ))}
-                {numselected <= 0 && (
-                    <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
-                        <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
-                            Action
-                        </Typography>
-                    </TableCell>
-                )}
-            </TableRow>
-        </TableHead>
+                    )}
+                    {numselected <= 0 &&
+                        headCells.map((headCell) => (
+                            <TableCell
+                                key={headCell.id}
+                                align={headCell.align}
+                                padding={headCell.disablePadding ? 'none' : 'normal'}
+                                sortDirection={orderBy === headCell.id ? order : false}
+                            >
+                                <TableSortLabel
+                                    active={orderBy === headCell.id}
+                                    direction={orderBy === headCell.id ? order : 'asc'}
+                                    onClick={createSortHandler(headCell.id)}
+                                >
+                                    {headCell.label}
+                                    {orderBy === headCell?.id ? (
+                                        <Box component="span" sx={visuallyHidden}>
+                                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                        </Box>
+                                    ) : null}
+                                </TableSortLabel>
+                            </TableCell>
+                        ))}
+                    {numselected <= 0 && (
+                        <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
+                            <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
+                                Action
+                            </Typography>
+                        </TableCell>
+                    )}
+                </TableRow>
+            </TableHead>
+        </>
     );
 }
 
@@ -190,10 +207,11 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| PRODUCT LIST ||============================== //
 
-const ProductList = () => {
+const TripList = () => {
     const theme = useTheme();
 
     const token = localStorage.getItem('accessToken');
+    // console.log(token);
 
     const [open, setOpen] = React.useState(false);
 
@@ -207,20 +225,25 @@ const ProductList = () => {
     const [filteredRows, setFilteredRows] = React.useState(rows);
     const [editRowIndex, setEditRowIndex] = React.useState(null);
     const [editedData, setEditedData] = React.useState({ id: null, type: '' });
-    // const { products } = useSelector((state) => state.customer);
-    // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
+    const [filter, setFilter] = React.useState({ column: '', value: '' });
+    const [isGridVisible, setIsGridVisible] = React.useState(false);
 
     const getTrip = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/trip/getTripType', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    authorization: `b ${token}`
+            const response = await axios.post(
+                'http://localhost:8000/trip/getTripType',
+                {},
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authorization: `b ${token}`
+                    }
                 }
-            });
+            );
             const data = response.data.data;
-            setRows(data);
             console.log(data);
+            setRows(data);
+
             setFilteredRows(data);
         } catch (error) {
             console.error('An error occurred while fetching data:', error.message);
@@ -234,6 +257,37 @@ const ProductList = () => {
         setRows(rows);
     }, [rows]);
 
+    const handleFilter = () => {
+        setIsGridVisible(true);
+    };
+
+    const handleFilterClose = () => {
+        setIsGridVisible(false);
+        getTrip();
+    };
+
+    const handleChange = (event) => {
+        try {
+            const { name, value } = event.target;
+            setFilter({ ...filter, [name]: value });
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    const handleFilterClick = () => {
+        console.log('Filter:', filter);
+        const filteredData = rows.filter((row) => {
+            console.log('Row:', row);
+            console.log('Column Value:', filter.column);
+            console.log('Filter Value:', filter.value);
+            return String(row[filter.column]).toLowerCase().includes(filter.value.toLowerCase());
+        });
+        console.log('Filtered Data:', filteredData);
+        setRows(filteredData);
+        setIsGridVisible(true);
+    };
+
     const handleClickOpenDialog = () => {
         setOpen(true);
     };
@@ -246,7 +300,6 @@ const ProductList = () => {
         const newString = event?.target.value;
         setSearch(newString);
 
-        // If the search string is empty, set rows to the fetched data
         if (!newString) {
             getTrip();
             return;
@@ -369,167 +422,224 @@ const ProductList = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     return (
-        <MainCard title="Triptypes" content={false}>
-            <CardContent>
-                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon fontSize="small" />
-                                    </InputAdornment>
-                                )
-                            }}
-                            onChange={handleSearch}
-                            placeholder="Search Triptypes"
-                            value={search}
-                            size="small"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        {/* product add & dialog */}
-                        <Tooltip title="Add Triptypes">
-                            <Fab
-                                color="primary"
+        <>
+            <MainCard title="Triptypes" content={false}>
+                <CardContent>
+                    <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                        {/* <GridFilterForm filters={filter} onFilterChange={handleFilterChange} onFilterSubmit={handleFilterSubmit} /> */}
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon fontSize="small" />
+                                        </InputAdornment>
+                                    )
+                                }}
+                                onChange={handleSearch}
+                                placeholder="Search Triptypes"
+                                value={search}
                                 size="small"
-                                onClick={handleClickOpenDialog}
-                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                            >
-                                <AddIcon fontSize="small" />
-                            </Fab>
-                        </Tooltip>
-                        <TripAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
-                    </Grid>
-                </Grid>
-            </CardContent>
-
-            {/* table */}
-            <TableContainer>
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numselected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={filteredRows.length}
-                        theme={theme}
-                        selected={selected}
-                        handleDelete={handleDelete}
-                    />
-                    <TableBody>
-                        {stableSort(rows, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
-                                if (typeof row === 'number') return null;
-                                const isItemselected = isselected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
-                                const isEditing = index === editRowIndex;
-
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        aria-checked={isItemselected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemselected}
-                                    >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemselected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
+                            {/* product add & dialog */}
+                            <Tooltip title="Filter Triptypes">
+                                <Fab
+                                    color="primary"
+                                    size="small"
+                                    onClick={handleFilter}
+                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                >
+                                    <FilterListIcon fontSize="small" />
+                                </Fab>
+                            </Tooltip>
+                            <Tooltip title="Add Triptypes">
+                                <Fab
+                                    color="primary"
+                                    size="small"
+                                    onClick={handleClickOpenDialog}
+                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                >
+                                    <AddIcon fontSize="small" />
+                                </Fab>
+                            </Tooltip>
+                            <TripAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
+                            {isGridVisible && (
+                                <Container>
+                                    <Grid container spacing={2}>
+                                        <Grid item>
+                                            <FormControl variant="outlined">
+                                                <Select
+                                                    value={filter.column}
+                                                    onChange={handleChange}
+                                                    name="column"
+                                                    placeholder="Select Column"
+                                                >
+                                                    {headCells.map((item) => (
+                                                        <MenuItem key={item.id} value={item.id}>
+                                                            {item.label}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item>
+                                            <TextField
+                                                label="Search"
+                                                variant="outlined"
+                                                value={filter.value}
+                                                name="value"
+                                                onChange={handleChange}
+                                                InputProps={{
+                                                    startAdornment: <InputAdornment position="start">&#128269;</InputAdornment>
                                                 }}
                                             />
-                                        </TableCell>
-                                        <TableCell
-                                            align="center"
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant="contained" color="primary" onClick={handleFilterClick}>
+                                                Filter
+                                            </Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant="contained" color="secondary" onClick={handleFilterClose}>
+                                                Cancel
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Container>
+                            )}
+                        </Grid>
+                    </Grid>
+                </CardContent>
+
+                {/* table */}
+                <TableContainer>
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numselected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={filteredRows.length}
+                            theme={theme}
+                            selected={selected}
+                            handleDelete={handleDelete}
+                        />
+                        <TableBody>
+                            {stableSort(rows, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+                                    /** Make sure no display bugs if row isn't an OrderData object */
+                                    if (typeof row === 'number') return null;
+                                    const isItemselected = isselected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+                                    const isEditing = index === editRowIndex;
+
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            aria-checked={isItemselected}
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={isItemselected}
                                         >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemselected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell
+                                                align="center"
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {' '}
-                                                #{row.id}{' '}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            {/* <Typography
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {' '}
+                                                    #{row.id}{' '}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {/* <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
                                                 {row.type}{' '}
                                             </Typography> */}
-                                            {isEditing ? (
-                                                <TextField
-                                                    value={editedData.type}
-                                                    onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
-                                                />
-                                            ) : (
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                                >
-                                                    {row.type}
-                                                </Typography>
-                                            )}
-                                        </TableCell>
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            {/* Conditionally render Edit or Save button */}
-                                            {isEditing ? (
-                                                <IconButton size="large" onClick={handleEditSubmit}>
-                                                    <SaveAltIcon />
-                                                </IconButton>
-                                            ) : (
-                                                <IconButton size="large" onClick={() => handleEditClick(index, row)}>
-                                                    <BorderColorIcon />
-                                                </IconButton>
-                                            )}
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.type}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell align="center" sx={{ pr: 3 }}>
+                                                {/* Conditionally render Edit or Save button */}
+                                                {isEditing ? (
+                                                    <IconButton size="large" onClick={handleEditSubmit}>
+                                                        <SaveAltIcon />
+                                                    </IconButton>
+                                                ) : (
+                                                    <IconButton size="large" onClick={() => handleEditClick(index, row)}>
+                                                        <BorderColorIcon />
+                                                    </IconButton>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: 53 * emptyRows
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
 
-            {/* table pagination */}
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </MainCard>
+                {/* table pagination */}
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </MainCard>
+        </>
     );
 };
 
-export default ProductList;
+export default TripList;

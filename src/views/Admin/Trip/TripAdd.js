@@ -26,7 +26,8 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
     const [progress, setProgress] = useState(0);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [status, setStatus] = useState();
+    // const [status, setStatus] = useState();
+    const [snackmode, setSnackMode] = useState('');
     const [tripType, setTripType] = useState({
         trip_type: ''
     });
@@ -100,13 +101,13 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
                 setSnackbarMessage('Trip created successfully!');
                 // alert('Trip created successfully!!!!!!!');
                 setOpenSnackbar(true);
-                setStatus(true);
+                setSnackMode('success');
                 getTrip();
                 setOpen(false);
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
-                setStatus(false);
+                setSnackMode('warning');
             }
         } catch (e) {
             console.log(e);
@@ -115,30 +116,20 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
 
     return (
         <>
-            {status ? (
-                <Snackbar
-                    open={openSnackbar}
-                    autoHideDuration={6000}
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
                     onClose={() => setOpenSnackbar(false)}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    severity={snackmode === 'success' ? 'success' : 'warning'}
+                    sx={{ width: '100%' }}
                 >
-                    <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
-                        {snackbarMessage}
-                    </Alert>
-                </Snackbar>
-            ) : (
-                <Snackbar
-                    open={openSnackbar}
-                    autoHideDuration={6000}
-                    onClose={() => setOpenSnackbar(false)}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                >
-                    <Alert onClose={() => setOpenSnackbar(false)} severity="warning" sx={{ width: '100%' }}>
-                        {snackbarMessage}
-                    </Alert>
-                </Snackbar>
-            )}
-
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
             <Dialog
                 open={open}
                 TransitionComponent={Transition}

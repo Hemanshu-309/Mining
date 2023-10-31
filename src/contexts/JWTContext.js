@@ -38,11 +38,13 @@ const setSession = (accessToken, refreshToken, userData) => {
     if (accessToken) {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('userData', userData);
+        localStorage.setItem('userData', JSON.stringify(userData));
         axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
     } else {
-        // localStorage.removeItem('accessToken');
-        // delete axios.defaults.headers.common.Authorization;
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userData');
+        delete axios.defaults.headers.common.Authorization;
     }
 };
 
@@ -59,9 +61,9 @@ export const JWTProvider = ({ children }) => {
                 const userData = window.localStorage.getItem('userData');
                 const accessToken = window.localStorage.getItem('accessToken');
                 if (refreshToken && verifyToken(refreshToken)) {
-                    setSession(accessToken, refreshToken, userData);
                     // const response = await axios.post('http://localhost:8000/users/loginUser');
                     // const { userData } = response.data.data;
+                    setSession(accessToken, refreshToken, userData);
                     dispatch({
                         type: LOGIN,
                         payload: {
@@ -86,18 +88,23 @@ export const JWTProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const response = await axios.post('http://localhost:8000/users/loginUser', { email, password });
-        console.log(response.data.data);
-        const { accessToken, refreshToken, userData } = response.data.data;
-        console.log(accessToken, refreshToken);
-        setSession(accessToken, refreshToken, userData);
-        dispatch({
-            type: LOGIN,
-            payload: {
-                isLoggedIn: true,
-                userData
-            }
-        });
+        try {
+            const response = await axios.post('http://localhost:8000/users/loginUser', { email, password });
+            console.log(email, password);
+            console.log(response.data.data);
+            const { accessToken, refreshToken, userData } = response.data.data;
+            console.log(accessToken, refreshToken);
+            setSession(accessToken, refreshToken, userData);
+            dispatch({
+                type: LOGIN,
+                payload: {
+                    isLoggedIn: true,
+                    userData
+                }
+            });
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const register = async (firstname, lastname, email, username, password, mobile, role, code) => {
@@ -150,6 +157,7 @@ export const JWTProvider = ({ children }) => {
     const logout = () => {
         setSession(null);
         dispatch({ type: LOGOUT });
+        window.location.href = '/login';
     };
 
     const resetPassword = (email) => console.log(email);
