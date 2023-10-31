@@ -57,7 +57,9 @@ const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, sea
     if (status) rows = rows.where(`${table}.status`,`${status}`)
 
     if(date1 && date2){
-      rows = rows.whereBetween(`${table}.date`,[date1,date2])
+      date2 = new Date(date2+"T00:00:00Z")
+      date2.setDate(date2.getDate() +1)
+      rows = rows.whereBetween(`${table}.date`,[new Date(date1+"T00:00:00Z"), date2])
     }
 
     if(id && userid)
