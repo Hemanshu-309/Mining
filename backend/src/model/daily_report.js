@@ -13,7 +13,7 @@ const insertDailyReport = (data) => {
 
 const getDailyReport = (id, userid) => {
   let rows = knex(table)
-    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip type`,`${mine}.mine_name as mine name`,`${table}.with_lead as with lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
+    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip_type`,`${mine}.mine_name as mine_name`,`${table}.with_lead as with_lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
     .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
     .leftJoin(role, `${role}.id`, "=", `${table}.role_id`)
     .leftJoin(vehicle, `${vehicle}.id`, "=", `${table}.vehicle`)
@@ -28,7 +28,7 @@ const getDailyReport = (id, userid) => {
 
 const getAllDailyReport = () => {
   let rows = knex(table)
-    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip type`,`${mine}.mine_name as mine name`,`${table}.with_lead as with lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
+    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip_type`,`${mine}.mine_name as mine_name`,`${table}.with_lead as with_lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
     .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
     .leftJoin(role, `${role}.id`, "=", `${table}.role_id`)
     .leftJoin(vehicle, `${vehicle}.id`, "=", `${table}.vehicle`)
@@ -47,7 +47,7 @@ const deleteReport = async (field) => {
 
 const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, search,id,userid,date1,date2) => {
   let rows = knex(table)
-    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip type`,`${mine}.mine_name as mine name`,`${table}.with_lead as with lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
+    .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip_type`,`${mine}.mine_name as mine_name`,`${table}.with_lead as with_lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
     .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
     .leftJoin(role, `${role}.id`, "=", `${table}.role_id`)
     .leftJoin(vehicle, `${vehicle}.id`, "=", `${table}.vehicle`)
