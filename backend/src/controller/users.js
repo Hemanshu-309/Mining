@@ -104,7 +104,7 @@ const loginUser = async (req, res) => {
         message: message,
       });
     }
-    
+   
     data.password = md5(password);
     let userData = await model.getUserDetail({email},1);
     if (!userData.length) {
@@ -114,7 +114,7 @@ const loginUser = async (req, res) => {
         Data: [],
       });
     }
-
+    
     if(userData[0].password != md5(password)){
       return  res.json({
         Error: true,
@@ -370,6 +370,7 @@ const resetPasswordEmail = async (req,res) =>{
 
     res.json({
       error:false,
+      message:"Reset password email has been sent",
       data : response
     })
 
@@ -416,7 +417,7 @@ const resetPassword = async (req,res) =>{
         Message:'User not found'
       })
     }
-
+   
     const updatePassword = await model.updateUser(where,{password:md5(newPassword)})
     if(updatePassword == 0){
         return res.json({
@@ -427,7 +428,8 @@ const resetPassword = async (req,res) =>{
 
     return res.json({
         error :false,
-        message:"Password has been reseted"
+        message:"Password has been reseted",
+        data : updatePassword
     })
 
   } catch (error) {
