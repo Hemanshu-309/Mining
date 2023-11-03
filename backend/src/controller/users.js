@@ -358,9 +358,19 @@ const resetPasswordEmail = async (req,res) =>{
       id:getUser[0].id
     }
 
-    const resetToken = jwt.sign(payload,constant.resetPassword.secret, { expiresIn: '1h' })
+    const reset_token = jwt.sign(payload,constant.resetPassword.secret, { expiresIn: '1h' })
 
-    const response =await fs.sendPasswordResetEmail(email,resetToken)
+    payload.email = email;
+    const insertToken = await model.updateUser(payload,{reset_token})
+    console.log(insertToken)
+    if(insertToken.length == 0){
+      return res.json({
+        error : true,
+        message: "Some error occureed please try again."
+      })
+    }
+
+    const response =await fs.sendPasswordResetEmail(email,reset_token)
     if(response.error == true){
       return res.status(404).json({
         error:true,
@@ -392,7 +402,7 @@ const resetPassword = async (req,res) =>{
     const data ={
       token,newPassword
     }
-
+    
     const checkValidation = validation.resetPassword(data);
     if (checkValidation.error) {
       const details = checkValidation.error.details;
@@ -408,17 +418,18 @@ const resetPassword = async (req,res) =>{
 
     const decodeToken = jwt.verify(token,constant.resetPassword.secret)
     const where = {
-      id:decodeToken.id
+      id:decodeToken.id,
+      reset_token:token
     }
     const getUser = await model.checkUser(where)
     if(!getUser.length){
       return res.status(404).json({
         Error:true,
-        Message:'User not found'
+        Message:'User not found or Bad Token'
       })
     }
-   
-    const updatePassword = await model.updateUser(where,{password:md5(newPassword)})
+    
+    const updatePassword = await model.updateUser(where,{password:md5(newPassword),reset_token:null})
     if(updatePassword == 0){
         return res.json({
           error: true,

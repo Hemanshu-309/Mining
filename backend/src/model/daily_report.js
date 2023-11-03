@@ -45,7 +45,7 @@ const deleteReport = async (field) => {
   return knex(table).update("status", 2).where(field).andWhere("status", 1);
 };
 
-const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, search,id,userid,date1,date2) => {
+const paginateDailyReport = async (limit, offset, sort, order, status, searchFrom, search,id,userid,date1,date2) => {
   let rows = knex(table)
     .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip_type`,`${mine}.mine_name as mine_name`,`${table}.with_lead as with_lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
     .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
@@ -60,6 +60,7 @@ const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, sea
       date2 = new Date(date2+"T00:00:00Z") // Use 'T00:00:00Z' to set the time to midnight in UTC
       date2.setDate(date2.getDate() +1) // Added 1 date above the get data from user's choice
       rows = rows.whereBetween(`${table}.date`,[new Date(date1+"T00:00:00Z"), date2])
+      limit = (await rows).length
     }
 
     if(id && userid)
@@ -69,19 +70,20 @@ const paginateDailyReport = (limit, offset, sort, order, status, searchFrom, sea
     }
      
     rows = rows.where((query)=>{
+          
         if(search){
           searchFrom.map(val =>{
             query.orWhereILike(val, `%${search}%`)
           })
         }
     })
-
+    
   rows = rows.orderBy(sort,order).limit(limit).offset(offset)
 
   return rows
 };
 
-const paginateDailyReportTotal = async(searchFrom, search, status) =>{
+const paginateDailyReportTotal = async(searchFrom, search, status,date1,date2) =>{
   let results = knex(table)
   .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
     .leftJoin(role, `${role}.id`, "=", `${table}.role_id`)
@@ -89,6 +91,12 @@ const paginateDailyReportTotal = async(searchFrom, search, status) =>{
     .leftJoin(trip, `${trip}.id`, "=", `${table}.trip_type`)
     .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`)
     
+    if(date1 && date2){
+      date2 = new Date(date2+"T00:00:00Z") // Use 'T00:00:00Z' to set the time to midnight in UTC
+      date2.setDate(date2.getDate() +1) // Added 1 date above the get data from user's choice
+      results = results.whereBetween(`${table}.date`,[new Date(date1+"T00:00:00Z"), date2])
+    }
+
     if (status) results = results.where("status", status)
     
     results = results.where((query) => {
