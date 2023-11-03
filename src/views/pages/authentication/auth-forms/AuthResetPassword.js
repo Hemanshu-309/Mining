@@ -28,17 +28,22 @@ import { strengthColor, strengthIndicatorNumFunc } from 'utils/password-strength
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // ========================|| FIREBASE - RESET PASSWORD ||======================== //
 
 const AuthResetPassword = ({ ...others }) => {
     const theme = useTheme();
-    const scriptedRef = useScriptRef();
+    // const scriptedRef = useScriptRef();
     const [showPassword, setShowPassword] = React.useState(false);
     const [strength, setStrength] = React.useState(0);
     const [level, setLevel] = React.useState();
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackmode, setSnackMode] = React.useState('');
 
-    // const { firebaseEmailPasswordSignIn } = useAuth();
+    const navigate = useNavigate();
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -53,21 +58,20 @@ const AuthResetPassword = ({ ...others }) => {
         setStrength(temp);
         setLevel(strengthColor(temp));
     };
+    const queryParams = new URLSearchParams(window.location.search);
 
-    useEffect(() => {
-        changePassword('123456');
-    }, []);
+    const token = queryParams.get('token');
 
     return (
         <Formik
             initialValues={{
-                email: 'info@codedthemes.com',
-                password: '123456',
-                confirmPassword: '123456',
+                token,
+                newPassword: '',
+                confirmPassword: '',
                 submit: null
             }}
             validationSchema={Yup.object().shape({
-                password: Yup.string().max(255).required('Password is required'),
+                newPassword: Yup.string().max(255).required('Password is required'),
                 confirmPassword: Yup.string().when('password', {
                     is: (val) => !!(val && val.length > 0),
                     then: Yup.string().oneOf([Yup.ref('password')], 'Both Password must be match!')
@@ -75,18 +79,28 @@ const AuthResetPassword = ({ ...others }) => {
             })}
             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {
-                    // await firebaseEmailPasswordSignIn(values.email, values.password);
-                    if (scriptedRef.current) {
+                    const response = await axios.post('http://10.201.1.198:8000/users/resetPassword', values);
+                    console.log(response);
+
+                    if (!response.data.error) {
+                        setSnackbarMessage('Password Reset Successfully');
+                        setOpenSnackbar(true);
+                        setSnackMode('success');
                         setStatus({ success: true });
                         setSubmitting(false);
+                        setTimeout(() => {
+                            navigate('/login', { replace: true });
+                        }, 3000);
+                    } else {
+                        setSnackbarMessage(`${response.data.message}`);
+                        setOpenSnackbar(true);
+                        setSnackMode('Warning');
                     }
-                } catch (err) {
-                    console.error(err);
-                    if (scriptedRef.current) {
-                        setStatus({ success: false });
-                        setErrors({ submit: err.message });
-                        setSubmitting(false);
-                    }
+                } catch (e) {
+                    console.log(e);
+                    setStatus({ success: false });
+                    setErrors({ submit: e.message });
+                    setSubmitting(false);
                 }
             }}
         >
@@ -97,8 +111,8 @@ const AuthResetPassword = ({ ...others }) => {
                         <OutlinedInput
                             id="outlined-adornment-password-reset"
                             type={showPassword ? 'text' : 'password'}
-                            value={values.password}
-                            name="password"
+                            value={values.newPassword}
+                            name="newPassword"
                             onBlur={handleBlur}
                             onChange={(e) => {
                                 handleChange(e);
@@ -213,3 +227,35 @@ const AuthResetPassword = ({ ...others }) => {
 };
 
 export default AuthResetPassword;
+
+// const [data, setData] = useState({
+//     password: ''
+// });
+// const [openSnackbar, setOpenSnackbar] = useState(false);
+// const [snackbarMessage, setSnackbarMessage] = useState('');
+// const [snackmode, setSnackMode] = useState('');
+
+// const handleChange = () => {
+//     const name = e.target.name;
+//     const value = e.target.value;
+//     setData({ ...data, [name]: value });
+// };
+
+// const handleSubmit = async () => {
+//     try {
+//         const response = await axios.post('http://10.201.1.198:8000/users/resetPassword', data);
+//         console.log(response);
+
+//         if (!response.data.error) {
+//             setSnackbarMessage('Password Reset Successfully');
+//             setOpenSnackbar(true);
+//             setSnackMode('success');
+//         } else {
+//             setSnackbarMessage(`${response.data.message}`);
+//             setOpenSnackbar(true);
+//             setSnackMode('Warning');
+//         }
+//     } catch (e) {
+//         console.log(e);
+//     }
+// };

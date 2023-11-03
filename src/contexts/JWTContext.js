@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { createContext, useEffect, useReducer } from 'react';
+// import dotenv from 'dotenv';
 
 // third-party
 // import { Chance } from 'chance';
@@ -54,6 +55,12 @@ const JWTContext = createContext(null);
 export const JWTProvider = ({ children }) => {
     const [state, dispatch] = useReducer(accountReducer, initialState);
 
+    // dotenv.config('full-version\.env');
+
+    const baseUrl = process.env.REACT_APP_BASE_URL;
+
+    console.log(baseUrl);
+
     useEffect(() => {
         const init = async () => {
             try {
@@ -89,7 +96,7 @@ export const JWTProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://localhost:8000/users/loginUser', { email, password });
+            const response = await axios.post('http://10.201.1.198:8000/users/loginUser', { email, password });
             console.log(email, password);
             console.log(response.data.data);
             const { accessToken, refreshToken, userData } = response.data.data;

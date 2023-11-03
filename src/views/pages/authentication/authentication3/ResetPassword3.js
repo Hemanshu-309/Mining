@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+import { FormControl, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 
 // project imports
 import AuthWrapper1 from '../AuthWrapper1';
@@ -10,6 +10,8 @@ import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthResetPassword from '../auth-forms/AuthResetPassword';
 import AuthFooter from 'ui-component/cards/AuthFooter';
+import { useState } from 'react';
+import axios from 'axios';
 
 // assets
 
@@ -18,6 +20,32 @@ import AuthFooter from 'ui-component/cards/AuthFooter';
 const ResetPassword = () => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
+
+    const [data, setData] = useState({
+        password: ''
+    });
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackmode, setSnackMode] = useState('');
+
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post('http://10.201.1.198:8000/users/resetPassword', data);
+            console.log(response);
+
+            if (!response.data.error) {
+                setSnackbarMessage('Password Reset Successfully');
+                setOpenSnackbar(true);
+                setSnackMode('success');
+            } else {
+                setSnackbarMessage(`${response.data.message}`);
+                setOpenSnackbar(true);
+                setSnackMode('Warning');
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
 
     return (
         <AuthWrapper1>

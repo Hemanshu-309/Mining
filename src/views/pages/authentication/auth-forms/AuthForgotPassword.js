@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { Box, Button, FormControl, FormHelperText, InputLabel, OutlinedInput } from '@mui/material';
 import { useDispatch } from 'store';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 // third party
 import * as Yup from 'yup';
@@ -13,6 +14,7 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import { openSnackbar } from 'store/slices/snackbar';
+import axios from 'axios';
 
 // ========================|| FIREBASE - FORGOT PASSWORD ||======================== //
 
@@ -23,12 +25,14 @@ const AuthForgotPassword = ({ ...others }) => {
     const navigate = useNavigate();
 
     const { resetPassword } = useAuth();
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackmode, setSnackMode] = React.useState('');
 
     return (
         <Formik
             initialValues={{
                 email: '',
-                password: '',
                 submit: null
             }}
             validationSchema={Yup.object().shape({
@@ -36,25 +40,20 @@ const AuthForgotPassword = ({ ...others }) => {
             })}
             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {
-                    await resetPassword(values.email);
+                    const response = await axios.post('http://10.201.1.198:8000/users/resetPasswordEmail', values);
+                    console.log(response);
 
-                    if (scriptedRef.current) {
-                        setStatus({ success: true });
-                        setSubmitting(false);
-                        dispatch(
-                            openSnackbar({
-                                open: true,
-                                message: 'Check mail for reset password link',
-                                variant: 'alert',
-                                alert: {
-                                    color: 'success'
-                                },
-                                close: false
-                            })
-                        );
+                    if (!response.data.error) {
+                        setSnackbarMessage(`Email sent successfully on ${values.email}`);
+                        setOpenSnackbar(true);
+                        setSnackMode('success');
                         setTimeout(() => {
-                            navigate('/login', { replace: true });
+                            navigate('/pages/reset-password/reset-password3', { replace: true });
                         }, 1500);
+                    } else {
+                        setSnackbarMessage(`${response.data.message}`);
+                        setOpenSnackbar(true);
+                        setSnackMode('Warning');
                     }
                 } catch (err) {
                     console.error(err);

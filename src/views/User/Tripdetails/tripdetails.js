@@ -27,6 +27,24 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import * as Yup from 'yup';
+import { Formik, useFormik } from 'formik';
+
+const validationSchema = Yup.object().shape({
+    date: Yup.string().required('Date is required'),
+    role: Yup.string().required('Role is required'),
+    mine_no: Yup.string().required('Mine number is required'),
+    vehicle: Yup.string().required('Vehicle is required'),
+    trip_type: Yup.string().required('TripeType is required'),
+    with_lead: Yup.string().required('Select a lead'),
+    trips: Yup.number().required('Trips is required').positive('trips must be a positive number').integer('trips must be a integer'),
+    quantity: Yup.number()
+        .required('Quantity is required')
+        .positive('Quantity must be a positive number')
+        .integer('Quantity must be a integer'),
+    rate: Yup.number().required('Rate is required').positive('Rate must be a positive number').integer('Rate must be a integer'),
+    amount: Yup.number().required('Amount is required'),
+    remarks: Yup.string().required('Remarks is required')
+});
 
 function Tripdetails() {
     const [value, setValue] = useState('');
@@ -49,20 +67,11 @@ function Tripdetails() {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [mineno, setmineno] = useState([]);
     const [status, setStatus] = useState('');
+    const [errors, setErrors] = useState('');
 
-    // const validationSchema = Yup.object().shape({
-    //     date: Yup.string().required('Date is required'),
-    //     role: Yup.string().required('Role is required'),
-    //     mine_no: Yup.string().required('Mine number is required')
-    //     vehicle: Yup.string().required('Vehicle is required'),
-    //     trip_type: '',
-    //     with_lead: 'No',
-    //     trips: '',
-    //     quantity: '',
-    //     rate: '',
-    //     amount: '',
-    //     remarks: ''
-    // });
+    const baseUrl = process.env.REACT_APP_BASE_URL;
+
+    console.log(baseUrl);
 
     const token = localStorage.getItem('accessToken');
 
@@ -202,27 +211,37 @@ function Tripdetails() {
         console.log(formData);
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/reports/addDailyReport', formData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `b ${token}`
+            validationSchema.validate(formData, { abortEarly: false }).then(async () => {
+                try {
+                    const response = await axios.post('http://localhost:8000/reports/addDailyReport', formData, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `b ${token}`
+                        }
+                    });
+                    console.log('Response:', response.data);
+                    if (!response.data.error) {
+                        setSnackbarMessage('tripDetails Created Successfully!!!');
+                        setOpenSnackbar(true);
+                        setStatus('success');
+                    } else {
+                        setSnackbarMessage(`${response.data.message}`);
+                        setOpenSnackbar(true);
+                        setStatus('warning');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
                 }
             });
-            console.log('Response:', response.data);
-            if (!response.data.error) {
-                setSnackbarMessage('tripDetails Created Successfully!!!');
-                setOpenSnackbar(true);
-                setStatus('success');
-            } else {
-                setSnackbarMessage(`${response.data.message}`);
-                setOpenSnackbar(true);
-                setStatus('warning');
-            }
         } catch (error) {
-            console.error('Error:', error);
+            // Form data is invalid
+            const newErrors = {};
+            error.inner.forEach((err) => {
+                newErrors[err.path] = err.message;
+            });
+            setErrors(newErrors);
         }
     };
-
     console.log(value);
     return (
         <>

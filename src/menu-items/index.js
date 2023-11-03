@@ -15,10 +15,6 @@ try {
     const userData = localStorage.getItem('userData');
     const userinfo = JSON.parse(userData);
 
-    // console.log(userinfo);
-    // console.log(role);
-    // console.log(typeof role);
-
     if (userinfo != null) {
         const roleNumber = userinfo.role;
         const role = roleNumber.toString();
