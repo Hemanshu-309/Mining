@@ -362,7 +362,6 @@ const resetPasswordEmail = async (req,res) =>{
 
     payload.email = email;
     const insertToken = await model.updateUser(payload,{reset_token})
-    console.log(insertToken)
     if(insertToken.length == 0){
       return res.json({
         error : true,
