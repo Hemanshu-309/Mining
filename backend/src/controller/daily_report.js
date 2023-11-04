@@ -49,7 +49,7 @@ const insertDailyReport = async (req, res) => {
     const roles = temp.role;
     const uid = temp.id
 
-    console.log(roles)
+    
     const field = {
       id: roles,
     };

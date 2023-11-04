@@ -54,6 +54,7 @@ const paginateDailyReport = async (limit, offset, sort, order, status, searchFro
     .leftJoin(trip, `${trip}.id`, "=", `${table}.trip_type`)
     .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`)
     
+    
     if (status) rows = rows.where(`${table}.status`,`${status}`)
 
     if(date1 && date2){

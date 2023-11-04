@@ -348,9 +348,9 @@ const resetPasswordEmail = async (req,res) =>{
 
     const getUser = await model.getUserDetail(data)
     if(!getUser.length){
-      return res.status(404).json({
-        Error:true,
-        Message:'User not found'
+      return res.json({
+        error:true,
+        message:'User not found'
       })
     }
     
