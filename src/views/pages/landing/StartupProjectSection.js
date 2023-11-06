@@ -106,7 +106,7 @@ const RtlInfoSection = () => {
             </Container>
             <HeaderAnimationImage
                 src={BackgroundImag}
-                alt="Berry"
+                alt="MINING"
                 sx={{
                     position: 'absolute',
                     filter: 'none',

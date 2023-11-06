@@ -13,13 +13,12 @@ let items = [];
 const modualsVerification = () => {
     const userData = localStorage.getItem('userData');
     const userinfo = JSON.parse(userData);
-
     try {
         if (userinfo != null) {
             const roleNumber = userinfo.role;
             const role = roleNumber.toString();
-            const adminItems = [admin, dashboard, pages];
-            const userItems = [user, pages];
+            const adminItems = [admin, dashboard];
+            const userItems = [user];
 
             items = role === '1' ? adminItems : userItems;
             // window.location.reload();

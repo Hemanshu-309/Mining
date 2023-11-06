@@ -33,7 +33,6 @@ import * as React from 'react';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
 import useAuth from 'hooks/useAuth';
 import User1 from 'assets/images/users/user-round.svg';
 import Button from '@mui/material/Button';
@@ -65,12 +64,12 @@ const ProfileSection = () => {
     const [open, setOpen] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const userData = localStorage.getItem('userData');
+    const userData = localStorage.getItem('user_info');
     const userinfo = JSON.parse(userData);
 
-    const firstname = userinfo.firstname;
-    // console.log(firstname);
-    const lastname = userinfo.lastname;
+    const firstname = userinfo.first_name;
+    console.log(firstname);
+    const lastname = userinfo.last_name;
 
     // const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
@@ -212,9 +211,9 @@ const ProfileSection = () => {
                                             <Stack>
                                                 <Stack direction="row" spacing={0.5} alignItems="center">
                                                     <Typography variant="h4">Good Morning,</Typography>
-                                                    <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
+                                                    {/* <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
                                                         {user?.name}
-                                                    </Typography>
+                                                    </Typography> */}
                                                 </Stack>
                                                 <Typography variant="subtitle2">{`${firstname} ${lastname}`}</Typography>
                                             </Stack>

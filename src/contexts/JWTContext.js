@@ -76,8 +76,7 @@ export const JWTProvider = ({ children }) => {
                 const userData = window.localStorage.getItem('userData');
                 const accessToken = window.localStorage.getItem('accessToken');
                 if (refreshToken && verifyToken(refreshToken)) {
-                    // const response = await axios.post('http://10.201.1.195:8000/users/loginUser');
-                    // const { userData } = response.data.data;
+                    
                     setSession(accessToken, refreshToken, userData);
                     dispatch({
                         type: LOGIN,
@@ -143,7 +142,8 @@ export const JWTProvider = ({ children }) => {
             Role: role,
             Code: code
         });
-        const response = await axios.post('http://10.201.1.198:8000/users/addUser', {
+        // const id = chance.bb_pin();
+        const response = await axios.post('http://localhost:8000/users/addUser', {
             firstname,
             lastname,
             email,

@@ -7,7 +7,7 @@ import { FormControl, Grid, Stack, Typography, useMediaQuery } from '@mui/materi
 // project imports
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
-import Logo from 'ui-component/Logo';
+// import Logo from 'ui-component/Logo';
 import AuthResetPassword from '../auth-forms/AuthResetPassword';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 import { useState } from 'react';
@@ -57,7 +57,7 @@ const ResetPassword = () => {
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                                     <Grid item sx={{ mb: 3 }}>
                                         <Link to="#" aria-label="theme-logo">
-                                            <Logo />
+                                            {/* <Logo /> */}
                                         </Link>
                                     </Grid>
                                     <Grid item xs={12}>
