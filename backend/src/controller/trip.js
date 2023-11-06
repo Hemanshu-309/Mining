@@ -174,12 +174,18 @@ const deleteTrip = async(req,res)=>{
       }
 
       const deleteTrip = await model.deleteTrip(data)
-      if(deleteTrip){
+    
+      if(!deleteTrip){
        return res.json({
-            error: false,
-            message: "Trip type has been deleted",
+            error: true,
+            message: "Trip type has already been deleted.",
         })
       }
+
+      return res.json({
+        error: false,
+        message: "Trip type has been deleted.",
+    })
 
     } catch (error) {
         return res.json({

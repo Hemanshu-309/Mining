@@ -11,6 +11,10 @@ const insertDailyReport = (data) => {
   return knex(table).insert(data);
 };
 
+const updateDailyReport = (data,id) =>{
+  return knex(table).update(data).where(id)
+}
+
 const getDailyReport = (id, userid) => {
   let rows = knex(table)
     .select(`${table}.id`, `${userTable}.username`,`${role}.role_name as role`,`${vehicle}.name as vehicle`,`${trip}.type as trip_type`,`${mine}.mine_name as mine_name`,`${table}.with_lead as with_lead`,`${table}.trips`,`${table}.quantity`,`${table}.rate`,`${table}.amount`,`${table}.date`,`${table}.remarks`)
@@ -118,5 +122,6 @@ export default {
   getAllDailyReport,
   deleteReport,
   paginateDailyReport,
-  paginateDailyReportTotal
+  paginateDailyReportTotal,
+  updateDailyReport
 };

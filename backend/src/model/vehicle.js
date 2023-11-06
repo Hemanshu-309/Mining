@@ -15,7 +15,7 @@ const getAllVehicle = async(field)=>{
 }
 
 const deleteVehicle = async(id)=>{
-    return knex(table).update('status',2).where(id)
+    return knex(table).update('status',2).where({id,status:1})
 }
 
 const updateVehicle = async (id,name) =>{ 

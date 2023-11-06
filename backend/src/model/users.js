@@ -30,7 +30,7 @@ const checkUser = (field,status)=>{
 }
 
 const deleteUser = (field)=>{
-    return knex(table).update('status',2).where(field)
+    return knex(table).update('status',2).where({...field,status:1})
 }
 
 const updateUser = (where,field)=>{

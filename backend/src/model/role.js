@@ -14,7 +14,7 @@ const getAllRoleDetail = async (field) =>{
 }
 
 const deleteRole = async (id)=>{
-    return knex(table).update('status',2).where(id)
+    return knex(table).update('status',2).where({id,status:1})
 }
 
 const updateRole = async (id,role_name) =>{ 
