@@ -6,7 +6,7 @@ const insertRole = async (data) =>{
 }
 
 const getRoleDetail = async (field) =>{
-    return knex(table).select('id','role_name').where(field).andWhere('status',1)
+    return knex(table).select('id','role_name','status').where(field).andWhere('status',1)
 }
 
 const getAllRoleDetail = async (field) =>{
