@@ -84,13 +84,13 @@ const paginateDailyReport = async (limit, offset, sort, order, status, searchFro
   return rows
 };
 
-const paginateDailyReportTotal = async(searchFrom, search, status,date1,date2) =>{
+const paginateDailyReportTotal = async(limit,searchFrom, search, status,date1,date2) =>{
   let results = knex(table)
   .leftJoin(userTable, `${userTable}.id`, "=", `${table}.userid`)
     .leftJoin(role, `${role}.id`, "=", `${table}.role_id`)
     .leftJoin(vehicle, `${vehicle}.id`, "=", `${table}.vehicle`)
     .leftJoin(trip, `${trip}.id`, "=", `${table}.trip_type`)
-    .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`)
+    .leftJoin(mine, `${mine}.id`,"=",`${table}.mine_no`).limit(limit)
     
     if(date1 && date2){
       date2 = new Date(date2+"T00:00:00Z") // Use 'T00:00:00Z' to set the time to midnight in UTC
@@ -107,7 +107,8 @@ const paginateDailyReportTotal = async(searchFrom, search, status,date1,date2) =
             })
         }
     })
-    const total = await results.count(`${table}.id as total`).first()
+
+    const total = (await results).length
     return total
 };
 

@@ -256,7 +256,7 @@ const paginateDailyReport = async(req,res) =>{
         "mine_name","role_name","vehicle","type","name","with_lead","date"
     ]
 
-    const total = await model.paginateDailyReportTotal(searchFrom,search,status,date1,date2)
+    const total = await model.paginateDailyReportTotal(limit,searchFrom,search,status,date1,date2)
     const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search,id,userid,date1,date2)
     let data_rows = []
     if(order /*=== 'asc'*/)/*{
@@ -279,7 +279,7 @@ const paginateDailyReport = async(req,res) =>{
       error: false,
       message: "Data has been fetched",
       data: {
-        total:total.total,
+        total:total,
         rows:data_rows
       },
     })
