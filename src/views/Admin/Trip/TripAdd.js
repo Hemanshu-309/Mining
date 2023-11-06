@@ -20,7 +20,7 @@ const Transition = forwardRef((props, ref) => <Slide direction="left" ref={ref} 
 
 // ==============================|| TRIP ADD DIALOG ||============================== //
 
-const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
+const TripAdd = ({ open, handleCloseDialog, setOpen, getTrip }) => {
     const token = localStorage.getItem('accessToken');
 
     const [progress, setProgress] = useState(0);
@@ -86,7 +86,7 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
     const handleSubmit = async () => {
         console.log(tripType);
         try {
-            const response = await axios.post('http://localhost:8000/trip/addTripType', tripType, {
+            const response = await axios.post('http://10.201.1.198:8000/trip/addTripType', tripType, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -103,7 +103,8 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
                 setOpenSnackbar(true);
                 setSnackMode('success');
                 getTrip();
-                setOpen(false);
+                // setOpen(false);
+                handleCloseDialog();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
@@ -175,9 +176,9 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
                                     Create
                                 </Button>
                             </AnimateButton>
-                            <Button variant="text" color="error" onClick={handleCloseDialog}>
+                            {/* <Button variant="text" color="error" onClick={handleCloseDialog}>
                                 Close
-                            </Button>
+                            </Button> */}
                         </DialogActions>
                     </>
                 )}
@@ -189,7 +190,8 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
 TripAdd.propTypes = {
     open: PropTypes.bool,
     handleCloseDialog: PropTypes.func,
-    setOpen: PropTypes.func
+    setOpen: PropTypes.func,
+    getTrip: PropTypes.func
 };
 
 export default TripAdd;

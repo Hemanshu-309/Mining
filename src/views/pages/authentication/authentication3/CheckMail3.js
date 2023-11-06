@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -18,6 +18,8 @@ import AuthFooter from 'ui-component/cards/AuthFooter';
 const CheckMail = () => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
+
+    const { email } = useParams();
 
     return (
         <AuthWrapper1>
@@ -56,16 +58,11 @@ const CheckMail = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <AnimateButton>
-                                            <Button
-                                                disableElevation
-                                                fullWidth
-                                                size="large"
-                                                type="submit"
-                                                variant="contained"
-                                                color="secondary"
-                                            >
-                                                Open Mail
-                                            </Button>
+                                            <a href={email} style={{ textDecoration: 'none' }}>
+                                                <Button disableElevation fullWidth size="large" variant="contained" color="secondary">
+                                                    Open Mail
+                                                </Button>
+                                            </a>
                                         </AnimateButton>
                                     </Grid>
                                 </Grid>

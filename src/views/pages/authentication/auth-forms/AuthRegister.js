@@ -90,9 +90,15 @@ const JWTRegister = ({ ...others }) => {
                     lastname: Yup.string().max(255).required('Last Name is required'),
                     email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
                     username: Yup.string().max(255).required('Username is required'),
-                    password: Yup.string().max(255).required('Password is required'),
-                    callingCode: Yup.string().required('Calling Code is required'),
-                    mobile: Yup.string().max(255).required('Mobile Number is required'),
+                    password: Yup.string()
+                        .max(255)
+                        .required('Password is required')
+                        .matches(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,35}$/, 'Is not in correct format'),
+                    callingCode: Yup.string().required('Country Code is required'),
+                    mobile: Yup.string()
+                        .max(255)
+                        .required('Mobile Number is required')
+                        .matches(/^([+]\d{2})?\d{10}$/, 'please enter valid mobile number'),
                     role: Yup.string().max(255).required('Role is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -112,21 +118,6 @@ const JWTRegister = ({ ...others }) => {
                         if (scriptedRef.current) {
                             setStatus({ success: true });
                             setSubmitting(false);
-                            dispatch(
-                                openSnackbar({
-                                    open: true,
-                                    message: 'Your registration has been successfully completed.',
-                                    variant: 'alert',
-                                    alert: {
-                                        color: 'success'
-                                    },
-                                    close: false
-                                })
-                            );
-
-                            setTimeout(() => {
-                                navigate('/login', { replace: true });
-                            }, 1500);
                         }
                     } catch (err) {
                         console.error(err);
@@ -195,6 +186,7 @@ const JWTRegister = ({ ...others }) => {
                             </FormHelperText>
                         )}
                         <TextField
+                            required
                             fullWidth
                             label="Username"
                             margin="normal"
@@ -211,13 +203,18 @@ const JWTRegister = ({ ...others }) => {
                             </FormHelperText>
                         )}
                         <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-callingCode">Calling Code</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-callingCode">Country Code</InputLabel>
                             <Select
+                                fullWidth
+                                labelId="demo-simple-select-helper-label"
                                 id="outlined-adornment-callingCode"
                                 name="callingCode"
                                 value={values.callingCode}
                                 onChange={handleChange}
-                                label="Calling Code"
+                                onBlur={handleBlur}
+                                label="Country Code"
+                                margin="normal"
+                                sx={{ ...theme.typography.customInput }}
                             >
                                 <MenuItem value="+91">+91</MenuItem>
                                 <MenuItem value="+1">+1</MenuItem>

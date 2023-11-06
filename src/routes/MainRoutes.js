@@ -46,10 +46,6 @@ const MainRoutes = {
             path: '/user/tripdetails',
             element: <UserTripDetails />
         }
-        // {
-        //     path: '/dashboard/default',
-        //     element: <DashboardDefault />
-        // }
     ]
 };
 

@@ -9,29 +9,34 @@ import user from './user';
 
 // ==============================|| MENU ITEMS ||============================== //
 let items = [];
-// eslint-disable-next-line react-hooks/rules-of-hooks
-// useState(() => {
-try {
+
+const modualsVerification = () => {
     const userData = localStorage.getItem('userData');
     const userinfo = JSON.parse(userData);
 
-    if (userinfo != null) {
-        const roleNumber = userinfo.role;
-        const role = roleNumber.toString();
-        const adminItems = [admin, dashboard, pages];
-        const userItems = [user, pages];
+    try {
+        if (userinfo != null) {
+            const roleNumber = userinfo.role;
+            const role = roleNumber.toString();
+            const adminItems = [admin, dashboard, pages];
+            const userItems = [user, pages];
 
-        items = role === '1' ? adminItems : userItems;
-    } else {
-        items = [];
+            items = role === '1' ? adminItems : userItems;
+            // window.location.reload();
+        } else {
+            items = [];
+        }
+    } catch (e) {
+        console.log(e);
     }
-} catch (e) {
-    console.log(e);
-}
-// }, [dashboard]);
+
+    return items;
+};
 
 const menuItems = {
-    items
+    items: modualsVerification()
 };
+
+// window.location.reload();
 
 export default menuItems;

@@ -109,7 +109,7 @@ function Tripdetails() {
         const getmine = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/mine/getAllMines',
+                    'http://10.201.1.198:8000/mine/getAllMines',
                     {},
                     {
                         headers: {
@@ -131,7 +131,7 @@ function Tripdetails() {
         const getTrip = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/trip/getTripType',
+                    'http://10.201.1.198:8000/trip/getTripType',
                     {},
                     {
                         headers: {
@@ -154,7 +154,7 @@ function Tripdetails() {
         const getVehical = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/vehicle/getVehicles',
+                    'http://10.201.1.198:8000/vehicle/getVehicles',
                     {},
                     {
                         headers: {
@@ -176,7 +176,7 @@ function Tripdetails() {
         const getRole = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/role/getRole',
+                    'http://10.201.1.198:8000/role/getRole',
                     {},
                     {
                         headers: {
@@ -213,7 +213,7 @@ function Tripdetails() {
         try {
             validationSchema.validate(formData, { abortEarly: false }).then(async () => {
                 try {
-                    const response = await axios.post('http://localhost:8000/reports/addDailyReport', formData, {
+                    const response = await axios.post('http://10.201.1.198:8000/reports/addDailyReport', formData, {
                         headers: {
                             'Content-Type': 'application/json',
                             Authorization: `b ${token}`
