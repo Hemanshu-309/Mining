@@ -10,8 +10,6 @@ import cors from 'cors'
 import country from './src/middleware/country.js'
 import fileUpload from 'express-fileupload'
 
-import pg from './src/routes/pg.js'
-
 const app = express()
 
 app.use(cors())
@@ -25,8 +23,6 @@ app.use('/vehicle',vehicle.router)
 app.use('/users',users.router)
 app.use('/reports',daily_report.router)
 app.use('/mine',mine.router)
-
-app.use('/pg',pg.router)
 
 app.post('/cc',async(req,res)=>{
     res.send({
