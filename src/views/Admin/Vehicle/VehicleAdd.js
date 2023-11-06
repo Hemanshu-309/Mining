@@ -86,7 +86,7 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
         console.log(vehicle);
         setOpen(false);
         try {
-            const response = await axios.post('http://localhost:8000/vehicle/addVehicle', vehicle, {
+            const response = await axios.post('http://10.201.1.198:8000/vehicle/addVehicle', vehicle, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`

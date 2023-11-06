@@ -7,7 +7,7 @@ import { Box, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 // project imports
 import AuthWrapper2 from '../AuthWrapper2';
 import AuthCardWrapper from '../AuthCardWrapper';
-import Logo from 'ui-component/Logo';
+// import Logo from 'ui-component/Logo';
 import AuthResetPassword from '../auth-forms/AuthResetPassword';
 import BackgroundPattern2 from 'ui-component/cards/BackgroundPattern2';
 import AuthFooter from 'ui-component/cards/AuthFooter';
@@ -51,7 +51,7 @@ const ResetPassword = () => {
                     >
                         <Grid item sx={{ display: { xs: 'none', md: 'block' }, m: 3 }}>
                             <Link to="#" aria-label="theme-logo">
-                                <Logo />
+                                {/* <Logo /> */}
                             </Link>
                         </Grid>
                         <Grid
@@ -64,7 +64,7 @@ const ResetPassword = () => {
                         >
                             <Stack justifyContent="center" alignItems="center" spacing={5} m={2}>
                                 <Box component={Link} to="#" sx={{ display: { xs: 'block', md: 'none' } }}>
-                                    <Logo />
+                                    {/* <Logo /> */}
                                 </Box>
                                 <AuthCardWrapper border={matchDownMD}>
                                     <Grid container spacing={2} justifyContent="center">

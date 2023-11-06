@@ -7,7 +7,7 @@ import { Divider, Grid, Typography, useMediaQuery } from '@mui/material';
 // project imports
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
-import Logo from 'ui-component/Logo';
+// import Logo from 'ui-component/Logo';
 import AuthForgotPassword from '../auth-forms/AuthForgotPassword';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 import useAuth from 'hooks/useAuth';
@@ -28,9 +28,10 @@ const ForgotPassword = () => {
                             <AuthCardWrapper>
                                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                                     <Grid item sx={{ mb: 3 }}>
-                                        <Link to="#" aria-label="theme-logo">
-                                            <Logo />
-                                        </Link>
+                                        {/* <Link to="#" aria-label="theme-logo"> */}
+                                        {/* <Logo /> */}
+                                        <Typography variant="h1">Mining</Typography>
+                                        {/* </Link> */}
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Grid container alignItems="center" justifyContent="center" textAlign="center" spacing={2}>
@@ -45,7 +46,7 @@ const ForgotPassword = () => {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Typography variant="caption" fontSize="16px" textAlign="center">
-                                                    Enter your email address below and we&apos;ll send you password reset OTP.
+                                                    Enter your email address below and we&apos;ll send you password reset Link.
                                                 </Typography>
                                             </Grid>
                                         </Grid>

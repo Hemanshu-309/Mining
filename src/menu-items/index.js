@@ -18,8 +18,8 @@ try {
     if (userinfo != null) {
         const roleNumber = userinfo.role;
         const role = roleNumber.toString();
-        const adminItems = [admin, dashboard, pages];
-        const userItems = [user, pages];
+        const adminItems = [admin, dashboard];
+        const userItems = [user];
 
         items = role === '1' ? adminItems : userItems;
     } else {

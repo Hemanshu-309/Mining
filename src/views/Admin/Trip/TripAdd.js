@@ -86,7 +86,7 @@ const TripAdd = ({ open, handleCloseDialog, setOpen }) => {
     const handleSubmit = async () => {
         console.log(tripType);
         try {
-            const response = await axios.post('http://localhost:8000/trip/addTripType', tripType, {
+            const response = await axios.post('http://10.201.1.198:8000/trip/addTripType', tripType, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`

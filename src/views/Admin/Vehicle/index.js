@@ -215,7 +215,7 @@ const VehicleList = () => {
     const getVehicle = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/vehicle/getVehicles',
+                'http://10.201.1.198:8000/vehicle/getVehicles',
                 {},
                 {
                     headers: {
@@ -277,7 +277,7 @@ const VehicleList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://localhost:8000/vehicle/updateVehicle', editedData, {
+            const response = await axios.post('http://10.201.1.198:8000/vehicle/updateVehicle', editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -304,7 +304,7 @@ const VehicleList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/vehicle/deleteMultipleVehicle',
+                'http://10.201.1.198:8000/vehicle/deleteMultipleVehicle',
                 { ids: selected },
                 {
                     headers: {

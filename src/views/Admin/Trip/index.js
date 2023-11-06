@@ -231,7 +231,7 @@ const TripList = () => {
     const getTrip = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/trip/getTripType',
+                'http://10.201.1.198:8000/trip/getTripType',
                 {},
                 {
                     headers: {
@@ -326,7 +326,7 @@ const TripList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://localhost:8000/trip/updateTripType', editedData, {
+            const response = await axios.post('http://10.201.1.198:8000/trip/updateTripType', editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -348,7 +348,7 @@ const TripList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/trip/deleteMultipleTripType',
+                'http://10.201.1.198:8000/trip/deleteMultipleTripType',
                 { ids: selected },
                 {
                     // Send the selected.id triptypes to be deleted

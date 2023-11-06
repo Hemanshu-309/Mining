@@ -86,7 +86,7 @@ const ContractorAdd = ({ open, handleCloseDialog, setOpen }) => {
         console.log(contractor);
         setOpen(false);
         try {
-            const response = await axios.post('http://localhost:8000/role/createRole', contractor, {
+            const response = await axios.post('http://10.201.1.198:8000/role/createRole', contractor, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`

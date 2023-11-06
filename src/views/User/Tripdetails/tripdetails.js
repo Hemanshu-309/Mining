@@ -109,7 +109,7 @@ function Tripdetails() {
         const getmine = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/mine/getAllMines',
+                    'http://10.201.1.198:8000/mine/getAllMines',
                     {},
                     {
                         headers: {
@@ -131,7 +131,7 @@ function Tripdetails() {
         const getTrip = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/trip/getTripType',
+                    'http://10.201.1.198:8000/trip/getTripType',
                     {},
                     {
                         headers: {
@@ -154,7 +154,7 @@ function Tripdetails() {
         const getVehical = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/vehicle/getVehicles',
+                    'http://10.201.1.198:8000/vehicle/getVehicles',
                     {},
                     {
                         headers: {
@@ -176,7 +176,7 @@ function Tripdetails() {
         const getRole = async () => {
             try {
                 const response = await axios.post(
-                    'http://localhost:8000/role/getRole',
+                    'http://10.201.1.198:8000/role/getRole',
                     {},
                     {
                         headers: {
@@ -213,7 +213,7 @@ function Tripdetails() {
         try {
             validationSchema.validate(formData, { abortEarly: false }).then(async () => {
                 try {
-                    const response = await axios.post('http://localhost:8000/reports/addDailyReport', formData, {
+                    const response = await axios.post('http://10.201.1.198:8000/reports/addDailyReport', formData, {
                         headers: {
                             'Content-Type': 'application/json',
                             Authorization: `b ${token}`
@@ -264,172 +264,178 @@ function Tripdetails() {
                     <Container>
                         <form onSubmit={handleSubmit}>
                             <Grid Container spacing={gridSpacing}>
-                                <Grid item xs={6} md={6}>
-                                    <SubCard title="">
-                                        <Grid item xs={12}>
-                                            <Grid item xs={12} sx={{ mb: 2 }}>
-                                                <LocalizationProvider dateAdapter={AdapterLuxon}>
-                                                    <DatePicker
-                                                        label="Date"
-                                                        inputFormat="yyyy/MM/dd"
-                                                        maxDate={new Date()}
-                                                        renderInput={(props) => <TextField fullWidth {...props} />}
-                                                        value={value}
-                                                        onChange={handleChangeDate}
-                                                    />
-                                                </LocalizationProvider>
-                                            </Grid>
-                                            <Grid item xs={12} sx={{ mb: 2 }}>
-                                                <FormControl fullWidth>
-                                                    <InputLabel id="demo-simple-select-label">MineNo</InputLabel>
-                                                    <Select
-                                                        labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        value={formData.mine_no}
-                                                        label="MineNo"
-                                                        name="mine_no"
-                                                        onChange={handleChange}
-                                                    >
-                                                        {mineno.map((items) => (
-                                                            <MenuItem key={items.id} value={items.id}>
-                                                                {items.id}
-                                                                {items.mine_name}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-
-                                            <Grid item xs={12} sx={{ mb: 2 }}>
-                                                <FormControl fullWidth>
-                                                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
-                                                    <Select
-                                                        labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        value={formData.role}
-                                                        label="Role"
-                                                        name="role"
-                                                        onChange={handleChange}
-                                                    >
-                                                        {role.map((items) => (
-                                                            <MenuItem key={items.id} value={items.role_name}>
-                                                                {items.role_name}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={12} sx={{ mb: 2 }}>
-                                                <FormControl fullWidth>
-                                                    <InputLabel id="demo-simple-select-label">Vehical-Type</InputLabel>
-                                                    <Select
-                                                        labelId="demo-simple-select-label"
-                                                        id="demo-simple-select"
-                                                        label="Vehical-Type"
-                                                        name="vehicle"
-                                                        value={formData.vehicle}
-                                                        onChange={handleChange}
-                                                    >
-                                                        {vehicalTypes.map((items) => (
-                                                            <MenuItem key={items.id} value={items.id}>
-                                                                {items.name}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={12} sx={{ mb: 2 }}>
-                                                <FormControl fullWidth>
-                                                    <InputLabel id="demo-simple-select-label">TripType</InputLabel>
-                                                    <Select
-                                                        labelId="demo-simple-select-label"
-                                                        id="outlined-basic-size-default"
-                                                        label="Trip-Type"
-                                                        name="trip_type"
-                                                        onChange={handleChange}
-                                                        style={{ width: '100%' }}
-                                                        value={formData.trip_type}
-                                                    >
-                                                        {tripTypes.map((items) => (
-                                                            <MenuItem key={items.id} value={items.id}>
-                                                                {items.type}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={8}>
-                                                <Typography variant="subtitle1" component="div" sx={{ mb: 1 }}>
-                                                    Lead:
-                                                </Typography>
-                                                <Grid item>
-                                                    <FormControl>
-                                                        <RadioGroup row name="with_lead" value={formData.with_lead} onChange={handleChange}>
-                                                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                                                        </RadioGroup>
-                                                    </FormControl>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    fullWidth
-                                                    id="outlined-Trips"
-                                                    label="Trips"
-                                                    name="trips"
-                                                    value={formData.trips}
-                                                    sx={{ mb: 2 }}
-                                                    onChange={handleTripsChange}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    fullWidth
-                                                    id="outlined-Qty"
-                                                    label="Qty MT"
-                                                    name="quantity"
-                                                    value={formData.quantity}
-                                                    sx={{ mb: 2 }}
-                                                    onChange={handleQuantityChange}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <TextField
-                                                    fullWidth
-                                                    id="outlined-email-address"
-                                                    label="Rate"
-                                                    name="rate"
-                                                    sx={{ mb: 2 }}
-                                                    value={formData.rate}
-                                                    onChange={handleRateChange}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <TextField
-                                                    fullWidth
-                                                    id="outlined-email-address"
-                                                    placeholder="Amt"
-                                                    name="amount"
-                                                    value={formData.amount}
-                                                    sx={{ mb: 2 }}
-                                                    // onChange={handleChange}
-                                                />
-                                            </Grid>
-                                            <Grid item xs={6}>
-                                                <TextField
-                                                    label="remarks"
-                                                    name="remarks"
-                                                    value={formData.remarks}
-                                                    multiline
-                                                    rows={4}
-                                                    variant="outlined"
-                                                    fullWidth
-                                                    onChange={handleChange}
-                                                />
-                                            </Grid>
-                                        </Grid>
-                                    </SubCard>
+                                {/* <Grid item> */}
+                                {/* <SubCard title=""> */}
+                                <Grid item xs={6} sx={{ mb: 2 }}>
+                                    <LocalizationProvider dateAdapter={AdapterLuxon}>
+                                        <DatePicker
+                                            label="Date"
+                                            inputFormat="yyyy/MM/dd"
+                                            maxDate={new Date()}
+                                            renderInput={(props) => <TextField fullWidth {...props} />}
+                                            value={value}
+                                            onChange={handleChangeDate}
+                                        />
+                                    </LocalizationProvider>
                                 </Grid>
+                                <Grid container spacing={gridSpacing}>
+                                    <Grid item xs={6} sx={{ mb: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">MineNo</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={formData.mine_no}
+                                                label="MineNo"
+                                                name="mine_no"
+                                                onChange={handleChange}
+                                            >
+                                                {mineno.map((items) => (
+                                                    <MenuItem key={items.id} value={items.id}>
+                                                        {items.id}
+                                                        {items.mine_name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6} sx={{ mb: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={formData.role}
+                                                label="Role"
+                                                name="role"
+                                                onChange={handleChange}
+                                            >
+                                                {role.map((items) => (
+                                                    <MenuItem key={items.id} value={items.role_name}>
+                                                        {items.role_name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={gridSpacing}>
+                                    <Grid item xs={6} sx={{ mb: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Vehical-Type</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                label="Vehical-Type"
+                                                name="vehicle"
+                                                value={formData.vehicle}
+                                                onChange={handleChange}
+                                            >
+                                                {vehicalTypes.map((items) => (
+                                                    <MenuItem key={items.id} value={items.id}>
+                                                        {items.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6} sx={{ mb: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">TripType</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="outlined-basic-size-default"
+                                                label="Trip-Type"
+                                                name="trip_type"
+                                                onChange={handleChange}
+                                                style={{ width: '100%' }}
+                                                value={formData.trip_type}
+                                            >
+                                                {tripTypes.map((items) => (
+                                                    <MenuItem key={items.id} value={items.id}>
+                                                        {items.type}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography variant="subtitle1" component="div" sx={{ mb: 1 }}>
+                                        Lead:
+                                    </Typography>
+                                    <Grid item>
+                                        <FormControl>
+                                            <RadioGroup row name="with_lead" value={formData.with_lead} onChange={handleChange}>
+                                                <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                                                <FormControlLabel value="No" control={<Radio />} label="No" />
+                                            </RadioGroup>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={gridSpacing}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-Trips"
+                                            label="Trips"
+                                            name="trips"
+                                            value={formData.trips}
+                                            sx={{ mb: 2 }}
+                                            onChange={handleTripsChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-Qty"
+                                            label="Qty MT"
+                                            name="quantity"
+                                            value={formData.quantity}
+                                            sx={{ mb: 2 }}
+                                            onChange={handleQuantityChange}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={gridSpacing}>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-email-address"
+                                            label="Rate"
+                                            name="rate"
+                                            sx={{ mb: 2 }}
+                                            value={formData.rate}
+                                            onChange={handleRateChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-email-address"
+                                            placeholder="Amt"
+                                            name="amount"
+                                            value={formData.amount}
+                                            sx={{ mb: 2 }}
+                                            // onChange={handleChange}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} sx={{ mb: 2 }}>
+                                    <TextField
+                                        label="remarks"
+                                        name="remarks"
+                                        value={formData.remarks}
+                                        multiline
+                                        rows={4}
+                                        variant="outlined"
+                                        fullWidth
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                                {/* </Grid> */}
+                                {/* </SubCard> */}
+                                {/* </Grid> */}
                                 <Grid container justifyContent="center">
                                     <Grid item>
                                         <Button type="submit" variant="contained">

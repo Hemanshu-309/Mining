@@ -221,7 +221,7 @@ const ContractorList = () => {
     const getContractor = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/role/getRole',
+                'http://10.201.1.198:8000/role/getRole',
                 {},
                 {
                     headers: {
@@ -286,7 +286,7 @@ const ContractorList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://localhost:8000/role/updateRole', editedData, {
+            const response = await axios.post('http://10.201.1.198:8000/role/updateRole', editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -313,7 +313,7 @@ const ContractorList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://localhost:8000/role/deleteMultipleRoles',
+                'http://10.201.1.198:8000/role/deleteMultipleRoles',
                 { ids: selected },
                 {
                     headers: {
