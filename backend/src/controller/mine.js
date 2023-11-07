@@ -3,12 +3,12 @@ import model from "../model/mine.js";
 import Rolemodel from "../model/role.js";
 import jwt from "jsonwebtoken";
 import constant from "../helpers/constant.js";
+import knex from "../config/mysql_db.js";
 
 const addMine = async (req, res) => {
   try {
-    const { id, code, name } = req.body;
+    const {  code, name } = req.body;
     const data = {
-      id,
       code,
      mine_name: name,
     };
@@ -36,7 +36,7 @@ const addMine = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -47,7 +47,7 @@ const addMine = async (req, res) => {
     }
 
     const checkMine = await model.getMineData(data, {});
-    if (checkMine.length) {
+    if (checkMine.length >0) {
       return res
         .json({
           error: true,
@@ -90,7 +90,7 @@ const getAllMine = async (req, res) => {
 
     let mine;
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       const data = {
         status: 1,
       };
@@ -136,7 +136,7 @@ const deleteMine = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -193,6 +193,90 @@ const deleteMine = async (req, res) => {
   }
 };
 
+const updateMine = async (req,res)=>{
+  try {
+    const { id, code, name } = req.body;
+    const data = {
+      id,
+      code,
+      mine_name: name,
+      };
+
+      const checkValidation = validation.updateValidateMine(data);
+      if (checkValidation.error) {
+        const details = checkValidation.error.details;
+        const message = details.map((i) => {
+          const err_msg = i.message;
+          return err_msg.replace(/\"/g, "");
+        });
+        return res.json({
+          error: true,
+          message: message,
+        });
+      }
+
+      const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const role = temp.role;
+
+    const field = {
+      id: role,
+    };
+
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
+        })
+        .end();
+    }
+
+    delete data.id
+    const checkMine = await knex("mine").where(data).whereNot({id})
+    if (checkMine.length > 0) {
+      return res
+        .json({
+          error: true,
+          message: "Mine entry already Exists.",
+          data: [],
+        })
+        .end();
+    }
+
+    const updateMine = await model.updateMine({id},data)
+    if(updateMine == 0){
+      return res
+      .json({
+        error: true,
+        message: "Failed to update",
+        data: [],
+      })
+      .end();
+    }
+
+    return res
+    .json({
+      error: false,
+      message: "Mine updated.",
+      data: updateMine,
+    })
+    .end();
+
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
+
 const deletedMultipleMines = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -204,7 +288,7 @@ const deletedMultipleMines = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -276,7 +360,7 @@ const paginateMine = async (req, res) =>{
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -338,5 +422,6 @@ export default {
   getAllMine,
   deleteMine,
   deletedMultipleMines,
-  paginateMine
+  paginateMine,
+  updateMine
 };

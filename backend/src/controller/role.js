@@ -84,7 +84,7 @@ const getRole = async(req,res) =>{
 
       let role;
       const checkRole = await model.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role != 'admin'){
         const data = {
             status:1
         }
@@ -198,7 +198,7 @@ const updateRole = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
+      if(checkRole.length && (checkRole[0].role != 'admin' || checkRole[0].role !="Admin")){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -207,9 +207,9 @@ const updateRole = async(req,res)=>{
         
       }
 
-      const {id , role_name} = req.body
+      const {id , role_name,code,status} = req.body
       const data = {
-        id , role_name
+        id, role_name,code,status
       }
 
       const checkValidation = validation.updateValidateRole(data)
@@ -233,8 +233,8 @@ const updateRole = async(req,res)=>{
                 data: []
               }).end()
         } 
-
-        const updateRole = await model.updateRole(id,role_name)
+        delete data.id
+        const updateRole = await model.updateRole(id,data)
         if(!updateRole){
             return res.json({
                 error: true,

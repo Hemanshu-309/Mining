@@ -6,19 +6,19 @@ const insertRole = async (data) =>{
 }
 
 const getRoleDetail = async (field) =>{
-    return knex(table).select('id','role_name','status').where(field).andWhere('status',1)
+    return knex(table).select('id','role_name as role','code','status').where(field).andWhere('status',1)
 }
 
 const getAllRoleDetail = async (field) =>{
-    return knex(table).select('id','role_name','status').orWhere(field)
+    return knex(table).select('id','role_name as role','code','status').orWhere(field)
 }
 
 const deleteRole = async (id)=>{
     return knex(table).update('status',2).where({id,status:1})
 }
 
-const updateRole = async (id,role_name) =>{ 
-    return knex(table).update({role_name,"status":1}).where({id})
+const updateRole = async (id,data) =>{ 
+    return knex(table).update(data).where({id})
 }
 
 const deletedMultipleRoles = async(field)=>{
@@ -26,7 +26,7 @@ const deletedMultipleRoles = async(field)=>{
 }
 
 const paginateRole = (limit, offset, sort, order, status, searchFrom, search) =>{
-    let rows = knex(table).select(`${table}.id`,`${table}.role_name as Role`)
+    let rows = knex(table).select(`${table}.id`,`${table}.role_name as role`,`${table}.code`,`${table}.status`)
 
     if (status) rows.where(`${table}.status`,`${status}`) 
 
@@ -44,7 +44,7 @@ const paginateRole = (limit, offset, sort, order, status, searchFrom, search) =>
 }
 
 const paginateRoleTotal = async(searchFrom,search,status) => {
-    let rows = knex(table).select(`${table}.id`,`${table}.role_name as Role`)
+    let rows = knex(table).select(`${table}.id`,`${table}.role_name as role`,`${table}.status`)
 
     if (status) rows.where(`${table}.status`,`${status}`) 
 

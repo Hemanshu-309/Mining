@@ -8,7 +8,7 @@ const createUser = (data)=>{
 
 const getUserDetail = (field,status) => {
     let rows = knex(table)
-    .select(`${table}.id`,`${table}.firstname`,`${table}.password`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${table}.status`,`${role}.role_name as role name`,`${role}.id as role`)
+    .select(`${table}.id`,`${table}.firstname`,`${table}.password`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${table}.status`,`${role}.role_name as role`)
     .leftJoin(role,`${role}.id`,"=",`${table}.role`)
    
     if (status) rows.where(`${table}.status`,status)
@@ -16,6 +16,18 @@ const getUserDetail = (field,status) => {
    rows =  rows.where(field)
 
    return rows
+}
+
+const getAllUserDetails = (status)=>{
+  let rows = knex(table)
+  .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${table}.status`,`${role}.role_name as role`)
+  .leftJoin(role,`${role}.id`,"=",`${table}.role`)
+ 
+  if (status) rows.where(`${table}.status`,status)
+
+ 
+
+ return rows
 }
 
 const checkUser = (field,status)=>{
@@ -85,5 +97,6 @@ export default {
     updateUser,
     paginateUser,
     paginateUserTotal,
-    checkUser
+    checkUser,
+    getAllUserDetails
 }

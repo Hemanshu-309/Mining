@@ -7,6 +7,11 @@ const createValidateRole = (create_data) =>{
           "string.empty": `"Role Name" is a required field.`,
           "string.length": `"Role Name" must contain 3 to 255 characters`
           }),
+          code :Joi.string().trim().min(3).max(255).required()
+        .messages({
+          "string.empty": `"Code" is a required field.`,
+          "string.length": `"Code" must contain 3 to 255 characters`
+          }),
     }).options({abortEarly:false})
 
     return JoiSchema.validate(create_data)
@@ -34,6 +39,12 @@ const updateValidateRole = (update_data) =>{
             "string.empty": `"Role Name" is a required field.`,
             "string.length": `"Role Name" must contain 255 characters`
         }), 
+        code :Joi.string().trim().min(3).max(255).required()
+        .messages({
+          "string.empty": `"Code" is a required field.`,
+          "string.length": `"Code" must contain 3 to 255 characters`
+          }),
+          status :Joi.number().integer().valid(1,2).required()
     }).options({abortEarly:false})
 
     return JoiSchema.validate(update_data)

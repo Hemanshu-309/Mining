@@ -24,6 +24,7 @@ app.use('/users',users.router)
 app.use('/reports',daily_report.router)
 app.use('/mine',mine.router)
 
+
 app.post('/cc',async(req,res)=>{
     res.send({
         Error:false,

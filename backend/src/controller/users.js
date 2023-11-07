@@ -196,7 +196,6 @@ const deleteUser = async (req, res) => {
     const email = temp.email;
 
     const field = {
-      id,
       email,
     };
 
@@ -237,6 +236,44 @@ const deleteUser = async (req, res) => {
       .end();
   }
 };
+
+const updateUser = async (req,res) =>{
+  try {
+    const {
+      firstname,
+      lastname,
+      email,
+      password,
+      role,
+      username,
+      mobile,
+      code,
+    } = req.body;
+
+    const data = {
+      username: username.toLowerCase().trim(),
+      firstname: firstname.charAt(0).toUpperCase() + firstname.slice(1).trim(),
+      lastname: lastname.charAt(0).toUpperCase() + lastname.slice(1).trim(),
+      email: email,
+      mobile: mobile,
+      password: password,
+      role: role,
+      code: code,
+      status: 1,
+    };
+
+  } catch (error) {
+    return res
+      .json({
+        error: true,
+        message: "Something went wrong.",
+        data: {
+          error: error.message,
+        },
+      })
+      .end();
+  }
+}
 
 const paginateUser = async (req, res) =>{
   try {
@@ -454,6 +491,59 @@ const resetPassword = async (req,res) =>{
   }
 }
 
+const getAllUsers = async(req,res)=>{
+  try {
+    
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const role = temp.role;
+
+    const field = {
+      id: role,
+    };
+
+    const checkRole = await Rolemodel.getRoleDetail(field);
+    if (checkRole.length && checkRole[0].role != "admin") {
+      return res
+        .json({
+          error: true,
+          message: "You don't have permission for this.",
+          data: [],
+        })
+        .end();
+    }
+
+    const users = await model.getAllUserDetails()
+    if(!users.length){
+      return res
+        .json({
+          error: true,
+          message: "No user found.",
+          data: [],
+        })
+        .end();
+    }
+
+    return res
+        .json({
+          error: false,
+          message: "Users fetched.",
+          total:users.length,
+          data: users,
+        })
+        .end();
+
+  } catch (error) {
+    return res.json({
+      error: true,
+      message: "Something went wrong.",
+      data: {
+        error: error.message,
+      },
+    })
+    .end();
+  }
+}
 
 //Tanvi's code
 const changePassword = async (req, res) => {
@@ -542,5 +632,7 @@ export default {
   changePassword,
   paginateUser,
   resetPasswordEmail,
-  resetPassword
+  resetPassword,
+  updateUser,
+  getAllUsers
 };

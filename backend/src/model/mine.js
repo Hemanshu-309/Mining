@@ -7,14 +7,20 @@ const addMineData = (data)=>{
 
 const getAllMinesData = (field)=>{
     return knex(table).select('*').orWhere(field)
+    
 }
 
-const getMineData = (where,status) =>{
+const getMineData =async (where,id,status) =>{
     return knex(table).select('*').where(where).orWhere(status)
+    
 }
 
 const deleteMine = (id)=>{
     return knex(table).update('status',2).where({id,status:1})
+}
+
+const updateMine = (where,data) =>{
+  return knex(table).update(data).where(where)
 }
 
 const deletedMultipleMines = async(field)=>{
@@ -63,5 +69,6 @@ export default {
     deleteMine,
     deletedMultipleMines,
     paginateMines,
-    paginateMineTotal
+    paginateMineTotal,
+    updateMine
 }

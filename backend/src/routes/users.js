@@ -6,6 +6,7 @@ const router = express.Router()
 
 
 router.post('/addUser',users.createUser)
+router.post('/getAllUsers',users.getAllUsers)
 router.post('/loginUser',users.loginUser)
 router.post('/deleteUser',middleware.checkJwt,users.deleteUser)
 router.post('/updatePassword',middleware.checkJwt,users.changePassword)
