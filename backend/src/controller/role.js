@@ -2,6 +2,7 @@ import model from '../model/role.js'
 import validation from '../validation/role.js'
 import jwt from 'jsonwebtoken'
 import constant from '../helpers/constant.js'
+import knex from '../config/mysql_db.js'
 
 const createRole = async(req,res)=>{
     try {
@@ -234,6 +235,18 @@ const updateRole = async(req,res)=>{
               }).end()
         } 
         delete data.id
+
+        const duplicate = await knex("users_role").where(data).whereNot({id})
+        if (duplicate.length > 0) {
+          return res
+            .json({
+              error: true,
+              message: "Role entry already Exists.",
+              data: [],
+            })
+            .end();
+        }        
+
         const updateRole = await model.updateRole(id,data)
         if(!updateRole){
             return res.json({
