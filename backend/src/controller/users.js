@@ -211,7 +211,7 @@ const deleteUser = async (req, res) => {
     }
 
     const deleteUser = await model.deleteUser(field);
-    if (deleteUser) {
+    if (deleteUser > 0) {
       return res.json({
         error: false,
         message: "User has been deleted.",
@@ -244,10 +244,8 @@ const updateUser = async (req,res) =>{
       lastname,
       email,
       password,
-      role,
       username,
       mobile,
-      code,
     } = req.body;
 
     const data = {
@@ -257,10 +255,45 @@ const updateUser = async (req,res) =>{
       email: email,
       mobile: mobile,
       password: password,
-      role: role,
-      code: code,
       status: 1,
     };
+
+    const token = req.headers.authorization.split(" ")[1];
+    const temp = jwt.verify(token, constant.jwtConfig.secret);
+    const id = temp.id;
+
+    const checkUsername = await model.getAllUserDetails({},{ username }).whereNot({id})
+    if (checkUsername.length > 0) {
+      return res.status(200).json({
+        error: true,
+        message: "Username already exist...",
+        data: [],
+      });
+    }
+
+    const checkEmail = await model.getAllUserDetails({},{ email }).whereNot({id});
+    if (checkEmail.length > 0) {
+      return res.status(200).json({
+        error: true,
+        message: "Email already exist...",
+        data: [],
+      });
+    }
+
+    const updateUser = await model.updateUser({id},data)
+    if(updateUser > 0){
+      return res.json({
+        error: false,
+        message: "User has been updated.",
+        data: updateUser,
+      });
+    }
+
+    return res.json({
+      error: true,
+      message: "Failed to update User.",
+      data: updateUser,
+    });
 
   } catch (error) {
     return res

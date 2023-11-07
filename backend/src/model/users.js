@@ -18,14 +18,14 @@ const getUserDetail = (field,status) => {
    return rows
 }
 
-const getAllUserDetails = (status)=>{
+const getAllUserDetails = (status,where)=>{
   let rows = knex(table)
   .select(`${table}.id`,`${table}.firstname`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${table}.status`,`${role}.role_name as role`)
   .leftJoin(role,`${role}.id`,"=",`${table}.role`)
  
   if (status) rows.where(`${table}.status`,status)
 
- 
+ if(where) rows.where(where)
 
  return rows
 }
