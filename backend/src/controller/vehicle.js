@@ -217,7 +217,7 @@ const updateVehicle = async (req, res) => {
       name,
     };
 
-    const checkValidation = await validation.updateValidateVehicle(data);
+    const checkValidation =  validation.updateValidateVehicle(data);
     if (checkValidation.error) {
       const details = checkValidation.error.details;
       const message = details.map((i) => {
@@ -240,6 +240,19 @@ const updateVehicle = async (req, res) => {
         })
         .end();
     }
+
+    delete data.id
+    const duplicate = await knex("vehicles").where(data).whereNot({id})
+    if (duplicate.length > 0) {
+      return res
+        .json({
+          error: true,
+          message: "Vehicle entry already Exists.",
+          data: [],
+        })
+        .end();
+    }  
+
 
     const vehicles = await model.updateVehicle(id, name);
     if (!vehicles) {

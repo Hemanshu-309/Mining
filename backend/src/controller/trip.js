@@ -3,6 +3,7 @@ import model from '../model/trip.js'
 import Rolemodel from '../model/role.js'
 import jwt from 'jsonwebtoken'
 import constant from '../helpers/constant.js'
+import knex from '../config/mysql_db.js'
 
 const createTrip = async(req,res) =>{
     try {
@@ -292,6 +293,18 @@ const updateTrip = async(req,res) =>{
                 message: message
             })
         }
+         
+        delete data.id
+        const duplicate = await knex("trip_type").where(data).whereNot({id})
+        if (duplicate.length > 0) {
+          return res
+            .json({
+              error: true,
+              message: "Trip type entry already Exists.",
+              data: [],
+            })
+            .end();
+        }  
 
         const updateTrip = await model.updateTrip(id,type)
         if(updateTrip){
