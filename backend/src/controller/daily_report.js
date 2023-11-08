@@ -64,9 +64,11 @@ const insertDailyReport = async (req, res) => {
         .end();
     }
 
+
     data.amount = data.trips * (data.rate * data.quantity)
     data.userid = uid
     data.role_id = roles
+
     const id = await model.insertDailyReport(data)
     if(id.length){
         return res.status(200).json({
