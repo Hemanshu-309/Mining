@@ -129,13 +129,20 @@ const getDailyReport = async (req,res) =>{
      reports = await model.getDailyReport(field)
     }
     
-    if(reports){
-      res.json({
+    if(reports.length > 0){
+    return res.json({
         error:false,
         message:"Reports has been fetched",
         data : reports
       })
     }
+
+    return res.json({
+      error:false,
+      message:"No reports to show.",
+      data : reports
+    })
+
   } catch (error) {
     return res.json({
       error: true,
@@ -172,9 +179,8 @@ const deleteReport = async (req,res) =>{
       });
     }
 
-    data.userid = uid
-
-    const checkReport = await model.getDailyReport(data)
+    const checkReport = await model.getDailyReport(data.id,uid)
+    console.log(checkReport)
     if(!checkReport.length){
       return res.json({
         error:false,
@@ -188,14 +194,14 @@ const deleteReport = async (req,res) =>{
     if(deleted_report > 0){
      return res.json({
         error:false,
-        message:"Reports has been deleted",
+        message:"Reports has been deleted.",
         data : deleted_report
       })
     }
 
    return res.json({
       error:false,
-      message:"Failed to delete report",
+      message:"Failed to delete report.",
       data : []
     })
 

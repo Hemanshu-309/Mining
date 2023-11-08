@@ -12,6 +12,7 @@ const getUserDetail = (field,status) => {
     .leftJoin(role,`${role}.id`,"=",`${table}.role`)
    
     if (status) rows.where(`${table}.status`,status)
+    
 
    rows =  rows.where(field)
 

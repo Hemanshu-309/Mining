@@ -107,7 +107,7 @@ const loginUser = async (req, res) => {
    
     data.password = md5(password);
     let userData = await model.getUserDetail({email},1);
-    if (!userData.length) {
+    if (userData.length == 0) {
       return res.json({
         Error: true,
         Message: "No user found.",
