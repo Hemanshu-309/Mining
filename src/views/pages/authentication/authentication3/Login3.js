@@ -9,6 +9,7 @@ import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
 // import Logo from 'ui-component/Logo';
+import Logo from '../../../../assets/images/minelogo.jpg';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 import useAuth from 'hooks/useAuth';
 // import axios from 'axios';
@@ -34,6 +35,7 @@ const Login = () => {
                                         <Grid item sx={{ mb: 3 }}>
                                             {/* <Link aria-label="theme-logo" sx={{ textDecoration: 'none' }}> */}
                                             {/* <Logo /> */}
+                                            <img src={Logo} alt="Logo" style={{ height: 'auto', width: '100px' }} />
                                             <Typography variant="h1">Mining</Typography>
                                             {/* </Link> */}
                                         </Grid>

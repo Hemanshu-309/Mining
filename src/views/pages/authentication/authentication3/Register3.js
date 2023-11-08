@@ -8,6 +8,7 @@ import { Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 // import Logo from 'ui-component/Logo';
+import Logo from '../../../../assets/images/minelogo.jpg';
 import AuthRegister from '../auth-forms/AuthRegister';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 import useAuth from 'hooks/useAuth';
@@ -32,6 +33,7 @@ const Register = () => {
                                     <Grid item sx={{ mb: 3 }}>
                                         {/* <Link to="#" aria-label="theme-logo"> */}
                                         {/* <Logo /> */}
+                                        <img src={Logo} alt="Logo" style={{ height: 'auto', width: '100px' }} />
                                         <Typography variant="h1">Mining</Typography>
                                         {/* </Link> */}
                                     </Grid>

@@ -8,6 +8,7 @@ import { FormControl, Grid, Stack, Typography, useMediaQuery } from '@mui/materi
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 // import Logo from 'ui-component/Logo';
+
 import AuthResetPassword from '../auth-forms/AuthResetPassword';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 import { useState } from 'react';
