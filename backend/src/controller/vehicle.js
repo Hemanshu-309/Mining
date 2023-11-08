@@ -15,7 +15,7 @@ const addVehicle = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -88,7 +88,7 @@ const getVehicle = async (req, res) => {
 
     let vehicle;
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       const data = {
         status: 1,
       };
@@ -134,7 +134,7 @@ const deleteVehicle = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -201,7 +201,7 @@ const updateVehicle = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -296,7 +296,7 @@ const deleteMultipleVehicles = async (req, res) => {
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,
@@ -372,7 +372,7 @@ const paginateVehicle = async (req, res) =>{
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,

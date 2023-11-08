@@ -70,9 +70,7 @@ const createUser = async (req, res) => {
         data: [],
       });
     }
-    const roleId = checkAdmin[0].id
-    const dupli = await model.getUserDetail({role:roleId})
-    if(dupli.length > 0)
+    if(role === checkAdmin[0].id)
     {
       return res.status(200).json({
         error: true,
@@ -358,7 +356,7 @@ const paginateUser = async (req, res) =>{
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name != "admin") {
+    if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({
           error: true,

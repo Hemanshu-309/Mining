@@ -15,7 +15,7 @@ const createRole = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -131,7 +131,7 @@ const deleteRole = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -285,7 +285,7 @@ const deleteMultipleRoles = async(req,res)=>{
       }
 
       const checkRole = await model.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role_name != 'admin'){
+      if(checkRole.length && checkRole[0].role != 'admin'){
           return res.json({
               error: true,
               message: "You don't have permission for this.",
@@ -358,7 +358,7 @@ const paginateRole = async (req, res) =>{
       };
   
       const checkRole = await model.getRoleDetail(field);
-      if (checkRole.length && checkRole[0].role_name != "admin") {
+      if (checkRole.length && checkRole[0].role != "admin") {
         return res.json({
             error: true,
             message: "You don't have permission for this.",
