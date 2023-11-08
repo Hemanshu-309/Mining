@@ -64,12 +64,12 @@ const ProfileSection = () => {
     const [open, setOpen] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    const userData = localStorage.getItem('user_info');
+    const userData = localStorage.getItem('userData');
     const userinfo = JSON.parse(userData);
 
-    const firstname = userinfo.first_name;
+    const firstname = userinfo.firstname;
     console.log(firstname);
-    const lastname = userinfo.last_name;
+    const lastname = userinfo.lastname;
 
     // const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 

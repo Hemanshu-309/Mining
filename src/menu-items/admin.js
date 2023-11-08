@@ -2,10 +2,16 @@
 import { FormattedMessage } from 'react-intl';
 
 // assets
-import { IconDashboard } from '@tabler/icons';
+import { IconDashboard, IconGlobe, IconTruck, IconUserCheck, IconReport, IconMountain } from '@tabler/icons';
+// import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 
 const icons = {
-    IconDashboard
+    IconDashboard,
+    IconGlobe,
+    IconTruck,
+    IconUserCheck,
+    IconReport,
+    IconMountain
 };
 
 // ==============================|| MENU ITEMS - ADMIN ||============================== //
@@ -21,7 +27,7 @@ const admin = {
             title: <FormattedMessage id="Trips" />,
             type: 'item',
             url: '/admin/trip',
-            icon: icons.IconTruckLoading,
+            icon: icons.IconGlobe,
             breadcrumbs: true
         },
         {
@@ -33,11 +39,27 @@ const admin = {
             breadcrumbs: true
         },
         {
-            id: 'contractor',
-            title: <FormattedMessage id="Contractor" />,
+            id: 'role',
+            title: <FormattedMessage id="Roles" />,
             type: 'item',
-            url: '/admin/Contractor',
-            icon: icons.IconTruck,
+            url: '/admin/roles',
+            icon: icons.IconUserCheck,
+            breadcrumbs: true
+        },
+        {
+            id: 'dailyreport',
+            title: <FormattedMessage id="DailyReport" />,
+            type: 'item',
+            url: '/admin/dailyreport',
+            icon: icons.IconReport,
+            breadcrumbs: true
+        },
+        {
+            id: 'mine',
+            title: <FormattedMessage id="Mines" />,
+            type: 'item',
+            url: '/admin/mines',
+            icon: icons.IconMountain,
             breadcrumbs: true
         }
     ]

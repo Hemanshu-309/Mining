@@ -40,10 +40,13 @@ const verifyToken = (refreshToken) => {
 
 const setSession = (accessToken, refreshToken, userData) => {
     if (accessToken) {
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('userData', JSON.stringify(userData));
-        axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+        if (localStorage.getItem('accessToken') == null) {
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            // const userinfo = JSON.stringify(userData);
+            localStorage.setItem('userData', JSON.stringify(userData));
+            axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+        }
     } else {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
@@ -76,7 +79,6 @@ export const JWTProvider = ({ children }) => {
                 const userData = window.localStorage.getItem('userData');
                 const accessToken = window.localStorage.getItem('accessToken');
                 if (refreshToken && verifyToken(refreshToken)) {
-                    
                     setSession(accessToken, refreshToken, userData);
                     dispatch({
                         type: LOGIN,
@@ -143,7 +145,7 @@ export const JWTProvider = ({ children }) => {
             Code: code
         });
         // const id = chance.bb_pin();
-        const response = await axios.post('http://localhost:8000/users/addUser', {
+        const response = await axios.post('http://10.201.1.198:8000/users/addUser', {
             firstname,
             lastname,
             email,

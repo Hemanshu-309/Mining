@@ -7,7 +7,10 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 
 const AdminTrip = Loadable(lazy(() => import('views/Admin/Trip/index')));
 const AdminVehicle = Loadable(lazy(() => import('views/Admin/Vehicle/index')));
-const AdminContractor = Loadable(lazy(() => import('views/Admin/Contractor/index')));
+const AdminRoles = Loadable(lazy(() => import('views/Admin/Role/index')));
+const AdminDailyReport = Loadable(lazy(() => import('views/Admin/DailyReport/index')));
+const AdminDailyReportView = Loadable(lazy(() => import('views/Admin/DailyReport/Invoice')));
+const AdminMine = Loadable(lazy(() => import('views/Admin/Mine/index')));
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default/index')));
 const UserDailyReport = Loadable(lazy(() => import('views/User/DailyReport/index')));
 const UserTripDetails = Loadable(lazy(() => import('views/User/Tripdetails/tripdetails')));
@@ -30,8 +33,20 @@ const MainRoutes = {
             element: <AdminVehicle />
         },
         {
-            path: '/admin/contractor',
-            element: <AdminContractor />
+            path: '/admin/roles',
+            element: <AdminRoles />
+        },
+        {
+            path: '/admin/dailyreport',
+            element: <AdminDailyReport />
+        },
+        {
+            path: '/admin/dailyreport/view/:id',
+            element: <AdminDailyReportView />
+        },
+        {
+            path: '/admin/mines',
+            element: <AdminMine />
         },
 
         {

@@ -311,8 +311,8 @@ function Tripdetails() {
                                                 onChange={handleChange}
                                             >
                                                 {role.map((items) => (
-                                                    <MenuItem key={items.id} value={items.role_name}>
-                                                        {items.role_name}
+                                                    <MenuItem key={items.id} value={items.role}>
+                                                        {items.role}
                                                     </MenuItem>
                                                 ))}
                                             </Select>

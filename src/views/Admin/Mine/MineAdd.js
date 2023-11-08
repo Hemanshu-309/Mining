@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { forwardRef, useEffect, useRef, useState } from 'react';
-import getContractor from './index';
+import getmine from './index';
 
 // material-ui
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Slide, Snackbar, TextField } from '@mui/material';
@@ -20,27 +20,29 @@ const Transition = forwardRef((props, ref) => <Slide direction="left" ref={ref} 
 
 // ==============================|| TRIP ADD DIALOG ||============================== //
 
-const ContractorAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
+const MineAdd = ({ open, handleCloseDialog, setOpen, getMine }) => {
     const token = localStorage.getItem('accessToken');
 
     const [progress, setProgress] = useState(0);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [contractor, setContractor] = useState({
-        role_name: ''
+    const [mine, setMine] = useState({
+        name: '',
+        code: ''
     });
     const [error, setError] = useState({});
     const [snackmode, setSnackMode] = useState('');
 
-    const URL = process.env.REACT_APP_HOST_URL;
+    // const URL = process.env.REACT_APP_HOST_URL;
 
-    console.log(URL);
+    // console.log(URL);
 
     const validationSchema = Yup.object({
-        role_name: Yup.string()
+        name: Yup.string()
             .min(3)
-            .required('Contractor Name is required')
-            .matches(/^[a-zA-Z]+$/, 'Contractor Name must contain only letters')
+            .required('Mine Name is required')
+            .matches(/^[a-zA-Z]+$/, 'Mine Name must contain only letters'),
+        code: Yup.string().min(1).required('Code is required')
     });
 
     const validateField = async (name, value) => {
@@ -82,15 +84,15 @@ const ContractorAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
     const handleChange = async (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setContractor({ [name]: value });
+        setMine({ ...mine, [name]: value });
         await validateField(name, value);
     };
 
     const handleSubmit = async () => {
-        console.log(contractor);
+        console.log(mine);
         setOpen(false);
         try {
-            const response = await axios.post('http://10.201.1.198:8000/role/createRole', contractor, {
+            const response = await axios.post('http://10.201.1.198:8000/mine/addMine', mine, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -99,13 +101,14 @@ const ContractorAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
             console.log(response);
 
             if (!response.data.error) {
-                setContractor({
-                    name: ''
+                setMine({
+                    name: '',
+                    code: ''
                 });
                 setSnackbarMessage('Contractor Added Successfully!');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getContractor();
+                getMine();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
@@ -151,19 +154,39 @@ const ContractorAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
             >
                 {open && (
                     <>
-                        <DialogTitle>Add Contractor Name</DialogTitle>
+                        <DialogTitle>Add mine</DialogTitle>
                         <DialogContent>
                             <Grid style={{ width: '400px' }} container spacing={gridSpacing} sx={{ mt: 0.25 }}>
                                 <Grid item xs={12}>
                                     <TextField
+                                        required
                                         id="outlined-basic1"
-                                        value={contractor.role_name}
-                                        name="role_name"
+                                        value={mine.name}
+                                        name="name"
                                         onChange={(e) => {
                                             handleChange(e);
                                         }}
                                         fullWidth
-                                        label="Enter Contractor Name"
+                                        label="Enter Mine Name"
+                                        inputProps={{ inputMode: 'text', pattern: '[a-z]' }}
+                                        error={Boolean(error.vehicle)}
+                                        helperText={error.vehicle}
+                                    />
+                                </Grid>
+                            </Grid>
+
+                            <Grid style={{ width: '400px' }} container spacing={gridSpacing} sx={{ mt: 0.25 }}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        id="outlined-basic1"
+                                        value={mine.code}
+                                        name="code"
+                                        onChange={(e) => {
+                                            handleChange(e);
+                                        }}
+                                        fullWidth
+                                        label="Enter Mine Code"
                                         inputProps={{ inputMode: 'text', pattern: '[a-z]' }}
                                         error={Boolean(error.vehicle)}
                                         helperText={error.vehicle}
@@ -188,10 +211,10 @@ const ContractorAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
     );
 };
 
-ContractorAdd.propTypes = {
+MineAdd.propTypes = {
     open: PropTypes.bool,
     handleCloseDialog: PropTypes.func,
     setOpen: PropTypes.func
 };
 
-export default ContractorAdd;
+export default MineAdd;

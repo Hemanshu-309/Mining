@@ -14,7 +14,7 @@ import { gridSpacing } from 'store/constant';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
-const Dashboard = () => {
+export default function Dashboard() {
     return (
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12}>
@@ -22,6 +22,4 @@ const Dashboard = () => {
             </Grid>
         </Grid>
     );
-};
-
-export default Dashboard;
+}

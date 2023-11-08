@@ -6,6 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import {
     Alert,
     Box,
+    Button,
     CardContent,
     Checkbox,
     Fab,
@@ -29,7 +30,7 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 // project imports
-import ContractorAdd from './ContractorAdd';
+import RoleAdd from './RoleAdd';
 import MainCard from 'ui-component/cards/MainCard';
 
 // assets
@@ -54,16 +55,6 @@ function descendingComparator(a, b, orderBy) {
 const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
 // table header options
 const headCells = [
     {
@@ -73,9 +64,15 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'contractor',
+        id: 'role',
         numeric: false,
-        label: 'Contractor',
+        label: 'Users',
+        align: 'left'
+    },
+    {
+        id: 'code',
+        numeric: true,
+        label: 'Code',
         align: 'left'
     },
     {
@@ -177,14 +174,14 @@ const EnhancedTableToolbar = ({ numselected, handleDelete }) => (
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrition
+                User
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
         {numselected > 0 && (
             <Tooltip title="Delete">
                 <IconButton size="large">
-                    <DeleteIcon fontSize="small" onClick={handleDelete} />
+                    <DeleteIcon fontSize="small" color="error" onClick={handleDelete} />
                 </IconButton>
             </Tooltip>
         )}
@@ -198,7 +195,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| PRODUCT LIST ||============================== //
 
-const ContractorList = () => {
+const UserList = () => {
     const theme = useTheme();
 
     const token = localStorage.getItem('accessToken');
@@ -221,7 +218,7 @@ const ContractorList = () => {
     // const { products } = useSelector((state) => state.customer);
     // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
 
-    const getContractor = async () => {
+    const getRole = async () => {
         try {
             const response = await axios.post(
                 'http://10.201.1.198:8000/role/getRole',
@@ -235,7 +232,7 @@ const ContractorList = () => {
             );
             const data = response.data.data;
             setRows(data);
-            console.log(data);
+            console.log(response);
             setFilteredRows(data);
         } catch (error) {
             console.error('An error occurred while fetching data:', error.message);
@@ -243,7 +240,7 @@ const ContractorList = () => {
     };
 
     React.useEffect(() => {
-        getContractor();
+        getRole();
     }, [token]);
     React.useEffect(() => {
         setRows(rows);
@@ -254,7 +251,7 @@ const ContractorList = () => {
     };
     const handleCloseDialog = () => {
         setOpen(false);
-        getContractor();
+        getRole();
     };
 
     const handleSearch = (event) => {
@@ -262,15 +259,16 @@ const ContractorList = () => {
         setSearch(newString);
 
         if (!newString) {
-            getContractor();
+            getRole();
             return;
         }
 
         const newFilteredRows = rows.filter(
             (row) =>
                 row.id.toString().includes(newString) ||
-                row.role_name.toLowerCase().includes(newString.toLowerCase()) ||
-                row.status.toLowerCase().includes(newString.toLowerCase())
+                row.role.toLowerCase().includes(newString.toLowerCase()) ||
+                row.status.toLowerCase().includes(newString.toLowerCase()) ||
+                row.code.toLowerCase().includes(newString.toLowerCase())
         );
 
         setRows(newFilteredRows);
@@ -298,7 +296,6 @@ const ContractorList = () => {
             if (!response.data.error) {
                 setSnackbarMessage('Data Updated Successfully');
                 setOpenSnackbar(true);
-                // alert('data updated successfully');
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
@@ -330,7 +327,7 @@ const ContractorList = () => {
                 setSnackbarMessage('Role Inactivate Successfully');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getContractor();
+                getRole();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
@@ -394,6 +391,16 @@ const ContractorList = () => {
     const isselected = (id) => selected.indexOf(id) !== -1;
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+    function stableSort(array, comparator) {
+        const stabilizedThis = array.map((el, index) => [el, index]);
+        stabilizedThis.sort((a, b) => {
+            const order = comparator(a[0], b[0]);
+            if (order !== 0) return order;
+            return a[1] - b[1];
+        });
+        return stabilizedThis.map((el) => el[0]);
+    }
+
     return (
         <>
             <Snackbar
@@ -410,7 +417,7 @@ const ContractorList = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-            <MainCard title="Contractor List" content={false}>
+            <MainCard title="Roles" content={false}>
                 <CardContent>
                     <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                         <Grid item xs={12} sm={6}>
@@ -423,13 +430,13 @@ const ContractorList = () => {
                                     )
                                 }}
                                 onChange={handleSearch}
-                                placeholder="Search Contractor"
+                                placeholder="Search Role"
                                 value={search}
                                 size="small"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                            <Tooltip title="Add Contractor">
+                            <Tooltip title="Add Role">
                                 <Fab
                                     color="primary"
                                     size="small"
@@ -439,12 +446,7 @@ const ContractorList = () => {
                                     <AddIcon fontSize="small" />
                                 </Fab>
                             </Tooltip>
-                            <ContractorAdd
-                                open={open}
-                                handleCloseDialog={handleCloseDialog}
-                                setOpen={setOpen}
-                                getContractor={getContractor}
-                            />
+                            <RoleAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} getRole={getRole} />
                         </Grid>
                     </Grid>
                 </CardContent>
@@ -524,7 +526,28 @@ const ContractorList = () => {
                                                         variant="subtitle1"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        {row.role_name}
+                                                        {row.role}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.name}
+                                                        onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.code === '' ? 'NA' : row.code}
                                                     </Typography>
                                                 )}
                                             </TableCell>
@@ -545,7 +568,15 @@ const ContractorList = () => {
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.status === '1' ? 'Active' : 'Inactive'}
+                                                    {row.status === '1' ? (
+                                                        <Button variant="outlined" color="success">
+                                                            Active
+                                                        </Button>
+                                                    ) : (
+                                                        <Button variant="outlined" color="error">
+                                                            Inactive
+                                                        </Button>
+                                                    )}
                                                 </Typography>
                                                 {/* )} */}
                                             </TableCell>
@@ -591,4 +622,4 @@ const ContractorList = () => {
     );
 };
 
-export default ContractorList;
+export default UserList;
