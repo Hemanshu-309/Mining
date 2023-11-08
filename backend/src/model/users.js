@@ -13,7 +13,6 @@ const getUserDetail = (field,status) => {
    
     if (status) rows.where(`${table}.status`,status)
     
-
    rows =  rows.where(field)
 
    return rows

@@ -337,6 +337,10 @@ const paginateMine = async (req, res) =>{
   try {
     let { offset = 0, limit = 10, order = "asc", sort = "id", search, status } = req.body;
 
+    const data = {
+      offset,limit,order,sort,status
+    }
+
     const checkValidation = validation.paginationValidateMine(data);
     if (checkValidation.error) {
       const details = checkValidation.error.details;
@@ -379,6 +383,16 @@ const paginateMine = async (req, res) =>{
     const total = await model.paginateMineTotal(searchFrom,search,status)
     const rows = await model.paginateMines(limit,offset,sort,order,status,searchFrom,search)
     
+    if(rows.length == 0){
+      return res.json({
+        error: true,
+        message: "No data.",
+        data: {
+          rows
+        },
+      })
+    }
+
     let data_rows = []
     if(order /*=== 'asc'*/)/*{
       let sr = total.total - (offset*limit)

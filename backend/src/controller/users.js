@@ -62,6 +62,25 @@ const createUser = async (req, res) => {
       });
     }
 
+    const checkAdmin = await Rolemodel.getRoleDetail({role_name:"admin"})
+    if(checkAdmin == 0){
+      return res.status(200).json({
+        error: true,
+        message: "There is no admin role.",
+        data: [],
+      });
+    }
+    const roleId = checkAdmin[0].id
+    const dupli = await model.getUserDetail({role:roleId})
+    if(dupli.length > 0)
+    {
+      return res.status(200).json({
+        error: true,
+        message: "Admin already exist...",
+        data: [],
+      });
+    }
+
     const userId = await model.createUser({ ...data, password: md5(password) });
     if (userId) {
       await fs.accountCreated(email);
@@ -355,6 +374,16 @@ const paginateUser = async (req, res) =>{
 
     const total = await model.paginateUserTotal(searchFrom,search,status)
     const rows = await model.paginateUser(limit,offset,sort,order,status,searchFrom,search)
+
+    if(rows.length == 0){
+      return res.json({
+        error: true,
+        message: "No data.",
+        data: {
+          rows
+        },
+      })
+    }
 
     let data_rows = []
     if(order)/*{

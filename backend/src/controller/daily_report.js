@@ -356,6 +356,17 @@ const paginateDailyReport = async(req,res) =>{
 
     const total = await model.paginateDailyReportTotal(limit,searchFrom,search,status,date1,date2)
     const rows = await model.paginateDailyReport(limit,offset,sort,order,status,searchFrom,search,id,userid,date1,date2)
+   
+    if(rows.length == 0){
+      return res.json({
+        error: true,
+        message: "No data.",
+        data: {
+          rows
+        },
+      })
+    }
+
     let data_rows = []
     if(order /*=== 'asc'*/)/*{
       let sr = total.total - (offset*limit)

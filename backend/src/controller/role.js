@@ -374,6 +374,17 @@ const paginateRole = async (req, res) =>{
       const total = await model.paginateRoleTotal(searchFrom,search,status)
       const rows = await model.paginateRole(limit,offset,sort,order,status,searchFrom,search)
       
+      if(rows.length == 0){
+        return res.json({
+          error: true,
+          message: "No data.",
+          data: {
+            rows
+          },
+        })
+      }
+
+
       let data_rows = []
       if(order /*=== 'asc'*/)/*{
         let sr = total.total - (offset*limit)

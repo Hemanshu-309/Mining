@@ -35,9 +35,11 @@ const createValidateUser = (create_data) => {
       "string.length": `"Username" must be between 4 to 20 character long.`,
       "string.pattern.base":"Username must start with a letter and can contain letters, digits, hyphens, and underscores. It must be between 3 and 20 characters long."
     }),
-    mobile: Joi.string().min(13).max(14).required().messages({
+    mobile: Joi.string().min(13).max(14).regex(/^\+\d{1,3}\d{10}$/).required().messages({
       "string.empty": `"Mobile Number" is a required field.`,
       "string.length": `"Mobile Number" must contain 10 digits.`,
+      "string.pattern.base":
+      `"Mobile Number" should have country code with + and follow up by 10 digit mobile number.`
     }),
     role: Joi.number().required().messages({
       "number.empty": `"Role" is a required field.`,
