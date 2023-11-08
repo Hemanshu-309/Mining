@@ -4,6 +4,7 @@ import * as React from 'react';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
+    Alert,
     Box,
     Button,
     Card,
@@ -19,6 +20,7 @@ import {
     Modal,
     Rating,
     Select,
+    Snackbar,
     Table,
     TableBody,
     TableCell,
@@ -90,6 +92,12 @@ const headCells = [
         label: 'Triptype',
         align: 'left',
         editable: true
+    },
+    {
+        id: 'status',
+        numeric: false,
+        label: 'Status',
+        align: 'left'
     }
 ];
 
@@ -227,6 +235,9 @@ const TripList = () => {
     const [editedData, setEditedData] = React.useState({ id: null, type: '' });
     const [filter, setFilter] = React.useState({ column: '', value: '' });
     const [isGridVisible, setIsGridVisible] = React.useState(false);
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackmode, setSnackMode] = React.useState('');
 
     const getTrip = async () => {
         try {
@@ -275,18 +286,18 @@ const TripList = () => {
         }
     };
 
-    const handleFilterClick = () => {
-        console.log('Filter:', filter);
-        const filteredData = rows.filter((row) => {
-            console.log('Row:', row);
-            console.log('Column Value:', filter.column);
-            console.log('Filter Value:', filter.value);
-            return String(row[filter.column]).toLowerCase().includes(filter.value.toLowerCase());
-        });
-        console.log('Filtered Data:', filteredData);
-        setRows(filteredData);
-        setIsGridVisible(true);
-    };
+    // const handleFilterClick = () => {
+    //     console.log('Filter:', filter);
+    //     const filteredData = rows.filter((row) => {
+    //         console.log('Row:', row);
+    //         console.log('Column Value:', filter.column);
+    //         console.log('Filter Value:', filter.value);
+    //         return String(row[filter.column]).toLowerCase().includes(filter.value.toLowerCase());
+    //     });
+    //     console.log('Filtered Data:', filteredData);
+    //     setRows(filteredData);
+    //     setIsGridVisible(true);
+    // };
 
     const handleClickOpenDialog = () => {
         setOpen(true);
@@ -333,7 +344,15 @@ const TripList = () => {
                 }
             });
             if (!response.data.error) {
-                alert('data updated successfully');
+                setSnackbarMessage('TripType Updated Successfully');
+                setOpenSnackbar(true);
+                setSnackMode('success');
+                getTrip();
+                setselected([]);
+            } else {
+                setSnackbarMessage(`${response.data.message}`);
+                setOpenSnackbar(true);
+                setSnackMode('warning');
             }
         } catch (error) {
             console.error('An error occurred while fetching data:', error.message);
@@ -360,10 +379,17 @@ const TripList = () => {
             );
             // Handle success or show a confirmation message
             console.log('Triptypes deleted successfully', response.data);
-
+            if (!response.data.error) {
+                setSnackbarMessage('TripType inactivated Successfully');
+                setOpenSnackbar(true);
+                setSnackMode('success');
+                getTrip();
+            } else {
+                setSnackbarMessage(`${response.data.message}`);
+                setOpenSnackbar(true);
+                setSnackMode('warning');
+            }
             // You may also want to update your local state to remove the deleted triptypes
-            const updatedRows = rows.filter((row) => !selected.includes(row.id));
-            setRows(updatedRows);
             // getTrip();
             // Clear the selected.id checkboxes
             setselected([]);
@@ -423,6 +449,20 @@ const TripList = () => {
 
     return (
         <>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setOpenSnackbar(false)}
+                    severity={snackmode === 'success' ? 'success' : 'warning'}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
             <MainCard title="Triptypes" content={false}>
                 <CardContent>
                     <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
@@ -444,7 +484,7 @@ const TripList = () => {
                         </Grid>
                         <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
                             {/* product add & dialog */}
-                            <Tooltip title="Filter Triptypes">
+                            {/* <Tooltip title="Filter Triptypes">
                                 <Fab
                                     color="primary"
                                     size="small"
@@ -453,7 +493,7 @@ const TripList = () => {
                                 >
                                     <FilterListIcon fontSize="small" />
                                 </Fab>
-                            </Tooltip>
+                            </Tooltip> */}
                             <Tooltip title="Add Triptypes">
                                 <Fab
                                     color="primary"
@@ -464,7 +504,7 @@ const TripList = () => {
                                     <AddIcon fontSize="small" />
                                 </Fab>
                             </Tooltip>
-                            <TripAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
+                            <TripAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} getTrip={getTrip} />
                             {isGridVisible && (
                                 <Container>
                                     <Grid container spacing={2}>
@@ -496,11 +536,11 @@ const TripList = () => {
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid item>
+                                        {/* <Grid item>
                                             <Button variant="contained" color="primary" onClick={handleFilterClick}>
                                                 Filter
                                             </Button>
-                                        </Grid>
+                                        </Grid> */}
                                         <Grid item>
                                             <Button variant="contained" color="secondary" onClick={handleFilterClose}>
                                                 Cancel
@@ -598,6 +638,35 @@ const TripList = () => {
                                                         {row.type}
                                                     </Typography>
                                                 )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                // onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {/* {isEditing ? (
+                                                <TextField
+                                                    value={editedData.name}
+                                                    onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
+                                                />
+                                            ) : ( */}
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {row.status === '1' ? (
+                                                        <Button variant="outlined" color="success">
+                                                            Active
+                                                        </Button>
+                                                    ) : (
+                                                        <Button variant="outlined" color="error">
+                                                            Inactive
+                                                        </Button>
+                                                    )}
+                                                </Typography>
+                                                {/* )} */}
                                             </TableCell>
                                             <TableCell align="center" sx={{ pr: 3 }}>
                                                 {/* Conditionally render Edit or Save button */}

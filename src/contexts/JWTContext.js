@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { createContext, useEffect, useReducer } from 'react';
+import * as React from 'react';
 // import dotenv from 'dotenv';
 
 // third-party
@@ -13,6 +14,8 @@ import accountReducer from 'store/accountReducer';
 // project imports
 import Loader from 'ui-component/Loader';
 import axios from 'utils/axios';
+import { Alert, Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 // import { json } from 'react-router-dom';
 
 // const chance = new Chance();
@@ -54,6 +57,11 @@ const JWTContext = createContext(null);
 
 export const JWTProvider = ({ children }) => {
     const [state, dispatch] = useReducer(accountReducer, initialState);
+    const [openSnackbar, setOpenSnackbar] = React.useState(false);
+    const [status, setStatus] = React.useState('');
+    const [snackbarMessage, setSnackbarMessage] = React.useState('');
+
+    const navigate = useNavigate();
 
     // dotenv.config('full-version\.env');
 
@@ -68,8 +76,7 @@ export const JWTProvider = ({ children }) => {
                 const userData = window.localStorage.getItem('userData');
                 const accessToken = window.localStorage.getItem('accessToken');
                 if (refreshToken && verifyToken(refreshToken)) {
-                    // const response = await axios.post('http://10.201.1.198:8000/users/loginUser');
-                    // const { userData } = response.data.data;
+                    
                     setSession(accessToken, refreshToken, userData);
                     dispatch({
                         type: LOGIN,
@@ -98,19 +105,28 @@ export const JWTProvider = ({ children }) => {
         try {
             const response = await axios.post('http://10.201.1.198:8000/users/loginUser', { email, password });
             console.log(email, password);
-            console.log(response.data.data);
-            const { accessToken, refreshToken, userData } = response.data.data;
-            console.log(accessToken, refreshToken);
-            setSession(accessToken, refreshToken, userData);
-            dispatch({
-                type: LOGIN,
-                payload: {
-                    isLoggedIn: true,
-                    userData
-                }
-            });
+            console.log(response);
+            if (!response.data.Error) {
+                const { accessToken, refreshToken, userData } = response.data.data;
+                console.log(accessToken, refreshToken);
+                setSession(accessToken, refreshToken, userData);
+                dispatch({
+                    type: LOGIN,
+                    payload: {
+                        isLoggedIn: true,
+                        userData
+                    }
+                });
+            } else {
+                setStatus('error');
+                setOpenSnackbar(true);
+                setSnackbarMessage(`${response.data.Message}`);
+            }
         } catch (e) {
             console.log(e);
+            setStatus('error');
+            setOpenSnackbar(true);
+            setSnackbarMessage('Network Problem. Please try after sometime!');
         }
     };
 
@@ -127,7 +143,7 @@ export const JWTProvider = ({ children }) => {
             Code: code
         });
         // const id = chance.bb_pin();
-        const response = await axios.post('http://10.201.1.198:8000/users/addUser', {
+        const response = await axios.post('http://localhost:8000/users/addUser', {
             firstname,
             lastname,
             email,
@@ -137,28 +153,40 @@ export const JWTProvider = ({ children }) => {
             code,
             role
         });
-        console.log(response.data);
-        let users = response.data;
-
-        if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
-            const localUsers = window.localStorage.getItem('users');
-            console.log(localUsers);
-            users = [
-                ...JSON.parse(localUsers),
-                {
-                    email,
-                    password,
-                    firstname,
-                    lastname,
-                    username,
-                    mobile,
-                    code,
-                    role
-                }
-            ];
+        console.log(response);
+        // let users = response.data;
+        if (!response.data.error) {
+            setStatus('success');
+            setOpenSnackbar(true);
+            setSnackbarMessage('Your registration has been successfully completed.');
+            setTimeout(() => {
+                navigate('/login', { replace: true });
+            }, 1500);
+        } else {
+            setStatus('error');
+            setOpenSnackbar(true);
+            setSnackbarMessage(`${response.data.message}`);
         }
 
-        window.localStorage.setItem('users', JSON.stringify(users));
+        // if (window.localStorage.getItem('users') !== undefined && window.localStorage.getItem('users') !== null) {
+        //     const localUsers = window.localStorage.getItem('users');
+        //     // console.log(localUsers);
+        //     users = [
+        //         ...JSON.parse(localUsers),
+        //         {
+        //             email,
+        //             password,
+        //             firstname,
+        //             lastname,
+        //             username,
+        //             mobile,
+        //             code,
+        //             role
+        //         }
+        //     ];
+        // }
+
+        // window.localStorage.setItem('users', JSON.stringify(users));
     };
 
     const logout = () => {
@@ -176,7 +204,21 @@ export const JWTProvider = ({ children }) => {
     }
 
     return (
-        <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>{children}</JWTContext.Provider>
+        <>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={4000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={() => setOpenSnackbar(false)} severity={status === 'success' ? 'success' : 'error'} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+            <JWTContext.Provider value={{ ...state, login, logout, register, resetPassword, updateProfile }}>
+                {children}
+            </JWTContext.Provider>
+        </>
     );
 };
 

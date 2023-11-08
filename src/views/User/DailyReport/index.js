@@ -44,6 +44,7 @@ import axios from 'axios';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { Navigate, useNavigate } from 'react-router-dom';
+// import NoData from 'assets/images/nodata.jpeg';
 
 // table sort
 function descendingComparator(a, b, orderBy) {
@@ -257,9 +258,11 @@ const ReportList = () => {
     //     fromDate: new Date(),
     //     toDate: new Date()
     // });
-    const [fromDate, setfromDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
-    const [toDate, settoDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
+    // const [fromDate, setfromDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
+    // const [toDate, settoDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
 
+    const [fromDate, setfromDate] = React.useState(``);
+    const [toDate, settoDate] = React.useState(``);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setselected] = React.useState([]);
@@ -276,7 +279,8 @@ const ReportList = () => {
     const [formData, setFormData] = React.useState({
         date1: fromDate,
         date2: toDate,
-        limit: rowsPerPage
+        search: ''
+        // limit: rowsPerPage
     });
 
     const navigate = useNavigate();
@@ -352,6 +356,11 @@ const ReportList = () => {
     const handleClickOpenDialog = () => {
         if (open) {
             setOpen(false);
+            setFormData({
+                date1: '',
+                date2: '',
+                search: ''
+            });
         } else {
             setOpen(true);
         }
@@ -370,32 +379,36 @@ const ReportList = () => {
         handleClickOpenDialog();
     };
 
-    const handleSearch = (event) => {
-        const newString = event?.target.value;
-        setSearch(newString);
+    // const handleSearch = (event) => {
+    //     const newString = event?.target.value;
+    //     setSearch(newString);
 
-        if (!newString) {
-            getReport();
-            return;
-        }
+    //     if (!newString) {
+    //         getReport();
+    //         return;
+    //     }
 
-        const newFilteredRows = rows.filter(
-            (row) =>
-                row.id.toString().includes(newString) ||
-                row.username.toLowerCase().includes(newString.toLowerCase()) ||
-                row.role.toLowerCase().includes(newString.toLowerCase()) ||
-                row.vehicle.toLowerCase().includes(newString.toLowerCase()) ||
-                row.trip_type.toLowerCase().includes(newString.toLowerCase()) ||
-                row.mine_name.toLowerCase().includes(newString.toLowerCase()) ||
-                row.with_lead.toLowerCase().includes(newString.toLowerCase()) ||
-                row.trips.toLowerCase().includes(newString.toLowerCase()) ||
-                row.quantity.toLowerCase().includes(newString.toLowerCase()) ||
-                row.rate.toLowerCase().includes(newString.toLowerCase()) ||
-                row.amount.toLowerCase().includes(newString.toLowerCase()) ||
-                row.date.toLowerCase().includes(newString.toLowerCase())
-        );
+    //     const newFilteredRows = rows.filter(
+    //         (row) =>
+    //             row.id.toString().includes(newString) ||
+    //             row.username.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.role.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.vehicle.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.trip_type.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.mine_name.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.with_lead.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.trips.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.quantity.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.rate.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.amount.toLowerCase().includes(newString.toLowerCase()) ||
+    //             row.date.toLowerCase().includes(newString.toLowerCase())
+    //     );
 
-        setRows(newFilteredRows);
+    //     setRows(newFilteredRows);
+    // };
+    const handleSearch = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleEditClick = (index, rowData) => {
@@ -510,20 +523,17 @@ const ReportList = () => {
     };
 
     const handleChangefromDate = (fromDate) => {
-        // const { name, value } = e.target;
-        const formattedDate = fromDate ? fromDate.toISODate() : '';
+        const formattedFromDate = fromDate ? fromDate.toISODate() : '';
 
-        setfromDate(formattedDate);
-        setFormData({ ...formData, date1: formattedDate });
-        // setFormData({ ...formData, date: formattedDate });
+        setfromDate(formattedFromDate);
+        setFormData({ ...formData, date1: formattedFromDate });
     };
 
     const handleChangetoDate = (toDate) => {
-        const formattedDate = toDate ? toDate.toISODate() : '';
+        const formattedToDate = toDate ? toDate.toISODate() : '';
 
-        settoDate(formattedDate);
-        setFormData({ ...formData, date2: formattedDate });
-        // setFormData({ ...formData, date: formattedDate });
+        settoDate(formattedToDate);
+        setFormData({ ...formData, date2: formattedToDate });
     };
 
     const isselected = (id) => selected.indexOf(id) !== -1;
@@ -548,65 +558,70 @@ const ReportList = () => {
             <MainCard title="Daily Reports" content={false}>
                 <CardContent>
                     {open ? (
-                        <Grid container spacing={2} sx={{ mb: 2 }}>
-                            <Grid item xs={12} lg={5}>
-                                <LocalizationProvider dateAdapter={AdapterLuxon}>
-                                    <DatePicker
-                                        label="From Date"
-                                        id="fromDate"
-                                        inputFormat="yyyy/MM/dd"
-                                        renderInput={(props) => <TextField fullWidth {...props} />}
-                                        value={fromDate}
-                                        // name="fromDate"
-                                        onChange={(e) => handleChangefromDate(e)}
+                        <>
+                            <Grid container spacing={2} sx={{ mb: 2 }}>
+                                <Grid item xs={12} lg={6}>
+                                    <LocalizationProvider dateAdapter={AdapterLuxon}>
+                                        <DatePicker
+                                            label="From Date"
+                                            id="fromDate"
+                                            inputFormat="yyyy/MM/dd"
+                                            maxDate={new Date()}
+                                            renderInput={(props) => <TextField fullWidth {...props} />}
+                                            value={fromDate}
+                                            onChange={(e) => handleChangefromDate(e)}
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                                <Grid item xs={12} lg={6}>
+                                    <LocalizationProvider dateAdapter={AdapterLuxon}>
+                                        <DatePicker
+                                            label="To Date"
+                                            id="toDate"
+                                            inputFormat="yyyy/MM/dd"
+                                            maxDate={new Date()}
+                                            minDate={formData.date1}
+                                            renderInput={(props) => <TextField fullWidth {...props} />}
+                                            value={toDate}
+                                            onChange={(e) => handleChangetoDate(e)}
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                            </Grid>
+                            <Grid container spacing={2} sx={{ mb: 2 }}>
+                                <Grid item xs={12} lg={6}>
+                                    <TextField
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SearchIcon fontSize="small" />
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                        onChange={(e) => handleSearch(e)}
+                                        placeholder="Filter text..."
+                                        value={formData.search}
+                                        size="large"
+                                        name="search"
                                     />
-                                </LocalizationProvider>
-                            </Grid>
-
-                            <Grid item xs={12} lg={5}>
-                                <LocalizationProvider dateAdapter={AdapterLuxon}>
-                                    <DatePicker
-                                        label="To Date"
-                                        id="toDate"
-                                        inputFormat="yyyy/MM/dd"
-                                        // name="toDate"
-                                        renderInput={(props) => <TextField fullWidth {...props} />}
-                                        value={toDate}
-                                        onChange={(e) => handleChangetoDate(e)}
-                                    />
-                                </LocalizationProvider>
-                            </Grid>
-                            <Grid item xs={12} lg={2}>
-                                <Button type="submit" variant="contained" style={{ padding: '0.8rem' }} onClick={handleFilter}>
-                                    Apply
-                                </Button>
-                            </Grid>
-                            {/* <Grid item xs={12} lg={2}>
+                                </Grid>
+                                <Grid item xs={12} lg={2}>
+                                    <Button type="submit" variant="contained" style={{ padding: '0.5rem' }} onClick={handleFilter}>
+                                        Apply
+                                    </Button>
+                                </Grid>
+                                {/* <Grid item xs={12} lg={2}>
                                 <Button type="submit" variant="contained" style={{ padding: '0.8rem' }} onClick={handleClickOpenDialog}>
-                                    Cancel
+                                Cancel
                                 </Button>
                             </Grid> */}
-                        </Grid>
+                            </Grid>
+                        </>
                     ) : (
                         ''
                     )}
                     <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SearchIcon fontSize="small" />
-                                        </InputAdornment>
-                                    )
-                                }}
-                                onChange={handleSearch}
-                                placeholder="Search..."
-                                value={search}
-                                size="small"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
+                        <Grid item xs={12} sm={12} sx={{ textAlign: 'right' }}>
                             <Tooltip title="Filter">
                                 <Fab
                                     color="primary"

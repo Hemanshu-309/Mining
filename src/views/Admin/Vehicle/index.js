@@ -4,13 +4,16 @@ import * as React from 'react';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
+    Alert,
     Box,
+    Button,
     CardContent,
     Checkbox,
     Fab,
     Grid,
     IconButton,
     InputAdornment,
+    Snackbar,
     Table,
     TableBody,
     TableCell,
@@ -71,9 +74,15 @@ const headCells = [
         align: 'center'
     },
     {
-        id: 'vehicle',
+        id: 'name',
         numeric: false,
         label: 'Vehicle',
+        align: 'left'
+    },
+    {
+        id: 'status',
+        numeric: false,
+        label: 'Status',
         align: 'left'
     }
 ];
@@ -209,6 +218,7 @@ const VehicleList = () => {
     const [editedData, setEditedData] = React.useState({ id: null, name: '' });
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
+    const [snackmode, setSnackMode] = React.useState('');
     // const { products } = useSelector((state) => state.customer);
     // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
 
@@ -258,7 +268,10 @@ const VehicleList = () => {
         }
 
         const newFilteredRows = rows.filter(
-            (row) => row.id.toString().includes(newString) || row.name.toLowerCase().includes(newString.toLowerCase())
+            (row) =>
+                row.id.toString().includes(newString) ||
+                row.name.toLowerCase().includes(newString.toLowerCase()) ||
+                row.status.toLowerCase().includes(newString.toLowerCase())
         );
 
         setRows(newFilteredRows);
@@ -286,10 +299,13 @@ const VehicleList = () => {
             if (!response.data.error) {
                 setSnackbarMessage('Data Updated Successfully');
                 setOpenSnackbar(true);
-                // alert('data updated successfully');
+                setSnackMode('success');
+                getVehicle();
+                setselected([]);
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
+                setSnackMode('warning');
             }
         } catch (error) {
             console.error('An error occurred while fetching data:', error.message);
@@ -313,16 +329,20 @@ const VehicleList = () => {
                     }
                 }
             );
+            console.log(response);
             if (!response.data.error) {
-                setSnackbarMessage('Data Deleted Successfully');
+                setSnackbarMessage('Vehicle inactivated Successfully');
                 setOpenSnackbar(true);
+                setSnackMode('success');
+                getVehicle();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
+                setSnackMode('warning');
             }
 
-            const updatedRows = rows.filter((row) => !selected.includes(row.id));
-            setRows(updatedRows);
+            // const updatedRows = rows.filter((row) => !selected.includes(row.id));
+            // setRows(updatedRows);
             setselected([]);
             console.log(selected);
         } catch (error) {
@@ -379,166 +399,211 @@ const VehicleList = () => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     return (
-        <MainCard title="Vehicle List" content={false}>
-            <CardContent>
-                <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon fontSize="small" />
-                                    </InputAdornment>
-                                )
-                            }}
-                            onChange={handleSearch}
-                            placeholder="Search Vehicles"
-                            value={search}
-                            size="small"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
-                        {/* product add & dialog */}
-                        <Tooltip title="Add Vehicles">
-                            <Fab
-                                color="primary"
+        <>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setOpenSnackbar(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setOpenSnackbar(false)}
+                    severity={snackmode === 'success' ? 'success' : 'warning'}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+            <MainCard title="Vehicle List" content={false}>
+                <CardContent>
+                    <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon fontSize="small" />
+                                        </InputAdornment>
+                                    )
+                                }}
+                                onChange={handleSearch}
+                                placeholder="Search Vehicles"
+                                value={search}
                                 size="small"
-                                onClick={handleClickOpenDialog}
-                                sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
-                            >
-                                <AddIcon fontSize="small" />
-                            </Fab>
-                        </Tooltip>
-                        <VehicleAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
+                            {/* product add & dialog */}
+                            <Tooltip title="Add Vehicles">
+                                <Fab
+                                    color="primary"
+                                    size="small"
+                                    onClick={handleClickOpenDialog}
+                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                >
+                                    <AddIcon fontSize="small" />
+                                </Fab>
+                            </Tooltip>
+                            <VehicleAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </CardContent>
+                </CardContent>
 
-            {/* table */}
-            <TableContainer>
-                <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-                    <EnhancedTableHead
-                        numselected={selected.length}
-                        order={order}
-                        orderBy={orderBy}
-                        onSelectAllClick={handleSelectAllClick}
-                        onRequestSort={handleRequestSort}
-                        rowCount={filteredRows.length}
-                        theme={theme}
-                        selected={selected}
-                        handleDelete={handleDelete}
-                    />
-                    <TableBody>
-                        {stableSort(rows, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row, index) => {
-                                /** Make sure no display bugs if row isn't an OrderData object */
-                                if (typeof row === 'number') return null;
-                                const isItemselected = isselected(row.id);
-                                const labelId = `enhanced-table-checkbox-${index}`;
-                                const isEditing = index === editRowIndex;
+                {/* table */}
+                <TableContainer>
+                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+                        <EnhancedTableHead
+                            numselected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={filteredRows.length}
+                            theme={theme}
+                            selected={selected}
+                            handleDelete={handleDelete}
+                        />
+                        <TableBody>
+                            {stableSort(rows, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+                                    if (typeof row === 'number') return null;
+                                    const isItemselected = isselected(row.id);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+                                    const isEditing = index === editRowIndex;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        role="checkbox"
-                                        aria-checked={isItemselected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemselected}
-                                    >
-                                        <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemselected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell
-                                            align="center"
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
+                                    return (
+                                        <TableRow
+                                            hover
+                                            role="checkbox"
+                                            aria-checked={isItemselected}
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={isItemselected}
                                         >
-                                            <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                            <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemselected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell
+                                                align="center"
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
                                             >
-                                                {' '}
-                                                #{row.id}{' '}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell
-                                            component="th"
-                                            id={labelId}
-                                            scope="row"
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            sx={{ cursor: 'pointer' }}
-                                        >
-                                            {/* <Typography
+                                                <Typography
+                                                    variant="subtitle1"
+                                                    sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                >
+                                                    {' '}
+                                                    #{row.id}{' '}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {/* <Typography
                                                 variant="subtitle1"
                                                 sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                             >
                                                 {' '}
                                                 {row.type}{' '}
                                             </Typography> */}
-                                            {isEditing ? (
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.name}
+                                                        onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.name}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                // onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {/* {isEditing ? (
                                                 <TextField
                                                     value={editedData.name}
                                                     onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
                                                 />
-                                            ) : (
+                                            ) : ( */}
+
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
-                                                    {row.name}
+                                                    {row.status === '1' ? (
+                                                        <Button variant="outlined" color="success">
+                                                            Active
+                                                        </Button>
+                                                    ) : (
+                                                        <Button variant="outlined" color="error">
+                                                            Inactive
+                                                        </Button>
+                                                    )}
                                                 </Typography>
-                                            )}
-                                        </TableCell>
-                                        <TableCell align="center" sx={{ pr: 3 }}>
-                                            {/* Conditionally render Edit or Save button */}
-                                            {isEditing ? (
-                                                <IconButton size="large" onClick={handleEditSubmit}>
-                                                    <SaveAltIcon />
-                                                </IconButton>
-                                            ) : (
-                                                <IconButton size="large" onClick={() => handleEditClick(index, row)}>
-                                                    <BorderColorIcon />
-                                                </IconButton>
-                                            )}
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        {emptyRows > 0 && (
-                            <TableRow
-                                style={{
-                                    height: 53 * emptyRows
-                                }}
-                            >
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                                                {/* )} */}
+                                            </TableCell>
+                                            <TableCell align="center" sx={{ pr: 3 }}>
+                                                {/* Conditionally render Edit or Save button */}
+                                                {isEditing ? (
+                                                    <IconButton size="large" onClick={handleEditSubmit}>
+                                                        <SaveAltIcon />
+                                                    </IconButton>
+                                                ) : (
+                                                    <IconButton size="large" onClick={() => handleEditClick(index, row)}>
+                                                        <BorderColorIcon />
+                                                    </IconButton>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: 53 * emptyRows
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
 
-            {/* table pagination */}
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </MainCard>
+                {/* table pagination */}
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={rows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </MainCard>
+        </>
     );
 };
 

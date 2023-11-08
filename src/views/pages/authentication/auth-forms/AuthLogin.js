@@ -64,7 +64,10 @@ const JWTLogin = ({ loginProp, ...others }) => {
             }}
             validationSchema={Yup.object().shape({
                 email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                password: Yup.string().max(255).required('Password is required')
+                password: Yup.string()
+                    .max(255)
+                    .required('Password is required')
+                    .matches(/^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,35}$/, 'Is not in correct format')
             })}
             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                 try {

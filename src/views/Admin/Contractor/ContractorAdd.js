@@ -20,7 +20,7 @@ const Transition = forwardRef((props, ref) => <Slide direction="left" ref={ref} 
 
 // ==============================|| TRIP ADD DIALOG ||============================== //
 
-const ContractorAdd = ({ open, handleCloseDialog, setOpen }) => {
+const ContractorAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
     const token = localStorage.getItem('accessToken');
 
     const [progress, setProgress] = useState(0);
@@ -31,6 +31,10 @@ const ContractorAdd = ({ open, handleCloseDialog, setOpen }) => {
     });
     const [error, setError] = useState({});
     const [snackmode, setSnackMode] = useState('');
+
+    const URL = process.env.REACT_APP_HOST_URL;
+
+    console.log(URL);
 
     const validationSchema = Yup.object({
         role_name: Yup.string()

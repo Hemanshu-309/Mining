@@ -83,8 +83,8 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
     };
 
     const handleSubmit = async () => {
-        console.log(vehicle);
-        setOpen(false);
+        // console.log(vehicle);
+        // setOpen(false);
         try {
             const response = await axios.post('http://10.201.1.198:8000/vehicle/addVehicle', vehicle, {
                 headers: {
@@ -99,14 +99,17 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
                     name: ''
                 });
                 setSnackbarMessage('Vehicle Added Successfully!');
-                // alert('Trip created successfully!!!!!!!');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getVehicle();
+                // getVehicle();
+                handleCloseDialog();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
                 setSnackMode('warning');
+                setVehicle({
+                    name: ''
+                });
             }
         } catch (e) {
             console.log(e);
@@ -174,9 +177,9 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
                                     Add
                                 </Button>
                             </AnimateButton>
-                            <Button variant="text" color="error" onClick={handleCloseDialog}>
+                            {/* <Button variant="text" color="error" onClick={handleCloseDialog}>
                                 Close
-                            </Button>
+                            </Button> */}
                         </DialogActions>
                     </>
                 )}
