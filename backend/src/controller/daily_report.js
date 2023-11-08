@@ -137,23 +137,6 @@ const getDailyReport = async (req,res) =>{
           }
     }
 
-
-    // const checkAdmin = await Rolemodel.getRoleDetail({id:userid})
-    // console.log(checkAdmin)
-    // if(checkAdmin[0].role != "admin"){
-    //   console.log(1)
-    //   if(id){
-    //     console.log(2)
-    //     reports = await model.getDailyReport(id,userid)
-    //   }else{
-    //     console.log(3)
-    //    reports = await model.getDailyReport(field)
-    //   }
-    // }else{
-    //   console.log(4)
-    //   reports = await model.getDailyReport(id)
-    // }
-    
     if(reports.length > 0){
     return res.json({
         error:false,
