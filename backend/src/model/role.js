@@ -10,7 +10,7 @@ const getRoleDetail = async (field) =>{
 }
 
 const getAllRoleDetail = async (field) =>{
-    return knex(table).select('id','role_name as role','code','status').orWhere(field)
+    return knex(table).select('id','role_name as role','code','status').orWhere(field).orderBy('id','desc')
 }
 
 const deleteRole = async (id)=>{

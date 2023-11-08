@@ -6,11 +6,11 @@ const addMineData = (data)=>{
 }
 
 const getAllMinesData = (field)=>{
-    return knex(table).select('*').orWhere(field)
+    return knex(table).select('*').orWhere(field).orderBy('id','desc')
     
 }
 
-const getMineData =async (where,id,status) =>{
+const getMineData =async (where,status) =>{
     return knex(table).select('*').where(where).orWhere(status)
     
 }

@@ -24,10 +24,10 @@ const createRole = async(req,res)=>{
         
       }
 
-      const {role_name} = req.body
+      const {role_name,code} = req.body
 
       const data = {
-        role_name
+        role_name,code
       }
      
       const checkValidation =  validation.createValidateRole(data)

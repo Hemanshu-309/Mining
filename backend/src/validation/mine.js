@@ -2,11 +2,11 @@ import Joi from 'joi'
 
 const addValidateMine = (add_data) =>{
     const JoiSchema = Joi.object({
-        code: Joi.string().trim().min(1).required().messages({
+        code: Joi.string().trim().min(1).regex(/^[a-zA-Z0-9]+$/).required().messages({
             "string.empty":`"Code" is a required field.`,
             "string.length": `"Code" must contain atleast 1 character.`
         }),
-       mine_name: Joi.string().trim().min(3).max(255).required().messages({
+       mine_name: Joi.string().trim().min(3).max(255).regex(/^[a-zA-Z0-9]+$/).required().messages({
             "string.empty":`"Name" is a required field.`,
             "string.length": `"Name" must contain 3 to 255 characters`
         }),
@@ -32,11 +32,11 @@ const updateValidateMine = (update_data) =>{
     .messages({
       "number.empty": `"id" is a required field.`
       }),
-    code: Joi.string().trim().min(1).required().messages({
+    code: Joi.string().trim().min(1).regex(/^[a-zA-Z0-9]+$/).required().messages({
         "string.empty":`"Code" is a required field.`,
         "string.length": `"Code" must contain atleast 1 character.`
     }),
-    mine_name: Joi.string().trim().min(3).max(255).required().messages({
+    mine_name: Joi.string().trim().regex(/^[a-zA-Z0-9]+$/).min(3).max(255).required().messages({
         "string.empty":`"Name" is a required field.`,
         "string.length": `"Name" must contain 3 to 255 characters`
     }),

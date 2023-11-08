@@ -58,13 +58,20 @@ const addMine = async (req, res) => {
     }
 
     const mine = await model.addMineData(data);
-    if (mine) {
-      res.status(200).json({
+    if (mine.length >0) {
+       return res.status(200).json({
         error: false,
         message: "Mine information has been added",
         data: [],
       });
     }
+
+    return res.status(200).json({
+      error: true,
+      message: "Failed to insert",
+      data: [],
+    });
+
   } catch (error) {
     return res
       .json({

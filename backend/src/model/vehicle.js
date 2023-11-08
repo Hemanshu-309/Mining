@@ -11,7 +11,7 @@ const getVehicle = async(field)=>{
 }
 
 const getAllVehicle = async(field)=>{
-    return knex(table).select('id','name','status').orWhere(field)
+    return knex(table).select('id','name','status').orWhere(field).orderBy('id','desc')
 }
 
 const deleteVehicle = async(id)=>{

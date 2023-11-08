@@ -26,7 +26,7 @@ const getAllUserDetails = (status,where)=>{
 
  if(where) rows.where(where)
 
- return rows
+ return rows.orderBy(`${table}.id`,'desc')
 }
 
 const checkUser = (field,status)=>{

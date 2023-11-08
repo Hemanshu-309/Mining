@@ -85,7 +85,7 @@ const getAllDailyReport = () => {
 
   rows = rows.where(`${table}.status`, 1);
 
-  return rows;
+  return rows.orderBy(`${table}.id`,'desc');
 };
 
 const deleteReport = async (field) => {
