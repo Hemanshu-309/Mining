@@ -60,7 +60,6 @@ const paginateRoleTotal = async(searchFrom,search,status) => {
     return total
 }
 
-
 export default {
     insertRole,
     getRoleDetail,

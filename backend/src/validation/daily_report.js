@@ -6,6 +6,10 @@ const createValidateDailyReport = (dailyreport_data) => {
       "number.empty": `"Mine No" is a required field.`,
       "number.base": `"Mine No" must be a number.`,
     }),
+    role_id: Joi.number().integer().required().messages({
+      "number.empty": `"Role " is a required field.`,
+      "number.base": `"Role " must be a number.`,
+    }),
     vehicle:Joi.number().integer().required().messages({
       "number.empty": `"Vehicle" is a required field.`,
       "number.base": `"Vehicle" must be a number.`,
@@ -48,6 +52,10 @@ const updateValidateDailyReport = (dailyreport_data) => {
     mine_no: Joi.number().integer().required().messages({
       "number.empty": `"Mine No" is a required field.`,
       "number.base": `"Mine No" must be a number.`,
+    }),
+    role_id: Joi.number().integer().required().messages({
+      "number.empty": `"Role " is a required field.`,
+      "number.base": `"Role " must be a number.`,
     }),
     vehicle:Joi.number().integer().required().messages({
       "number.empty": `"Vehicle" is a required field.`,

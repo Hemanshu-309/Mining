@@ -38,12 +38,24 @@ const getDailyReport = (id, userid) => {
     .leftJoin(trip, `${trip}.id`, "=", `${table}.trip_type`)
     .leftJoin(mine, `${mine}.id`, "=", `${table}.mine_no`);
 
-  if (id && userid) {
-    rows = rows
+  if (id) {
+    rows = rows.where(`${table}.id`, id)
+    if(userid){
+      rows = rows
       .where(`${table}.status`, 1)
-      .andWhere(`${table}.id`, id)
-      .andWhere(`${table}.userid`, userid);
+      .andWhere(`${table}.userid`, userid)
+      .orWhere(`${table}.id`, id);
+    }
   }
+
+  if(userid){
+    rows = rows
+    .where(`${table}.status`, 1)
+    .andWhere(`${table}.userid`, userid)
+    .orWhere(`${table}.id`, id);
+  }
+  
+
 
   return rows;
 };

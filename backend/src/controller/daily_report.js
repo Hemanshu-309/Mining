@@ -8,6 +8,7 @@ const insertDailyReport = async (req, res) => {
   try {
     const {
       mine_no,
+      role,
       vehicle,
       trip_type,
       with_lead,
@@ -21,6 +22,7 @@ const insertDailyReport = async (req, res) => {
     const data = {
       mine_no,
       vehicle,
+      role_id:role,
       trip_type,
       with_lead,
       date,
@@ -67,7 +69,6 @@ const insertDailyReport = async (req, res) => {
 
     data.amount = data.trips * (data.rate * data.quantity)
     data.userid = uid
-    data.role_id = roles
 
     const id = await model.insertDailyReport(data)
     if(id.length){
@@ -119,22 +120,45 @@ const getDailyReport = async (req,res) =>{
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const userid = temp.id;
+    const role = temp.role
 
     const field = {
       userid
     };
     let reports;
-    
-    if(id){
-      reports = await model.getDailyReport(id,userid)
+  
+    if(role == "admin"){
+      reports = await model.getDailyReport(id)
     }else{
-     reports = await model.getDailyReport(field)
+      if(id){
+            reports = await model.getDailyReport(id,userid)
+          }else{
+            reports = await model.getDailyReport(null,userid)
+          }
     }
+
+
+    // const checkAdmin = await Rolemodel.getRoleDetail({id:userid})
+    // console.log(checkAdmin)
+    // if(checkAdmin[0].role != "admin"){
+    //   console.log(1)
+    //   if(id){
+    //     console.log(2)
+    //     reports = await model.getDailyReport(id,userid)
+    //   }else{
+    //     console.log(3)
+    //    reports = await model.getDailyReport(field)
+    //   }
+    // }else{
+    //   console.log(4)
+    //   reports = await model.getDailyReport(id)
+    // }
     
     if(reports.length > 0){
     return res.json({
         error:false,
         message:"Reports has been fetched",
+        total:reports.length,
         data : reports
       })
     }
