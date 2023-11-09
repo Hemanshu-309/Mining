@@ -89,7 +89,7 @@ const getAllDailyReport = () => {
 };
 
 const deleteReport = async (field) => {
-  return knex(table).update("status", 2).where(field).andWhere("status", 1);
+  return knex(table).delete().where(field)
 };
 
 const paginateDailyReport = async (

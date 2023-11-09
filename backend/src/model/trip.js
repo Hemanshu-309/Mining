@@ -15,7 +15,7 @@ const getAllTripDetails = async (data)=>{
 }
 
 const deleteTrip = async(field)=>{
-    return knex(table).update('status',2).where({...field,status:1})
+    return knex(table).delete().where({...field})
 }
 
 const deletedMultipleTrip = async(field)=>{

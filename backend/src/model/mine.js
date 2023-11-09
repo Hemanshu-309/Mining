@@ -16,7 +16,7 @@ const getMineData =async (where,status) =>{
 }
 
 const deleteMine = (id)=>{
-    return knex(table).update('status',2).where({id,status:1})
+    return knex(table).delete().where(id)
 }
 
 const updateMine = (where,data) =>{
