@@ -41,10 +41,10 @@ const createValidateUser = (create_data) => {
       "string.pattern.base":
       `"Mobile Number" should have country code with + and follow up by 10 digit mobile number.`
     }),
-    // role: Joi.number().required().messages({
-    //   "number.empty": `"Role" is a required field.`,
-    //   "number.base": `"Role" must be a number.`,
-    // }),
+    role: Joi.number().required().valid(2,3).messages({
+      "number.empty": `"Role" is a required field.`,
+      "number.base": `"Role" must be a number.`,
+    }),
     // code: Joi.number().required().messages({
     //   "number.empty": `"Code" is a required field.`,
     //   "number.base": `"Code" must be a number.`,

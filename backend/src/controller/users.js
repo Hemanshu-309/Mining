@@ -15,6 +15,7 @@ const createUser = async (req, res) => {
       password,
       username,
       mobile,
+      role=2
       
     } = req.body;
 
@@ -25,6 +26,7 @@ const createUser = async (req, res) => {
       email: email,
       mobile: mobile,
       password: password,
+      role,
       status: 1,
     };
 
