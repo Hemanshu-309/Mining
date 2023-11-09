@@ -6,13 +6,14 @@ const createUser = (data)=>{
     return knex(table).insert(data)
 }
 
-const getUserDetail = (field,status) => {
+const getUserDetail = (field,status,where) => {
     let rows = knex(table)
     .select(`${table}.id`,`${table}.firstname`,`${table}.password`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${table}.status`,`${role}.role_name as role`)
     .leftJoin(role,`${role}.id`,"=",`${table}.role`)
    
     if (status) rows.where(`${table}.status`,status)
-   rows =  rows.where(field)
+    if(field) rows =  rows.where(`${table}.id`,field.id)
+    if(where) rows = rows.where(where)
 
    return rows
 }

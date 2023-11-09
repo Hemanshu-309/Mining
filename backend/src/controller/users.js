@@ -13,10 +13,9 @@ const createUser = async (req, res) => {
       lastname,
       email,
       password,
-      role,
       username,
       mobile,
-      code,
+      
     } = req.body;
 
     const data = {
@@ -26,8 +25,6 @@ const createUser = async (req, res) => {
       email: email,
       mobile: mobile,
       password: password,
-      role: role,
-      code: code,
       status: 1,
     };
 
@@ -123,7 +120,7 @@ const loginUser = async (req, res) => {
     }
    
     data.password = md5(password);
-    let userData = await model.getUserDetail({email},1);
+    let userData = await model.getUserDetail(null,1,{email});
     if (userData.length == 0) {
       return res.json({
         Error: true,
@@ -147,7 +144,7 @@ const loginUser = async (req, res) => {
     const accessToken = jwt.sign(
       {
         id: userData[0].id,
-        role: userData[0].role,
+        //role: userData[0].role,
         email: userData[0].email,
       },
       jwtConfig.secret,
@@ -157,7 +154,7 @@ const loginUser = async (req, res) => {
     const refreshToken = jwt.sign(
       {
         id: userData[0].id,
-        role: userData[0].role,
+       // role: userData[0].role,
         email: userData[0].email,
       },
       jwtConfig.refreshSecret,
@@ -556,13 +553,14 @@ const getAllUsers = async(req,res)=>{
     
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
-    const role = temp.role;
+    const role = temp.id;
 
     const field = {
       id: role,
     };
 
-    const checkRole = await Rolemodel.getRoleDetail(field);
+    //const checkRole = await Rolemodel.getRoleDetail(field);
+    const checkRole = await model.getUserDetail(field,null,null)
     if (checkRole.length && checkRole[0].role != "admin") {
       return res
         .json({

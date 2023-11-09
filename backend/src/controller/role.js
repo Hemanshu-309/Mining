@@ -3,6 +3,7 @@ import validation from '../validation/role.js'
 import jwt from 'jsonwebtoken'
 import constant from '../helpers/constant.js'
 import knex from '../config/mysql_db.js'
+import Usermodel from '../model/users.js'
 
 const createRole = async(req,res)=>{
     try {
@@ -77,14 +78,15 @@ const getRole = async(req,res) =>{
         
         const token = req.headers.authorization.split(" ")[1]
         const temp =  jwt.verify(token, constant.jwtConfig.secret)
-      const roles = temp.role
+      const roles = temp.id
 
       const field = {
           id:roles
       }
 
       let role;
-      const checkRole = await model.getRoleDetail(field)
+      const checkRole = await Usermodel.getUserDetail(field,null,null)
+   //   const checkRole = await model.getRoleDetail(field)
       if(checkRole.length && checkRole[0].role != 'admin'){
         const data = {
             status:1
@@ -124,13 +126,14 @@ const deleteRole = async(req,res)=>{
     try {
         const token = req.headers.authorization.split(" ")[1]
         const temp =  jwt.verify(token, constant.jwtConfig.secret)
-        const role = temp.role
+        const role = temp.id
 
       const field = {
           id:role
       }
 
-      const checkRole = await model.getRoleDetail(field)
+      //const checkRole = await model.getRoleDetail(field)
+      const checkRole = await Usermodel.getUserDetail(field,null,null)
       if(checkRole.length && checkRole[0].role != 'admin'){
           return res.json({
               error: true,

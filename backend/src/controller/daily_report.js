@@ -3,6 +3,7 @@ import validations from "../validation/daily_report.js";
 import Rolemodel from "../model/role.js";
 import jwt from 'jsonwebtoken'
 import constant from "../helpers/constant.js";
+import Usermodel from '../model/users.js'
 
 const insertDailyReport = async (req, res) => {
   try {
@@ -130,13 +131,15 @@ const getDailyReport = async (req,res) =>{
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const userid = temp.id;
-    const role = temp.role
+   // const role = temp.role
 
     const field = {
       userid
     };
     let reports;
   
+    const checkRole = await Usermodel.getUserDetail({id:temp.id},null,null)
+    const role = checkRole[0].role
     if(role == "admin"){
       reports = await model.getDailyReport(id)
     }else{
@@ -422,6 +425,7 @@ const paginateDailyReport = async(req,res) =>{
     })
   }
 }
+
 
 export default {
   insertDailyReport,

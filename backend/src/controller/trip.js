@@ -4,19 +4,21 @@ import Rolemodel from '../model/role.js'
 import jwt from 'jsonwebtoken'
 import constant from '../helpers/constant.js'
 import knex from '../config/mysql_db.js'
+import Usermodel from '../model/users.js'
 
 const createTrip = async(req,res) =>{
     try {
 
         const token = req.headers.authorization.split(" ")[1]
         const temp =  jwt.verify(token, constant.jwtConfig.secret)
-        const role = temp.role
+        const role = temp.id
 
         const field = {
             id:role
         }
 
-        const checkRole = await Rolemodel.getRoleDetail(field)
+        // const checkRole = await Rolemodel.getRoleDetail(field)
+        const checkRole = await Usermodel.getUserDetail(field)
         if(checkRole.length && checkRole[0].role != 'admin'){
             return res.json({
                 error: true,
@@ -81,14 +83,15 @@ const getTrip = async(req,res)=>{
 
         const token = req.headers.authorization.split(" ")[1]
         const temp =  jwt.verify(token, constant.jwtConfig.secret)
-      const roles = temp.role
+      const roles = temp.id
 
       const field = {
           id:roles
       }
 
       let trip;
-      const checkRole = await Rolemodel.getRoleDetail(field)
+      //const checkRole = await Rolemodel.getRoleDetail(field)
+      const checkRole = await Usermodel.getUserDetail(field,null,null)
       if(checkRole.length && checkRole[0].role != 'admin'){
         const data = {
             status:1
@@ -98,8 +101,6 @@ const getTrip = async(req,res)=>{
       else{
         trip = await model.getAllTripDetails({})  
       }
-
-
         
         if(!trip.length){
            return res.status(404).json({
