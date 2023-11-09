@@ -84,17 +84,22 @@ const getRole = async(req,res) =>{
       }
 
       let role;
-      const checkRole = await model.getRoleDetail(field)
-      if(checkRole.length && checkRole[0].role != 'admin'){
-        const data = {
-            status:1
-        }
-        role = await model.getAllRoleDetail(data) 
-      }
-      else{
-        role = await model.getAllRoleDetail({})  
-      }
+      // const checkRole = await model.getRoleDetail(field)
+      // if(checkRole.length && checkRole[0].role != 'admin'){
+      //   const data = {
+      //       status:1
+      //   }
+      //   role = await model.getAllRoleDetail(data) 
+      // }
+      // else{
+      //   role = await model.getAllRoleDetail({})  
+      // }
       
+      const data = {
+              status:1
+          }
+          role = await model.getAllRoleDetail(data)
+
       if(!role){
            return res.status(404).json({
                 error: false,
