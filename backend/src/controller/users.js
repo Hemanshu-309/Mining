@@ -144,7 +144,7 @@ const loginUser = async (req, res) => {
     const accessToken = jwt.sign(
       {
         id: userData[0].id,
-        //role: userData[0].role,
+        role: userData[0].role,
         email: userData[0].email,
       },
       jwtConfig.secret,
@@ -154,7 +154,7 @@ const loginUser = async (req, res) => {
     const refreshToken = jwt.sign(
       {
         id: userData[0].id,
-       // role: userData[0].role,
+        role: userData[0].role,
         email: userData[0].email,
       },
       jwtConfig.refreshSecret,

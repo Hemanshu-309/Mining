@@ -4,6 +4,7 @@ import Rolemodel from "../model/role.js";
 import jwt from 'jsonwebtoken'
 import constant from "../helpers/constant.js";
 import Usermodel from '../model/users.js'
+import role from "../model/role.js";
 
 const insertDailyReport = async (req, res) => {
   try {
@@ -60,14 +61,15 @@ const insertDailyReport = async (req, res) => {
 
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
-    const roles = temp.role;
+    const roles = temp.id;
     const uid = temp.id
 
     const field = {
-      id: roles,
+      id: uid,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
+   //const checkRole = await Usermodel.getUserDetail({id:temp.id},null,null)
     if (checkRole.length && checkRole[0].role == "admin") {
       return res
         .json({
@@ -131,15 +133,15 @@ const getDailyReport = async (req,res) =>{
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const userid = temp.id;
-   // const role = temp.role
+    const role = temp.role
 
     const field = {
-      userid
+      id:role
     };
     let reports;
   
-    const checkRole = await Usermodel.getUserDetail({id:temp.id},null,null)
-    const role = checkRole[0].role
+   // const checkRole = await Usermodel.getUserDetail({id:temp.id},null,null)
+   // const role = checkRole[0].role
     if(role == "admin"){
       reports = await model.getDailyReport(id)
     }else{
@@ -288,11 +290,12 @@ const updateReport = async (req,res) =>{
     const uid = temp.id
 
     const field = {
-      id: roles,
+      role_name: roles,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
-    if (checkRole.length && checkRole[0].role_name == "admin") {
+   // const checkRole = await Usermodel.getUserDetail({id:temp.id},null,null)
+    if (checkRole.length && checkRole[0].role == "admin") {
       return res
         .json({
           error: true,
