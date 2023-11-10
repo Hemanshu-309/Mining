@@ -85,7 +85,7 @@ const getTrip = async(req,res)=>{
       const roles = temp.role
 
       const field = {
-          id:roles
+        role_name:roles
       }
 
       let trip;
@@ -135,7 +135,7 @@ const deleteTrip = async(req,res)=>{
       const role = temp.role
 
       const field = {
-          id:role
+        role_name:role
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
@@ -176,7 +176,6 @@ const deleteTrip = async(req,res)=>{
       }
 
       const deleteTrip = await model.deleteTrip(data)
-    
       if(!deleteTrip){
        return res.json({
             error: true,
@@ -207,7 +206,7 @@ const deletedMultipleTrip = async(req,res)=>{
         const role = temp.role
 
       const field = {
-          id:role
+        role_name:role
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
@@ -263,7 +262,7 @@ const updateTrip = async(req,res) =>{
       const role = temp.role
 
       const field = {
-          id:role
+        role_name:role
       }
 
       const checkRole = await Rolemodel.getRoleDetail(field)
@@ -354,7 +353,7 @@ const paginateTrip = async(req, res) =>{
       const uid = temp.id
   
       const field = {
-        id: roles,
+        role_name: roles,
       };
   
       const checkRole = await Rolemodel.getRoleDetail(field);

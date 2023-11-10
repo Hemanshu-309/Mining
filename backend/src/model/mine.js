@@ -24,7 +24,7 @@ const updateMine = (where,data) =>{
 }
 
 const deletedMultipleMines = async(field)=>{
-    return knex(table).whereIn('id',field).update('status',2).andWhere({status:1})
+    return knex(table).whereIn('id',field).delete()
 }
 
 const paginateMines = (limit, offset, sort, order, status, searchFrom, search) =>{

@@ -19,7 +19,7 @@ const deleteTrip = async(field)=>{
 }
 
 const deletedMultipleTrip = async(field)=>{
-    return knex(table).whereIn('id',field).update('status',2)
+    return knex(table).whereIn('id',field).delete()
 }
 
 const updateTrip = async (id,type) =>{ 

@@ -3,9 +3,6 @@ import validations from "../validation/daily_report.js";
 import Rolemodel from "../model/role.js";
 import jwt from 'jsonwebtoken'
 import constant from "../helpers/constant.js";
-import Usermodel from '../model/users.js'
-import role from "../model/role.js";
-
 const insertDailyReport = async (req, res) => {
   try {
     const {
@@ -61,11 +58,11 @@ const insertDailyReport = async (req, res) => {
 
     const token = req.headers.authorization.split(" ")[1];
     const temp = jwt.verify(token, constant.jwtConfig.secret);
-    const roles = temp.id;
+    const roles = temp.role;
     const uid = temp.id
 
     const field = {
-      id: uid,
+      role_name: roles,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -136,7 +133,7 @@ const getDailyReport = async (req,res) =>{
     const role = temp.role
 
     const field = {
-      id:role
+      role_name:role
     };
     let reports;
   
@@ -361,7 +358,7 @@ const paginateDailyReport = async(req,res) =>{
     const userid = temp.id
 
     const field = {
-      id: roles,
+      role_name: roles,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);

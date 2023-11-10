@@ -23,7 +23,7 @@ const updateVehicle = async (id,name) =>{
 }
 
 const deletedMultipleVehicle = async(field)=>{
-    return knex(table).whereIn('id',field).update('status',2)
+    return knex(table).whereIn('id',field).delete()
 }
 
 const paginateVehicle = (limit, offset, sort, order, status, searchFrom, search) =>{

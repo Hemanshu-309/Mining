@@ -11,7 +11,7 @@ const addVehicle = async (req, res) => {
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -83,7 +83,7 @@ const getVehicle = async (req, res) => {
     const roles = temp.role;
 
     const field = {
-      id: roles,
+      role_name: roles,
     };
 
     let vehicle;
@@ -130,7 +130,7 @@ const deleteVehicle = async (req, res) => {
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -197,7 +197,7 @@ const updateVehicle = async (req, res) => {
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -292,7 +292,7 @@ const deleteMultipleVehicles = async (req, res) => {
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -368,7 +368,7 @@ const paginateVehicle = async (req, res) =>{
     const uid = temp.id
 
     const field = {
-      id: roles,
+      role_name: roles,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);

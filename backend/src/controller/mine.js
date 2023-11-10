@@ -31,7 +31,7 @@ const addMine = async (req, res) => {
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -91,7 +91,7 @@ const getAllMine = async (req, res) => {
     const roles = temp.role;
 
     const field = {
-      id: roles,
+      role_name: roles,
     };
 
     let mine;
@@ -138,7 +138,7 @@ const deleteMine = async (req, res) => {
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -179,6 +179,7 @@ const deleteMine = async (req, res) => {
     }
 
     const deleteMine = await model.deleteMine(data);
+    console.log(deleteMine)
     if (deleteMine) {
       return res.json({
         error: false,
@@ -226,7 +227,7 @@ const updateMine = async (req,res)=>{
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -290,7 +291,7 @@ const deletedMultipleMines = async (req, res) => {
     const role = temp.role;
 
     const field = {
-      id: role,
+      role_name: role,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);
@@ -366,7 +367,7 @@ const paginateMine = async (req, res) =>{
     const uid = temp.id
 
     const field = {
-      id: roles,
+      role_name: roles,
     };
 
     const checkRole = await Rolemodel.getRoleDetail(field);

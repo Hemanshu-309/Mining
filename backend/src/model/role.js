@@ -22,7 +22,7 @@ const updateRole = async (id,data) =>{
 }
 
 const deletedMultipleRoles = async(field)=>{
-    return knex(table).whereIn('id',field).update('status',2)
+    return knex(table).whereIn('id',field).delete()
 }
 
 const paginateRole = (limit, offset, sort, order, status, searchFrom, search) =>{

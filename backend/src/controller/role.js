@@ -11,7 +11,7 @@ const createRole = async(req,res)=>{
        const role = temp.role
 
       const field = {
-          id:role
+        role_name:role
       }
 
       const checkRole = await model.getRoleDetail(field)
@@ -80,7 +80,7 @@ const getRole = async(req,res) =>{
       const roles = temp.role
 
       const field = {
-          id:roles
+        role_name:roles
       }
 
       let role;
