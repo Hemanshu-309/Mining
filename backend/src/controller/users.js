@@ -277,7 +277,7 @@ const updateUser = async (req,res) =>{
     const temp = jwt.verify(token, constant.jwtConfig.secret);
     const id = temp.id;
 
-    const checkUsername = await model.getAllUserDetails({},{ username }).whereNot({id})
+    const checkUsername = await model.getAllUserDetails(null,{ username }).whereNot({id})
     if (checkUsername.length > 0) {
       return res.status(200).json({
         error: true,
@@ -286,7 +286,7 @@ const updateUser = async (req,res) =>{
       });
     }
 
-    const checkEmail = await model.getAllUserDetails({},{ email }).whereNot({id});
+    const checkEmail = await model.getAllUserDetails(null,{ email }).whereNot({id});
     if (checkEmail.length > 0) {
       return res.status(200).json({
         error: true,
