@@ -10,10 +10,14 @@ const getUserDetail = (field,status,where) => {
     let rows = knex(table)
     .select(`${table}.id`,`${table}.firstname`,`${table}.password`,`${table}.lastname`,`${table}.username`,`${table}.email`,`${table}.mobile`,`${table}.status`,`${role}.role_name as role`)
     .leftJoin(role,`${role}.id`,"=",`${table}.role`)
-   
-    if (status) rows.where(`${table}.status`,status)
-    if(field) rows =  rows.where(`${table}.id`,field.id)
-    if(where) rows = rows.where(where)
+
+    const key = Object.keys(where)
+    const value = Object.values(where)
+
+    if(where) {rows = rows.where(`${table}.${key[0]}`,value[0])}
+    if (status) {rows.where(`${table}.status`,status)}
+    if(field) {rows =  rows.where(`${table}.id`,field.id)}
+    
 
    return rows
 }

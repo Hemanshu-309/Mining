@@ -42,8 +42,8 @@ const createUser = async (req, res) => {
         message: message,
       });
     }
-
-    const checkUsername = await model.getUserDetail({ username });
+    
+    const checkUsername = await model.getUserDetail(null,null,{ username });
     if (checkUsername.length) {
       return res.status(200).json({
         error: true,
@@ -51,8 +51,7 @@ const createUser = async (req, res) => {
         data: [],
       });
     }
-
-    const checkEmail = await model.getUserDetail({ email });
+    const checkEmail = await model.getUserDetail(null,null,{ email });
     if (checkEmail.length) {
       return res.status(200).json({
         error: true,
@@ -60,7 +59,7 @@ const createUser = async (req, res) => {
         data: [],
       });
     }
-
+    
     const checkAdmin = await Rolemodel.getRoleDetail({role_name:"admin"})
     if(checkAdmin == 0){
       return res.status(200).json({
