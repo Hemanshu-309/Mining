@@ -9,8 +9,8 @@ const addMine = async (req, res) => {
   try {
     const {  code, name } = req.body;
     const data = {
-      code,
-     mine_name: name,
+    code,
+    mine_name: name,
     };
 
     const checkValidation = validation.addValidateMine(data);
@@ -45,7 +45,7 @@ const addMine = async (req, res) => {
         .end();
     }
 
-    const checkMine = await model.getMineData(data, {});
+    const checkMine = await model.getMineData(data, null);
     if (checkMine.length >0) {
       return res
         .json({

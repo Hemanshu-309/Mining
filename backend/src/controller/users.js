@@ -15,7 +15,8 @@ const createUser = async (req, res) => {
       password,
       username,
       mobile,
-      role=2
+      role=2,
+      mine
       
     } = req.body;
 
@@ -27,6 +28,7 @@ const createUser = async (req, res) => {
       mobile: mobile,
       password: password,
       role,
+      mine,
       status: 1,
     };
 
