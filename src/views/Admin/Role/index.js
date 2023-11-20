@@ -82,7 +82,7 @@ const headCells = [
         align: 'left'
     }
 ];
-
+const url = process.env.REACT_APP_HOST_URL;
 // ==============================|| TABLE HEADER ||============================== //
 
 function EnhancedTableHead({ onSelectAllClick, order, orderBy, numselected, rowCount, onRequestSort, theme, selected, handleDelete }) {
@@ -221,7 +221,7 @@ const UserList = () => {
     const getRole = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/role/getRole',
+                `${url}/role/getRole`,
                 {},
                 {
                     headers: {
@@ -287,7 +287,7 @@ const UserList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://10.201.1.198:8000/role/updateRole', editedData, {
+            const response = await axios.post(`${url}/role/updateRole`, editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -313,7 +313,7 @@ const UserList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/role/deleteMultipleRoles',
+                `${url}/role/deleteMultipleRoles`,
                 { ids: selected },
                 {
                     headers: {

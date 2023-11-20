@@ -10,6 +10,7 @@ const AdminVehicle = Loadable(lazy(() => import('views/Admin/Vehicle/index')));
 const AdminRoles = Loadable(lazy(() => import('views/Admin/Role/index')));
 const AdminDailyReport = Loadable(lazy(() => import('views/Admin/DailyReport/index')));
 const AdminDailyReportView = Loadable(lazy(() => import('views/Admin/DailyReport/Invoice')));
+const AdminRate = Loadable(lazy(() => import('views/Admin/Rate/index')));
 const AdminMine = Loadable(lazy(() => import('views/Admin/Mine/index')));
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default/index')));
 const UserDailyReport = Loadable(lazy(() => import('views/User/DailyReport/index')));
@@ -47,6 +48,10 @@ const MainRoutes = {
         {
             path: '/admin/mines',
             element: <AdminMine />
+        },
+        {
+            path: '/admin/rate',
+            element: <AdminRate />
         },
 
         {

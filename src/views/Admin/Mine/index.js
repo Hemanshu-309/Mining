@@ -82,6 +82,7 @@ const headCells = [
         align: 'left'
     }
 ];
+const url = process.env.REACT_APP_HOST_URL;
 
 // ==============================|| TABLE HEADER ||============================== //
 
@@ -219,7 +220,7 @@ const MineList = () => {
     const getMine = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/mine/getAllMines',
+                `${url}/mine/getAllMines`,
                 {},
                 {
                     headers: {
@@ -285,7 +286,7 @@ const MineList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://10.201.1.198:8000/role/updateRole', editedData, {
+            const response = await axios.post(`${url}/role/updateRole`, editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -311,7 +312,7 @@ const MineList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/role/deleteAllMines',
+                `${url}/role/deleteAllMines`,
                 { ids: selected },
                 {
                     headers: {

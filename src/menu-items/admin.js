@@ -61,6 +61,14 @@ const admin = {
             url: '/admin/mines',
             icon: icons.IconMountain,
             breadcrumbs: true
+        },
+        {
+            id: 'rate',
+            title: <FormattedMessage id="Rate" />,
+            type: 'item',
+            url: '/admin/rate',
+            icon: icons.IconMountain,
+            breadcrumbs: true
         }
     ]
 };

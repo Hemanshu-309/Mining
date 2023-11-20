@@ -92,7 +92,7 @@ const RoleAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
         console.log(role);
         setOpen(false);
         try {
-            const response = await axios.post('http://10.201.1.198:8000/role/createRole', role, {
+            const response = await axios.post('http://10.201.0.239:8000/role/createRole', role, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`

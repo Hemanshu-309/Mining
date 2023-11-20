@@ -34,46 +34,47 @@ import { DateTime } from 'luxon';
 import { DateTimePicker } from '@mui/x-date-pickers';
 
 const validationSchema = Yup.object().shape({
-    date: Yup.string().required('Date is required'),
-    role: Yup.string().required('Role is required'),
-    mine_no: Yup.string().required('Mine number is required'),
-    vehicle: Yup.string().required('Vehicle is required'),
-    trip_type: Yup.string().required('TripeType is required'),
-    with_lead: Yup.string().required('Select a lead'),
-    trips: Yup.number().required('Trips is required').positive('trips must be a positive number').integer('trips must be a integer'),
-    quantity: Yup.number()
-        .required('Quantity is required')
-        .positive('Quantity must be a positive number')
-        .integer('Quantity must be a integer'),
-    rate: Yup.number().required('Rate is required').positive('Rate must be a positive number').integer('Rate must be a integer'),
-    amount: Yup.number(),
-    remarks: Yup.string()
+    // date: Yup.string().required('Date is required'),
+    service: Yup.string().required('service is required'),
+    mine_no: Yup.string().required('mines is required'),
+    unit: Yup.string().required('unit is required'),
+    // trip_type: Yup.string().required('TripeType is required'),
+    rate: Yup.number().required('rate is required').positive('trips must be a positive number').integer('trips must be a integer'),
+    fromdate: Yup.string().required('fromdate is required'),
+    todate: Yup.string().required('todate is required'),
+    currency: Yup.string().required('Currency is required'),
+    contractor: Yup.string().required('contractor is required')
+    // quantity: Yup.number()
+    //     .required('Quantity is required')
+    //     .positive('Quantity must be a positive number')
+    //     .integer('Quantity must be a integer'),
+    // rate: Yup.number().required('Rate is required').positive('Rate must be a positive number').integer('Rate must be a integer'),
 });
 
 function Tripdetails() {
     const [value, setValue] = useState('');
     console.log(value);
+    const [fromDate, setfromDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
+    const [toDate, settoDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
     const [formData, setFormData] = useState({
-        date: '',
-        role: '',
         mine_no: '',
-        vehicle: '',
-        trip_type: 'soft',
-        with_lead: 'No',
-        trips: '',
-        quantity: '',
+        service: '',
         rate: '',
-        amount: '',
-        remarks: ''
+        unit: '',
+        contractor: '',
+        currency: '',
+        fromDate,
+        toDate
     });
     const [tripTypes, setTripTypes] = useState([]);
     const [snackbarmessage, setSnackbarMessage] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [mineno, setmineno] = useState([]);
     const [status, setStatus] = useState('');
-    const [date, setDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
-    // const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
+
     const url = process.env.REACT_APP_HOST_URL;
+
     // console.log(baseUrl);
     const token = localStorage.getItem('accessToken');
 
@@ -82,6 +83,7 @@ function Tripdetails() {
         validationSchema,
         onSubmit: async (values) => {
             try {
+                console.log(formData, values);
                 const response = await axios.post(`${url}/reports/addDailyReport`, values, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -103,18 +105,28 @@ function Tripdetails() {
             }
         }
     });
+
+    console.log(formik.values);
     const calculateAmount = (trips, quantity, rate) => {
         if (trips && quantity && rate) {
             return trips * quantity * rate;
         }
         return '';
     };
-    const handleChangeDate = (fromDate) => {
-        const formattedDate = fromDate ? Date.toISODate() : '';
+    const handleChangefromDate = (fromDate) => {
+        const formattedFromDate = fromDate ? fromDate.toISODate() : '';
 
-        setDate(formattedDate);
-        setFormData({ ...formData, Date: formattedDate });
+        setfromDate(formattedFromDate);
+        setFormData({ ...formData, fromDate: formattedFromDate });
     };
+
+    const handleChangetoDate = (toDate) => {
+        const formattedToDate = toDate ? toDate.toISODate() : '';
+
+        settoDate(formattedToDate);
+        setFormData({ ...formData, toDate: formattedToDate });
+    };
+
     // function calculateAmount(trips, quantity, rate) {
     //     return trips * quantity * rate;
     // }
@@ -264,7 +276,6 @@ function Tripdetails() {
         setFormData({ ...formData, [name]: value });
         calculateAmount();
     };
-
     // const handleSubmit = async (e) => {
     //     console.log(formData);
     //     e.preventDefault();
@@ -290,7 +301,7 @@ function Tripdetails() {
     //         console.error('Error:', error);
     //     }
     // };
-    // console.log(errors);
+    console.log(formik.errors);
     return (
         <>
             <Snackbar
@@ -307,40 +318,34 @@ function Tripdetails() {
                     {snackbarmessage}
                 </Alert>
             </Snackbar>
-            <MainCard title="Trip Details">
+            <MainCard title="Rate">
                 <Typography>
                     <Container>
                         <form onSubmit={formik.handleSubmit}>
-                            {/* <Formik {...formik}> */}
                             <Grid Container spacing={gridSpacing}>
-                                {/* <Grid item> */}
-                                {/* <SubCard title=""> */}
-                                <Grid item xs={6} sx={{ mb: 2 }}>
+                                {/* <Grid item xs={6} sx={{ mb: 2 }}>
                                     <LocalizationProvider dateAdapter={AdapterLuxon}>
                                         <DatePicker
                                             label="Date"
                                             inputFormat="yyyy/MM/dd"
                                             maxDate={new Date()}
                                             renderInput={(props) => <TextField fullWidth {...props} />}
-                                            value={formik.values.date}
-                                            onChange={handleChangeDate}
-                                            // onChange={(date) => formik.setFieldValue('date', date)}
-                                            // value={formik.values.date ? DateTime.fromISO(formik.values.date).toFormat('yyyy-MM-dd') : ''}
-                                            // onChange={(date) => formik.setFieldValue('date', date ? date.toISODate() : '')}
+                                            value={formik.values.date ? DateTime.fromISO(formik.values.date).toFormat('yyyy-MM-dd') : ''}
+                                            onChange={(date) => formik.setFieldValue('date', date ? date.toISODate() : '')}
                                         />
                                     </LocalizationProvider>
-                                </Grid>
+                                </Grid> */}
                                 <Grid container spacing={gridSpacing}>
                                     <Grid item xs={6} sx={{ mb: 2 }}>
-                                        <FormControl fullWidth error={Boolean(formik.errors.mine_no)}>
-                                            <InputLabel id="demo-simple-select-label">MineNo</InputLabel>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Mines</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
                                                 value={formik.values.mine_no}
-                                                label="MineNo"
+                                                label="Mines"
                                                 name="mine_no"
-                                                onChange={handleChange}
+                                                onChange={formik.handleChange}
                                                 // onChange={(e) => formik.setFieldValue('mine_no', e.target.value)}
                                                 // error={formik.touched.mine_no && Boolean(formik.errors.mine_no)}
                                             >
@@ -354,61 +359,74 @@ function Tripdetails() {
                                             <FormHelperText style={{ color: 'red' }}>
                                                 {(formik.submitCount > 0 && formik.errors.mine_no) || ''}
                                             </FormHelperText>
-                                            {/* <FormHelperText color="error">{formik.errors.mine_no}</FormHelperText> */}
+                                            {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.mine_no}</FormHelperText> */}
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={6} sx={{ mb: 2 }}>
-                                        <FormControl fullWidth error={Boolean(formik.errors.role)}>
-                                            <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Service</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                value={formik.values.role}
-                                                label="Role"
-                                                name="role"
-                                                onChange={handleChange}
-                                                // onChange={(e) => formik.setFieldValue('role', e.target.value)}
-                                                error={formik.touched.role && Boolean(formik.errors.role)}
+                                                value={formik.values.service}
+                                                label="service"
+                                                name="service"
+                                                onChange={formik.handleChange}
+                                                // onChange={(e) => formik.setFieldValue('service', e.target.value)}
                                             >
-                                                {role.map((items) => (
-                                                    <MenuItem key={items.id} value={items.id}>
-                                                        {items.role}
-                                                    </MenuItem>
-                                                ))}
+                                                {/* {role.map((items) => ( */}
+                                                <MenuItem value="service1">service1</MenuItem>
+                                                <MenuItem value="service2">service2</MenuItem>
+                                                {/* ))} */}
                                             </Select>
                                             <FormHelperText style={{ color: 'red' }}>
-                                                {(formik.submitCount > 0 && formik.errors.role) || ''}
+                                                {(formik.submitCount > 0 && formik.errors.service) || ''}
                                             </FormHelperText>
+                                            {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.service}</FormHelperText> */}
                                         </FormControl>
                                     </Grid>
                                 </Grid>
                                 <Grid container spacing={gridSpacing}>
                                     <Grid item xs={6} sx={{ mb: 2 }}>
-                                        <FormControl fullWidth error={Boolean(formik.errors.vehicle)}>
-                                            <InputLabel id="demo-simple-select-label">Vehical-Type</InputLabel>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Unit</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                label="Vehical-Type"
-                                                name="vehicle"
-                                                value={formik.values.vehicle}
-                                                onChange={handleChange}
-                                                // onChange={(e) => formik.setFieldValue('vehicle', e.target.value)}
+                                                label="unit"
+                                                name="unit"
+                                                value={formik.values.unit}
+                                                onChange={formik.handleChange}
+                                                // onChange={(e) => formik.setFieldValue('unit', e.target.value)}
                                                 // error={formik.touched.vehicle && Boolean(formik.errors.vehicle)}
                                             >
-                                                {vehicalTypes.map((items) => (
-                                                    <MenuItem key={items.id} value={items.id}>
-                                                        {items.name}
-                                                    </MenuItem>
-                                                ))}
+                                                {/* {vehicalTypes.map((items) => ( */}
+                                                <MenuItem value="MT">MT</MenuItem>
+                                                {/* ))} */}
                                             </Select>
-                                            {/* <FormHelperText color="error">{formik.errors.vehicle}</FormHelperText> */}
+                                            {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.unit}</FormHelperText> */}
                                             <FormHelperText style={{ color: 'red' }}>
-                                                {(formik.submitCount > 0 && formik.errors.vehicle) || ''}
+                                                {(formik.submitCount > 0 && formik.errors.unit) || ''}
                                             </FormHelperText>
                                         </FormControl>
                                     </Grid>
-                                    <Grid item xs={6} sx={{ mb: 2 }}>
+                                    <Grid item xs={6}>
+                                        {/* <FormControl> */}
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-Trips"
+                                            label="Rate"
+                                            name="rate"
+                                            value={formik.values.rate}
+                                            onChange={formik.handleChange}
+                                        />
+                                        {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.rate}</FormHelperText> */}
+                                        <FormHelperText style={{ color: 'red' }}>
+                                            {(formik.submitCount > 0 && formik.errors.rate) || ''}
+                                        </FormHelperText>
+                                        {/* </FormControl> */}
+                                    </Grid>
+                                    {/* <Grid item xs={6} sx={{ mb: 2 }}>
                                         <FormControl fullWidth error={Boolean(formik.errors.trip_type)}>
                                             <InputLabel id="demo-simple-select-label">TripType</InputLabel>
                                             <Select
@@ -416,12 +434,10 @@ function Tripdetails() {
                                                 id="outlined-basic-size-default"
                                                 label="Trip-Type"
                                                 name="trip_type"
-                                                onChange={handleChange}
-                                                // onChange={(e) => formik.setFieldValue('trip_type', e.target.value)}
-                                                // error={formik.touched.trip_type && Boolean(formik.errors.trip_type)}
+                                                onChange={(e) => formik.setFieldValue('trip_type', e.target.value)}
+                                                error={formik.touched.trip_type && Boolean(formik.errors.trip_type)}
                                                 style={{ width: '100%' }}
                                                 value={formik.values.trip_type}
-                                                // defaultValue="soft"
                                             >
                                                 {tripTypes.map((items) => (
                                                     <MenuItem key={items.id} value={items.id}>
@@ -429,14 +445,11 @@ function Tripdetails() {
                                                     </MenuItem>
                                                 ))}
                                             </Select>
-                                            {/* <FormHelperText color="error">{formik.errors.trip_type}</FormHelperText> */}
-                                            <FormHelperText style={{ color: 'red' }}>
-                                                {(formik.submitCount > 0 && formik.errors.trip_type) || ''}
-                                            </FormHelperText>
+                                            <FormHelperText color="error">{formik.errors.trip_type}</FormHelperText>
                                         </FormControl>
-                                    </Grid>
+                                    </Grid> */}
                                 </Grid>
-                                <Grid item xs={6}>
+                                {/* <Grid item xs={6}>
                                     <Typography variant="subtitle1" component="div" sx={{ mb: 1 }}>
                                         Lead:
                                     </Typography>
@@ -446,142 +459,97 @@ function Tripdetails() {
                                                 row
                                                 name="with_lead"
                                                 value={formik.values.with_lead}
-                                                onChange={handleChange}
-                                                // onChange={(e) => formik.setFieldValue('with_lead', e.target.value)}
-                                                // error={formik.touched.with_lead && Boolean(formik.errors.with_lead)}
+                                                onChange={(e) => formik.setFieldValue('with_lead', e.target.value)}
+                                                error={formik.touched.with_lead && Boolean(formik.errors.with_lead)}
                                             >
                                                 <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
                                                 <FormControlLabel value="No" control={<Radio />} label="No" />
                                             </RadioGroup>
-                                            {/* <FormHelperText color="error">{formik.errors.with_lead}</FormHelperText> */}
+                                            <FormHelperText color="error">{formik.errors.with_lead}</FormHelperText>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid> */}
+                                <Grid container spacing={gridSpacing}>
+                                    <Grid item xs={6} sx={{ mb: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Contractor</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={formik.values.contractor}
+                                                label="contractor"
+                                                name="contractor"
+                                                onChange={formik.handleChange}
+                                                // onChange={(e) => formik.setFieldValue('contractor', e.target.value)}
+                                                // error={formik.touched.role && Boolean(formik.errors.role)}
+                                            >
+                                                {/* {role.map((items) => ( */}
+                                                <MenuItem value="contractor1">contractor1</MenuItem>
+                                                <MenuItem value="contractor2">contractor2</MenuItem>
+                                                {/* ))} */}
+                                            </Select>
+                                            {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.contractor}</FormHelperText> */}
                                             <FormHelperText style={{ color: 'red' }}>
-                                                {(formik.submitCount > 0 && formik.errors.with_lead) || ''}
+                                                {(formik.submitCount > 0 && formik.errors.contractor) || ''}
+                                            </FormHelperText>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6} sx={{ mb: 2 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={formik.values.currency}
+                                                label="currency"
+                                                name="currency"
+                                                onChange={formik.handleChange}
+                                                // onChange={(e) => formik.setFieldValue('currency', e.target.value)}
+                                                // error={formik.touched.role && Boolean(formik.errors.role)}
+                                            >
+                                                {/* {role.map((items) => ( */}
+                                                <MenuItem value="INR">INR</MenuItem>
+                                                {/* ))} */}
+                                            </Select>
+                                            {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.currency}</FormHelperText> */}
+                                            <FormHelperText style={{ color: 'red' }}>
+                                                {(formik.submitCount > 0 && formik.errors.currency) || ''}
                                             </FormHelperText>
                                         </FormControl>
                                     </Grid>
                                 </Grid>
-                                <Grid container spacing={gridSpacing}>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-Trips"
-                                            label="Trips"
-                                            name="trips"
-                                            value={formik.values.trips}
-                                            // value={formData.trips}
-                                            sx={{ mb: 2 }}
-                                            // onChange={handleTripsChange}
-                                            onChange={formik.handleChange}
-                                            onBlur={(e) => {
-                                                const amount = calculateAmount(e.target.value, formik.values.quantity, formik.values.rate);
-                                                formik.setFieldValue('amount', amount);
-                                            }}
-                                            error={formik.touched.trips && Boolean(formik.errors.trips)}
-                                        />
-                                        {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.trips}</FormHelperText> */}
-                                        <FormHelperText style={{ color: 'red' }}>
-                                            {(formik.submitCount > 0 && formik.errors.trips) || ''}
-                                        </FormHelperText>
+                                <Grid container spacing={gridSpacing} sx={{ mb: 4 }}>
+                                    <Grid item xs={12} lg={6}>
+                                        <FormControl fullWidth>
+                                            <LocalizationProvider dateAdapter={AdapterLuxon}>
+                                                <DatePicker
+                                                    label="From Date"
+                                                    id="fromDate"
+                                                    inputFormat="yyyy/MM/dd"
+                                                    maxDate={new Date()}
+                                                    renderInput={(props) => <TextField fullWidth {...props} />}
+                                                    value={fromDate}
+                                                    onChange={(e) => handleChangefromDate(e)}
+                                                />
+                                                <FormHelperText style={{ color: 'red' }}>{formik.errors.fromDate}</FormHelperText>
+                                            </LocalizationProvider>
+                                        </FormControl>
                                     </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-Qty"
-                                            label="Qty MT"
-                                            name="quantity"
-                                            value={formik.values.quantity}
-                                            // value={formData.quantity}
-                                            sx={{ mb: 2 }}
-                                            // onChange={handleQuantityChange}
-                                            onChange={formik.handleChange}
-                                            onBlur={(e) => {
-                                                const amount = calculateAmount(formik.values.trips, e.target.value, formik.values.rate);
-                                                formik.setFieldValue('amount', amount);
-                                            }}
-                                            error={formik.touched.quantity && Boolean(formik.errors.quantity)}
-                                            // onChange={(e) => handleQuantityChange(e)}
-                                            // error={Boolean(errors.quantity)}
-                                            // helperText={errors.quantity || ''}
-                                        />
-                                        {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.quantity}</FormHelperText> */}
-                                        <FormHelperText style={{ color: 'red' }}>
-                                            {(formik.submitCount > 0 && formik.errors.quantity) || ''}
-                                        </FormHelperText>
+                                    <Grid item xs={16} lg={6}>
+                                        <LocalizationProvider dateAdapter={AdapterLuxon}>
+                                            <DatePicker
+                                                label="To Date"
+                                                id="toDate"
+                                                inputFormat="yyyy/MM/dd"
+                                                maxDate={new Date()}
+                                                minDate={formData.date1}
+                                                renderInput={(props) => <TextField fullWidth {...props} />}
+                                                value={toDate}
+                                                onChange={(e) => handleChangetoDate(e)}
+                                            />
+                                        </LocalizationProvider>
+                                        <FormHelperText style={{ color: 'red' }}>{formik.errors.toDate}</FormHelperText>
                                     </Grid>
-                                </Grid>
-                                <Grid container spacing={gridSpacing}>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-email-address"
-                                            label="Rate"
-                                            name="rate"
-                                            sx={{ mb: 2 }}
-                                            value={formik.values.rate}
-                                            // value={formData.rate}
-                                            // onChange={handleRateChange}
-                                            onChange={formik.handleChange}
-                                            onBlur={(e) => {
-                                                const amount = calculateAmount(formik.values.trips, formik.values.quantity, e.target.value);
-                                                formik.setFieldValue('amount', amount);
-                                            }}
-                                            error={formik.touched.rate && Boolean(formik.errors.rate)}
-                                            // onChange={(e) => handleRateChange(e)}
-                                            // error={Boolean(errors.rate)}
-                                            // helperText={errors.rate || ''}
-                                        />
-                                        {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.rate}</FormHelperText> */}
-                                        <FormHelperText style={{ color: 'red' }}>
-                                            {(formik.submitCount > 0 && formik.errors.rate) || ''}
-                                        </FormHelperText>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-email-address"
-                                            placeholder="Amt"
-                                            name="amount"
-                                            // value={
-                                            //     formik.values.amount
-                                            //         ? formik.values.trips * formik.values.quantity * formik.values.rate
-                                            //         : ''
-                                            // }
-                                            value={formik.values.amount}
-                                            // value={formData.amount}
-                                            sx={{ mb: 2 }}
-                                            onChange={handleChange}
-                                            // onChange={formik.handleChange}
-                                            // onBlur={calculateAmount}
-                                            disabled
-                                            error={formik.touched.amount && Boolean(formik.errors.amount)}
-                                            // error={Boolean(errors.amount)}
-                                            // helperText={errors.amount || ''}
-                                        />
-                                        {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.amount}</FormHelperText> */}
-                                        <FormHelperText style={{ color: 'red' }}>
-                                            {(formik.submitCount > 0 && formik.errors.amount) || ''}
-                                        </FormHelperText>
-                                    </Grid>
-                                </Grid>
-                                <Grid item xs={12} sx={{ mb: 2 }}>
-                                    <TextField
-                                        label="remarks"
-                                        name="remarks"
-                                        value={formik.values.remarks}
-                                        multiline
-                                        rows={4}
-                                        variant="outlined"
-                                        fullWidth
-                                        onChange={handleChange}
-                                        // onChange={formik.handleChange}
-                                        // error={formik.touched.remarks && Boolean(formik.errors.remarks)}
-                                        // error={Boolean(errors.remarks)}
-                                        // helperText={errors.remarks || ''}
-                                    />
-                                    {/* <FormHelperText style={{ color: 'red' }}>{formik.errors.remarks}</FormHelperText> */}
-                                    <FormHelperText style={{ color: 'red' }}>
-                                        {(formik.submitCount > 0 && formik.errors.remarks) || ''}
-                                    </FormHelperText>
                                 </Grid>
                                 <Grid container justifyContent="center">
                                     <Grid item>
@@ -591,7 +559,6 @@ function Tripdetails() {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            {/* </Formik> */}
                         </form>
                     </Container>
                 </Typography>

@@ -202,7 +202,7 @@ const JWTRegister = ({ ...others }) => {
                                 {errors.username}
                             </FormHelperText>
                         )}
-                        <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
+                        {/* <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
                             <InputLabel htmlFor="outlined-adornment-callingCode">Country Code</InputLabel>
                             <Select
                                 fullWidth
@@ -225,7 +225,7 @@ const JWTRegister = ({ ...others }) => {
                                     {errors.callingCode}
                                 </FormHelperText>
                             )}
-                        </FormControl>
+                        </FormControl> */}
                         <TextField
                             fullWidth
                             label="Mobile Number"
@@ -242,7 +242,7 @@ const JWTRegister = ({ ...others }) => {
                                 {errors.mobile}
                             </FormHelperText>
                         )}
-                        <TextField
+                        {/* <TextField
                             fullWidth
                             label="Role"
                             margin="normal"
@@ -257,7 +257,7 @@ const JWTRegister = ({ ...others }) => {
                             <FormHelperText error id="standard-weight-helper-text-role">
                                 {errors.role}
                             </FormHelperText>
-                        )}
+                        )} */}
                         <FormControl
                             fullWidth
                             error={Boolean(touched.password && errors.password)}

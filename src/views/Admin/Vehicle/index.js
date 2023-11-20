@@ -86,6 +86,7 @@ const headCells = [
         align: 'left'
     }
 ];
+const url = process.env.REACT_APP_HOST_URL;
 
 // ==============================|| TABLE HEADER ||============================== //
 
@@ -225,7 +226,7 @@ const VehicleList = () => {
     const getVehicle = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/vehicle/getVehicles',
+                `${url}/vehicle/getVehicles`,
                 {},
                 {
                     headers: {
@@ -290,7 +291,7 @@ const VehicleList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://10.201.1.198:8000/vehicle/updateVehicle', editedData, {
+            const response = await axios.post(`${url}/vehicle/updateVehicle`, editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -320,7 +321,7 @@ const VehicleList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/vehicle/deleteMultipleVehicle',
+                `${url}/vehicle/deleteMultipleVehicle`,
                 { ids: selected },
                 {
                     headers: {

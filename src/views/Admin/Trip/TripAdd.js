@@ -17,6 +17,7 @@ import axios from 'axios';
 
 // animation
 const Transition = forwardRef((props, ref) => <Slide direction="left" ref={ref} {...props} />);
+const url = process.env.REACT_APP_HOST_URL;
 
 // ==============================|| TRIP ADD DIALOG ||============================== //
 
@@ -86,7 +87,7 @@ const TripAdd = ({ open, handleCloseDialog, setOpen, getTrip }) => {
     const handleSubmit = async () => {
         console.log(tripType);
         try {
-            const response = await axios.post('http://10.201.1.198:8000/trip/addTripType', tripType, {
+            const response = await axios.post(`${url}/trip/addTripType`, tripType, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
