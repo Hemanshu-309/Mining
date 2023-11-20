@@ -32,6 +32,8 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
     const [error, setError] = useState({});
     const [snackmode, setSnackMode] = useState('');
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     const validationSchema = Yup.object({
         name: Yup.string()
             .min(3)
@@ -86,7 +88,7 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
         // console.log(vehicle);
         // setOpen(false);
         try {
-            const response = await axios.post('http://10.201.1.198:8000/vehicle/addVehicle', vehicle, {
+            const response = await axios.post(`${url}/vehicle/addVehicle`, vehicle, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`

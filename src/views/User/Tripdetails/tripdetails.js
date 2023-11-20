@@ -54,7 +54,7 @@ function Tripdetails() {
     const [value, setValue] = useState('');
     console.log(value);
     const [formData, setFormData] = useState({
-        date: '',
+        date: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
         role: '',
         mine_no: '',
         vehicle: '',
@@ -73,7 +73,7 @@ function Tripdetails() {
     const [status, setStatus] = useState('');
     // const [errors, setErrors] = useState({});
 
-    // const baseUrl = process.env.REACT_APP_BASE_URL;
+    const url = process.env.REACT_APP_HOST_URL;
 
     // console.log(baseUrl);
     const token = localStorage.getItem('accessToken');
@@ -83,7 +83,7 @@ function Tripdetails() {
         validationSchema,
         onSubmit: async (values) => {
             try {
-                const response = await axios.post(`http://10.201.1.198:8000/reports/addDailyReport`, values, {
+                const response = await axios.post(`${url}/reports/addDailyReport`, values, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `b ${token}`
@@ -155,7 +155,7 @@ function Tripdetails() {
         const getmine = async () => {
             try {
                 const response = await axios.post(
-                    'http://10.201.1.198:8000/mine/getAllMines',
+                    `${url}/mine/getAllMines`,
                     {},
                     {
                         headers: {
@@ -177,7 +177,7 @@ function Tripdetails() {
         const getTrip = async () => {
             try {
                 const response = await axios.post(
-                    'http://10.201.1.198:8000/trip/getTripType',
+                    `${url}/trip/getTripType`,
                     {},
                     {
                         headers: {
@@ -200,7 +200,7 @@ function Tripdetails() {
         const getVehical = async () => {
             try {
                 const response = await axios.post(
-                    'http://10.201.1.198:8000/vehicle/getVehicles',
+                    `${url}/vehicle/getVehicles`,
                     {},
                     {
                         headers: {
@@ -222,7 +222,7 @@ function Tripdetails() {
         const getRole = async () => {
             try {
                 const response = await axios.post(
-                    'http://10.201.1.198:8000/role/getRole',
+                    `${url}/role/getRole`,
                     {},
                     {
                         headers: {
@@ -265,7 +265,7 @@ function Tripdetails() {
     //     console.log(formData);
     //     e.preventDefault();
     //     try {
-    //         const response = await axios.post('http://10.201.1.198:8000/reports/addDailyReport', formData, {
+    //         const response = await axios.post('${url}/reports/addDailyReport', formData, {
     //             headers: {
     //                 'Content-Type': 'application/json',
     //                 Authorization: `b ${token}`

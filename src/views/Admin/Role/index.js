@@ -218,10 +218,12 @@ const UserList = () => {
     // const { products } = useSelector((state) => state.customer);
     // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     const getRole = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/role/getRole',
+                `${url}/role/getRole`,
                 {},
                 {
                     headers: {
@@ -287,7 +289,7 @@ const UserList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://10.201.1.198:8000/role/updateRole', editedData, {
+            const response = await axios.post(`${url}/role/updateRole`, editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -313,7 +315,7 @@ const UserList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/role/deleteMultipleRoles',
+                `${url}/role/deleteMultipleRoles`,
                 { ids: selected },
                 {
                     headers: {

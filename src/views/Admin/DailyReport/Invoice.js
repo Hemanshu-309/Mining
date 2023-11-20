@@ -37,10 +37,12 @@ const Invoice = () => {
 
     const [tripDetails, setTripDetails] = useState([{}]);
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     useEffect(async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/reports/getDailyReportWhere',
+                `${url}/reports/getDailyReportWhere`,
                 { id },
                 {
                     headers: {

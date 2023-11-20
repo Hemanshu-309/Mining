@@ -285,6 +285,8 @@ const ReportList = () => {
 
     const navigate = useNavigate();
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     console.log(fromDate, formData, toDate);
     function stableSort(arr, comparator) {
         if (!Array.isArray(arr)) {
@@ -302,7 +304,7 @@ const ReportList = () => {
     const getReport = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/reports/getDailyReport',
+                `${url}/reports/getDailyReport`,
                 {},
                 {
                     headers: {
@@ -322,7 +324,7 @@ const ReportList = () => {
 
     const filterTable = async () => {
         try {
-            const response = await axios.post('http://10.201.1.198:8000/reports/paginateDailyReport', formData, {
+            const response = await axios.post(`${url}/reports/paginateDailyReport`, formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -424,7 +426,7 @@ const ReportList = () => {
             return row;
         });
         try {
-            const response = await axios.post('http://10.201.1.198:8000/role/updateRole', editedData, {
+            const response = await axios.post(`${url}/role/updateRole`, editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
@@ -451,7 +453,7 @@ const ReportList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                'http://10.201.1.198:8000/role/deleteMultipleRoles',
+                `${url}/role/deleteMultipleRoles`,
                 { ids: selected },
                 {
                     headers: {

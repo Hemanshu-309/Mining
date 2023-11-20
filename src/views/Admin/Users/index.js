@@ -10,9 +10,12 @@ import {
     CardContent,
     Checkbox,
     Fab,
+    FormControl,
     Grid,
     IconButton,
     InputAdornment,
+    MenuItem,
+    Select,
     Snackbar,
     Table,
     TableBody,
@@ -30,8 +33,9 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 // project imports
-import VehicleAdd from './VehicleAdd';
+import UserAdd from './UserAdd';
 import MainCard from 'ui-component/cards/MainCard';
+// import { GridFilterForm } from '@mui/x-data-grid/components';
 
 // assets
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -39,7 +43,10 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/AddTwoTone';
+// import FilterListIcon from '@mui/icons-material/FilterList';
 import axios from 'axios';
+// import { DataGrid } from '@mui/x-data-grid';
+import { Container } from '@mui/system';
 
 // table sort
 function descendingComparator(a, b, orderBy) {
@@ -56,6 +63,7 @@ const getComparator = (order, orderBy) =>
     order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
 
 function stableSort(array, comparator) {
+    console.log(array);
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
@@ -68,16 +76,46 @@ function stableSort(array, comparator) {
 // table header options
 const headCells = [
     {
-        id: 'id',
+        id: 'ID',
         numeric: true,
         label: 'ID',
-        align: 'center'
+        align: 'center',
+        editable: true
     },
     {
-        id: 'name',
+        id: 'firstname',
         numeric: false,
-        label: 'Vehicle',
-        align: 'left'
+        label: 'Firstname',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'lastname',
+        numeric: false,
+        label: 'Lastname',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'mineno',
+        numeric: false,
+        label: 'Mine no',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'email',
+        numeric: false,
+        label: 'Email',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'role',
+        numeric: false,
+        label: 'Role',
+        align: 'left',
+        editable: true
     },
     {
         id: 'status',
@@ -95,55 +133,57 @@ function EnhancedTableHead({ onSelectAllClick, order, orderBy, numselected, rowC
     };
 
     return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox" sx={{ pl: 3 }}>
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numselected > 0 && numselected < rowCount}
-                        checked={rowCount > 0 && numselected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'select all desserts'
-                        }}
-                    />
-                </TableCell>
-                {numselected > 0 && (
-                    <TableCell padding="none" colSpan={7}>
-                        <EnhancedTableToolbar numselected={selected.length} handleDelete={handleDelete} />
+        <>
+            <TableHead>
+                <TableRow>
+                    <TableCell padding="checkbox" sx={{ pl: 3 }}>
+                        <Checkbox
+                            color="primary"
+                            indeterminate={numselected > 0 && numselected < rowCount}
+                            checked={rowCount > 0 && numselected === rowCount}
+                            onChange={onSelectAllClick}
+                            inputProps={{
+                                'aria-label': 'select all Users'
+                            }}
+                        />
                     </TableCell>
-                )}
-                {numselected <= 0 &&
-                    headCells.map((headCell) => (
-                        <TableCell
-                            key={headCell.id}
-                            align={headCell.align}
-                            padding={headCell.disablePadding ? 'none' : 'normal'}
-                            sortDirection={orderBy === headCell.id ? order : false}
-                        >
-                            <TableSortLabel
-                                active={orderBy === headCell.id}
-                                direction={orderBy === headCell.id ? order : 'asc'}
-                                onClick={createSortHandler(headCell.id)}
-                            >
-                                {headCell.label}
-                                {orderBy === headCell?.id ? (
-                                    <Box component="span" sx={visuallyHidden}>
-                                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                    </Box>
-                                ) : null}
-                            </TableSortLabel>
+                    {numselected > 0 && (
+                        <TableCell padding="none" colSpan={7}>
+                            <EnhancedTableToolbar numselected={selected.length} handleDelete={handleDelete} />
                         </TableCell>
-                    ))}
-                {numselected <= 0 && (
-                    <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
-                        <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
-                            Action
-                        </Typography>
-                    </TableCell>
-                )}
-            </TableRow>
-        </TableHead>
+                    )}
+                    {numselected <= 0 &&
+                        headCells.map((headCell) => (
+                            <TableCell
+                                key={headCell.id}
+                                align={headCell.align}
+                                padding={headCell.disablePadding ? 'none' : 'normal'}
+                                sortDirection={orderBy === headCell.id ? order : false}
+                            >
+                                <TableSortLabel
+                                    active={orderBy === headCell.id}
+                                    direction={orderBy === headCell.id ? order : 'asc'}
+                                    onClick={createSortHandler(headCell.id)}
+                                >
+                                    {headCell.label}
+                                    {orderBy === headCell?.id ? (
+                                        <Box component="span" sx={visuallyHidden}>
+                                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                        </Box>
+                                    ) : null}
+                                </TableSortLabel>
+                            </TableCell>
+                        ))}
+                    {numselected <= 0 && (
+                        <TableCell sortDirection={false} align="center" sx={{ pr: 3 }}>
+                            <Typography variant="subtitle1" sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}>
+                                Action
+                            </Typography>
+                        </TableCell>
+                    )}
+                </TableRow>
+            </TableHead>
+        </>
     );
 }
 
@@ -174,11 +214,11 @@ const EnhancedTableToolbar = ({ numselected, handleDelete }) => (
     >
         {numselected > 0 ? (
             <Typography color="inherit" variant="h4">
-                {numselected} selected.id
+                {numselected} selected
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrition
+                Users
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -199,7 +239,7 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| PRODUCT LIST ||============================== //
 
-const VehicleList = () => {
+const UserList = () => {
     const theme = useTheme();
 
     const token = localStorage.getItem('accessToken');
@@ -215,19 +255,19 @@ const VehicleList = () => {
     const [rows, setRows] = React.useState([]);
     const [filteredRows, setFilteredRows] = React.useState(rows);
     const [editRowIndex, setEditRowIndex] = React.useState(null);
-    const [editedData, setEditedData] = React.useState({ id: null, name: '' });
+    const [editedData, setEditedData] = React.useState({ id: null, type: '' });
+    const [filter, setFilter] = React.useState({ column: '', value: '' });
+    const [isGridVisible, setIsGridVisible] = React.useState(false);
     const [openSnackbar, setOpenSnackbar] = React.useState(false);
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [snackmode, setSnackMode] = React.useState('');
-    // const { products } = useSelector((state) => state.customer);
-    // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
 
     const url = process.env.REACT_APP_HOST_URL;
 
-    const getVehicle = async () => {
+    const getUser = async () => {
         try {
             const response = await axios.post(
-                `${url}/vehicle/getVehicles`,
+                `${url}:8000/users/paginateUser`,
                 {},
                 {
                     headers: {
@@ -236,9 +276,10 @@ const VehicleList = () => {
                     }
                 }
             );
-            const data = response.data.data;
-            setRows(data);
+            const data = response.data.data.rows;
             console.log(data);
+            setRows(data);
+
             setFilteredRows(data);
         } catch (error) {
             console.error('An error occurred while fetching data:', error.message);
@@ -246,18 +287,49 @@ const VehicleList = () => {
     };
 
     React.useEffect(() => {
-        getVehicle();
+        getUser();
     }, [token]);
     React.useEffect(() => {
         setRows(rows);
     }, [rows]);
+
+    const handleFilter = () => {
+        setIsGridVisible(true);
+    };
+
+    const handleFilterClose = () => {
+        setIsGridVisible(false);
+        getUser();
+    };
+
+    const handleChange = (event) => {
+        try {
+            const { name, value } = event.target;
+            setFilter({ ...filter, [name]: value });
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
+    // const handleFilterClick = () => {
+    //     console.log('Filter:', filter);
+    //     const filteredData = rows.filter((row) => {
+    //         console.log('Row:', row);
+    //         console.log('Column Value:', filter.column);
+    //         console.log('Filter Value:', filter.value);
+    //         return String(row[filter.column]).toLowerCase().includes(filter.value.toLowerCase());
+    //     });
+    //     console.log('Filtered Data:', filteredData);
+    //     setRows(filteredData);
+    //     setIsGridVisible(true);
+    // };
 
     const handleClickOpenDialog = () => {
         setOpen(true);
     };
     const handleCloseDialog = () => {
         setOpen(false);
-        getVehicle();
+        getUser();
     };
 
     const handleSearch = (event) => {
@@ -265,15 +337,19 @@ const VehicleList = () => {
         setSearch(newString);
 
         if (!newString) {
-            getVehicle();
+            getUser();
             return;
         }
 
         const newFilteredRows = rows.filter(
             (row) =>
                 row.id.toString().includes(newString) ||
-                row.name.toLowerCase().includes(newString.toLowerCase()) ||
-                row.status.toLowerCase().includes(newString.toLowerCase())
+                row.firstname.toLowerCase().includes(newString.toLowerCase()) ||
+                row.lastname.toLowerCase().includes(newString.toLowerCase()) ||
+                row.email.toLowerCase().includes(newString.toLowerCase()) ||
+                row.mobile.toString().includes(newString) ||
+                // row.mineno.toLowerCase().includes(newString.toLowerCase()) ||
+                row.role.toLowerCase().includes(newString.toLowerCase())
         );
 
         setRows(newFilteredRows);
@@ -285,6 +361,7 @@ const VehicleList = () => {
     };
 
     const handleEditSubmit = async () => {
+        // Update the data in your rows array with the editedData
         const updatedRows = rows.map((row, index) => {
             if (index === editRowIndex) {
                 return editedData;
@@ -292,17 +369,17 @@ const VehicleList = () => {
             return row;
         });
         try {
-            const response = await axios.post(`${url}/vehicle/updateVehicle`, editedData, {
+            const response = await axios.post(`${url}:8000/trip/updateTripType`, editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
                 }
             });
             if (!response.data.error) {
-                setSnackbarMessage('Data Updated Successfully');
+                setSnackbarMessage('User Updated Successfully');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getVehicle();
+                getUser();
                 setselected([]);
             } else {
                 setSnackbarMessage(`${response.data.message}`);
@@ -322,29 +399,31 @@ const VehicleList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                `${url}/vehicle/deleteMultipleVehicle`,
+                `${url}:8000/trip/deleteMultipleTripType`,
                 { ids: selected },
                 {
+                    // Send the selected.id triptypes to be deleted
                     headers: {
                         'Content-Type': 'application/json',
                         authorization: `b ${token}`
                     }
                 }
             );
-            console.log(response);
+            // Handle success or show a confirmation message
+            console.log('Triptypes deleted successfully', response.data);
             if (!response.data.error) {
-                setSnackbarMessage('Vehicle inactivated Successfully');
+                setSnackbarMessage('TripType inactivated Successfully');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getVehicle();
+                getUser();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
                 setSnackMode('warning');
             }
-
-            // const updatedRows = rows.filter((row) => !selected.includes(row.id));
-            // setRows(updatedRows);
+            // You may also want to update your local state to remove the deleted triptypes
+            // getUser();
+            // Clear the selected.id checkboxes
             setselected([]);
             console.log(selected);
         } catch (error) {
@@ -416,9 +495,10 @@ const VehicleList = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-            <MainCard title="Vehicle List" content={false}>
+            <MainCard title="Users" content={false}>
                 <CardContent>
                     <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+                        {/* <GridFilterForm filters={filter} onFilterChange={handleFilterChange} onFilterSubmit={handleFilterSubmit} /> */}
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 InputProps={{
@@ -429,14 +509,24 @@ const VehicleList = () => {
                                     )
                                 }}
                                 onChange={handleSearch}
-                                placeholder="Search Vehicles"
+                                placeholder="Search user"
                                 value={search}
                                 size="small"
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} sx={{ textAlign: 'right' }}>
                             {/* product add & dialog */}
-                            <Tooltip title="Add Vehicles">
+                            {/* <Tooltip title="Filter Triptypes">
+                                <Fab
+                                    color="primary"
+                                    size="small"
+                                    onClick={handleFilter}
+                                    sx={{ boxShadow: 'none', ml: 1, width: 32, height: 32, minHeight: 32 }}
+                                >
+                                    <FilterListIcon fontSize="small" />
+                                </Fab>
+                            </Tooltip> */}
+                            <Tooltip title="Add New User">
                                 <Fab
                                     color="primary"
                                     size="small"
@@ -446,7 +536,51 @@ const VehicleList = () => {
                                     <AddIcon fontSize="small" />
                                 </Fab>
                             </Tooltip>
-                            <VehicleAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} />
+                            <UserAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} getUser={getUser} />
+                            {isGridVisible && (
+                                <Container>
+                                    <Grid container spacing={2}>
+                                        <Grid item>
+                                            <FormControl variant="outlined">
+                                                <Select
+                                                    value={filter.column}
+                                                    onChange={handleChange}
+                                                    name="column"
+                                                    placeholder="Select Column"
+                                                >
+                                                    {headCells.map((item) => (
+                                                        <MenuItem key={item.id} value={item.id}>
+                                                            {item.label}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item>
+                                            <TextField
+                                                label="Search"
+                                                variant="outlined"
+                                                value={filter.value}
+                                                name="value"
+                                                onChange={handleChange}
+                                                InputProps={{
+                                                    startAdornment: <InputAdornment position="start">&#128269;</InputAdornment>
+                                                }}
+                                            />
+                                        </Grid>
+                                        {/* <Grid item>
+                                            <Button variant="contained" color="primary" onClick={handleFilterClick}>
+                                                Filter
+                                            </Button>
+                                        </Grid> */}
+                                        <Grid item>
+                                            <Button variant="contained" color="secondary" onClick={handleFilterClose}>
+                                                Cancel
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Container>
+                            )}
                         </Grid>
                     </Grid>
                 </CardContent>
@@ -469,6 +603,7 @@ const VehicleList = () => {
                             {stableSort(rows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
+                                    /** Make sure no display bugs if row isn't an OrderData object */
                                     if (typeof row === 'number') return null;
                                     const isItemselected = isselected(row.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
@@ -482,6 +617,7 @@ const VehicleList = () => {
                                             tabIndex={-1}
                                             key={index}
                                             selected={isItemselected}
+                                            sx={{ typography: 'body2' }}
                                         >
                                             <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                                 <Checkbox
@@ -501,7 +637,7 @@ const VehicleList = () => {
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
-                                                    variant="subtitle1"
+                                                    variant="body2"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
                                                     {' '}
@@ -515,24 +651,101 @@ const VehicleList = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                {/* <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.type}{' '}
-                                            </Typography> */}
                                                 {isEditing ? (
                                                     <TextField
-                                                        value={editedData.name}
-                                                        onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
                                                     />
                                                 ) : (
                                                     <Typography
-                                                        variant="subtitle1"
+                                                        variant="body2"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        {row.name}
+                                                        {row.firstname}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.lastname}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        NA
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.email}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.role}
                                                     </Typography>
                                                 )}
                                             </TableCell>
@@ -549,7 +762,6 @@ const VehicleList = () => {
                                                     onChange={(e) => setEditedData({ ...editedData, name: e.target.value })}
                                                 />
                                             ) : ( */}
-
                                                 <Typography
                                                     variant="subtitle1"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
@@ -609,4 +821,4 @@ const VehicleList = () => {
     );
 };
 
-export default VehicleList;
+export default UserList;

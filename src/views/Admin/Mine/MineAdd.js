@@ -33,7 +33,7 @@ const MineAdd = ({ open, handleCloseDialog, setOpen, getMine }) => {
     const [error, setError] = useState({});
     const [snackmode, setSnackMode] = useState('');
 
-    // const URL = process.env.REACT_APP_HOST_URL;
+    const url = process.env.REACT_APP_HOST_URL;
 
     // console.log(URL);
 
@@ -92,7 +92,7 @@ const MineAdd = ({ open, handleCloseDialog, setOpen, getMine }) => {
         console.log(mine);
         setOpen(false);
         try {
-            const response = await axios.post('http://10.201.1.198:8000/mine/addMine', mine, {
+            const response = await axios.post(`${url}/mine/addMine`, mine, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`

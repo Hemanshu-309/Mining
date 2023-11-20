@@ -47,6 +47,14 @@ const admin = {
             breadcrumbs: true
         },
         {
+            id: 'users',
+            title: <FormattedMessage id="Users" />,
+            type: 'item',
+            url: '/admin/users',
+            icon: icons.IconUserCheck,
+            breadcrumbs: true
+        },
+        {
             id: 'dailyreport',
             title: <FormattedMessage id="DailyReport" />,
             type: 'item',

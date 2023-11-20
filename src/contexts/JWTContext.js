@@ -68,9 +68,9 @@ export const JWTProvider = ({ children }) => {
 
     // dotenv.config('full-version\.env');
 
-    const baseUrl = process.env.REACT_APP_BASE_URL;
+    const url = process.env.REACT_APP_HOST_URL;
 
-    console.log(baseUrl);
+    console.log(url);
 
     useEffect(() => {
         const init = async () => {
@@ -105,7 +105,7 @@ export const JWTProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://10.201.1.198:8000/users/loginUser', { email, password });
+            const response = await axios.post(`${url}/users/loginUser`, { email, password });
             console.log(email, password);
             console.log(response);
             if (!response.data.Error) {
@@ -145,7 +145,7 @@ export const JWTProvider = ({ children }) => {
             Code: code
         });
         // const id = chance.bb_pin();
-        const response = await axios.post('http://10.201.1.198:8000/users/addUser', {
+        const response = await axios.post(`${url}/users/addUser`, {
             firstname,
             lastname,
             email,
