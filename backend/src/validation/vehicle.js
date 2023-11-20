@@ -7,6 +7,10 @@ const createValidateVehicle = (create_data) =>{
           "string.empty": `"Vehicle Name" is a required field.`,
           "string.length": `"Vehicle Name" must contain 2 to 255 characters`
           }),
+          std_qty:Joi.number().integer().min(1).required()
+          .messages({
+            "number.empty": `"Standard Quantity" is a required field.`
+            }),
     }).options({abortEarly:false})
 
     return JoiSchema.validate(create_data)
@@ -34,6 +38,10 @@ const updateValidateVehicle = (update_data) =>{
             "string.empty": `"Vehicle Name" is a required field.`,
             "string.length": `"Vehicle Name" must contain 255 characters`
         }), 
+        std_qty:Joi.number().integer().min(1).required()
+          .messages({
+            "number.empty": `"Standard Quantity" is a required field.`
+            }),
     }).options({abortEarly:false})
 
     return JoiSchema.validate(update_data)

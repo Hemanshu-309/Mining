@@ -25,9 +25,10 @@ const addVehicle = async (req, res) => {
         .end();
     }
 
-    const { name } = req.body;
+    const { name,std_qty } = req.body;
     const data = {
       name,
+      std_qty
     };
 
     const checkValidation = validation.createValidateVehicle(data);
@@ -54,7 +55,6 @@ const addVehicle = async (req, res) => {
         .end();
     }
 
-    
     const vehicle = await model.insertVehicle(data);
     if (vehicle) {
       res.status(200).json({
@@ -211,10 +211,11 @@ const updateVehicle = async (req, res) => {
         .end();
     }
 
-    const { id, name } = req.body;
+    const { id, name,std_qty } = req.body;
     const data = {
       id,
       name,
+      std_qty
     };
 
     const checkValidation =  validation.updateValidateVehicle(data);
@@ -254,7 +255,7 @@ const updateVehicle = async (req, res) => {
     }  
 
 
-    const vehicles = await model.updateVehicle(id, name);
+    const vehicles = await model.updateVehicle(id, name,std_qty);
     if (!vehicles) {
       return res
         .json({

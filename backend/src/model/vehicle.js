@@ -7,19 +7,19 @@ const insertVehicle = async (data)=>{
 }
 
 const getVehicle = async(field)=>{
-    return knex(table).select('id','name').where(field)
+    return knex(table).select('id','name','std_qty').where(field)
 }
 
 const getAllVehicle = async(field)=>{
-    return knex(table).select('id','name','status').orWhere(field).orderBy('id','desc')
+    return knex(table).select('id','name','std_qty','status').orWhere(field).orderBy('id','desc')
 }
 
 const deleteVehicle = async(id)=>{
     return knex(table).delete().where(id)
 }
 
-const updateVehicle = async (id,name) =>{ 
-    return knex(table).update({name,"status":1}).where({id})
+const updateVehicle = async (id,name,std_qty) =>{ 
+    return knex(table).update({name,std_qty,"status":1}).where({id})
 }
 
 const deletedMultipleVehicle = async(field)=>{
