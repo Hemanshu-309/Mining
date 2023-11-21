@@ -33,9 +33,7 @@ const RoleAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
     const [error, setError] = useState({});
     const [snackmode, setSnackMode] = useState('');
 
-    // const URL = process.env.REACT_APP_HOST_URL;
-
-    // console.log(URL);
+    const url = process.env.REACT_APP_HOST_URL;
 
     const validationSchema = Yup.object({
         role_name: Yup.string()
@@ -92,7 +90,7 @@ const RoleAdd = ({ open, handleCloseDialog, setOpen, getContractor }) => {
         console.log(role);
         setOpen(false);
         try {
-            const response = await axios.post('http://10.201.0.239:8000/role/createRole', role, {
+            const response = await axios.post(`${url}/role/createRole`, role, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`

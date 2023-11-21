@@ -266,8 +266,8 @@ const ReportList = () => {
     // const [fromDate, setfromDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
     // const [toDate, settoDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
 
-    const [fromDate, setfromDate] = React.useState(``);
-    const [toDate, settoDate] = React.useState(``);
+    const [fromDate, setfromDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
+    const [toDate, settoDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setselected] = React.useState([]);
@@ -289,6 +289,10 @@ const ReportList = () => {
     });
 
     const navigate = useNavigate();
+
+    const url = process.env.REACT_APP_HOST_URL;
+
+    console.log(url);
 
     console.log(fromDate, formData, toDate);
     function stableSort(arr, comparator) {

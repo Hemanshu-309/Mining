@@ -70,7 +70,7 @@ export const JWTProvider = ({ children }) => {
 
     const url = process.env.REACT_APP_HOST_URL;
 
-    // console.log(baseUrl);
+
 
     useEffect(() => {
         const init = async () => {

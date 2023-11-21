@@ -218,6 +218,8 @@ const UserList = () => {
     // const { products } = useSelector((state) => state.customer);
     // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     const getRole = async () => {
         try {
             const response = await axios.post(

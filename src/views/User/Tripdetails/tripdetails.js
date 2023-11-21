@@ -54,7 +54,7 @@ function Tripdetails() {
     const [value, setValue] = useState('');
     console.log(value);
     const [formData, setFormData] = useState({
-        date: '',
+        date: `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`,
         role: '',
         mine_no: '',
         vehicle: '',
@@ -74,7 +74,7 @@ function Tripdetails() {
     const [date, setDate] = React.useState(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`);
     // const [errors, setErrors] = useState({});
     const url = process.env.REACT_APP_HOST_URL;
-    // console.log(baseUrl);
+
     const token = localStorage.getItem('accessToken');
 
     const formik = useFormik({

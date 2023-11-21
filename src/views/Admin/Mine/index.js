@@ -217,6 +217,8 @@ const MineList = () => {
     const [snackbarMessage, setSnackbarMessage] = React.useState('');
     const [snackmode, setSnackMode] = React.useState('');
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     const getMine = async () => {
         try {
             const response = await axios.post(

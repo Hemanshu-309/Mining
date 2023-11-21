@@ -7,18 +7,14 @@ import {
     Alert,
     Box,
     Button,
-    Card,
     CardContent,
     Checkbox,
-    Dialog,
     Fab,
     FormControl,
     Grid,
     IconButton,
     InputAdornment,
     MenuItem,
-    Modal,
-    Rating,
     Select,
     Snackbar,
     Table,
@@ -37,7 +33,7 @@ import {
 import { visuallyHidden } from '@mui/utils';
 
 // project imports
-import TripAdd from './TripAdd';
+import UserAdd from './UserAdd';
 import MainCard from 'ui-component/cards/MainCard';
 // import { GridFilterForm } from '@mui/x-data-grid/components';
 
@@ -47,9 +43,9 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/AddTwoTone';
-import FilterListIcon from '@mui/icons-material/FilterList';
+// import FilterListIcon from '@mui/icons-material/FilterList';
 import axios from 'axios';
-import { DataGrid } from '@mui/x-data-grid';
+// import { DataGrid } from '@mui/x-data-grid';
 import { Container } from '@mui/system';
 
 // table sort
@@ -87,9 +83,37 @@ const headCells = [
         editable: true
     },
     {
-        id: 'Triptype',
+        id: 'firstname',
         numeric: false,
-        label: 'Triptype',
+        label: 'Firstname',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'lastname',
+        numeric: false,
+        label: 'Lastname',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'mineno',
+        numeric: false,
+        label: 'Mine no',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'email',
+        numeric: false,
+        label: 'Email',
+        align: 'left',
+        editable: true
+    },
+    {
+        id: 'role',
+        numeric: false,
+        label: 'Role',
         align: 'left',
         editable: true
     },
@@ -100,7 +124,7 @@ const headCells = [
         align: 'left'
     }
 ];
-const url = process.env.REACT_APP_HOST_URL;
+
 // ==============================|| TABLE HEADER ||============================== //
 
 function EnhancedTableHead({ onSelectAllClick, order, orderBy, numselected, rowCount, onRequestSort, theme, selected, handleDelete }) {
@@ -119,7 +143,7 @@ function EnhancedTableHead({ onSelectAllClick, order, orderBy, numselected, rowC
                             checked={rowCount > 0 && numselected === rowCount}
                             onChange={onSelectAllClick}
                             inputProps={{
-                                'aria-label': 'select all desserts'
+                                'aria-label': 'select all Users'
                             }}
                         />
                     </TableCell>
@@ -190,11 +214,11 @@ const EnhancedTableToolbar = ({ numselected, handleDelete }) => (
     >
         {numselected > 0 ? (
             <Typography color="inherit" variant="h4">
-                {numselected} selected.id
+                {numselected} selected
             </Typography>
         ) : (
             <Typography variant="h6" id="tableTitle">
-                Nutrition
+                Users
             </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -215,11 +239,10 @@ EnhancedTableToolbar.propTypes = {
 
 // ==============================|| PRODUCT LIST ||============================== //
 
-const TripList = () => {
+const UserList = () => {
     const theme = useTheme();
 
     const token = localStorage.getItem('accessToken');
-    // console.log(token);
 
     const [open, setOpen] = React.useState(false);
 
@@ -241,10 +264,10 @@ const TripList = () => {
 
     const url = process.env.REACT_APP_HOST_URL;
 
-    const getTrip = async () => {
+    const getUser = async () => {
         try {
             const response = await axios.post(
-                `${url}/trip/getTripType`,
+                `${url}:8000/users/paginateUser`,
                 {},
                 {
                     headers: {
@@ -253,7 +276,7 @@ const TripList = () => {
                     }
                 }
             );
-            const data = response.data.data;
+            const data = response.data.data.rows;
             console.log(data);
             setRows(data);
 
@@ -264,7 +287,7 @@ const TripList = () => {
     };
 
     React.useEffect(() => {
-        getTrip();
+        getUser();
     }, [token]);
     React.useEffect(() => {
         setRows(rows);
@@ -276,7 +299,7 @@ const TripList = () => {
 
     const handleFilterClose = () => {
         setIsGridVisible(false);
-        getTrip();
+        getUser();
     };
 
     const handleChange = (event) => {
@@ -306,7 +329,7 @@ const TripList = () => {
     };
     const handleCloseDialog = () => {
         setOpen(false);
-        getTrip();
+        getUser();
     };
 
     const handleSearch = (event) => {
@@ -314,12 +337,19 @@ const TripList = () => {
         setSearch(newString);
 
         if (!newString) {
-            getTrip();
+            getUser();
             return;
         }
 
         const newFilteredRows = rows.filter(
-            (row) => row.id.toString().includes(newString) || row.type.toLowerCase().includes(newString.toLowerCase())
+            (row) =>
+                row.id.toString().includes(newString) ||
+                row.firstname.toLowerCase().includes(newString.toLowerCase()) ||
+                row.lastname.toLowerCase().includes(newString.toLowerCase()) ||
+                row.email.toLowerCase().includes(newString.toLowerCase()) ||
+                row.mobile.toString().includes(newString) ||
+                // row.mineno.toLowerCase().includes(newString.toLowerCase()) ||
+                row.role.toLowerCase().includes(newString.toLowerCase())
         );
 
         setRows(newFilteredRows);
@@ -339,17 +369,17 @@ const TripList = () => {
             return row;
         });
         try {
-            const response = await axios.post(`${url}/trip/updateTripType`, editedData, {
+            const response = await axios.post(`${url}:8000/trip/updateTripType`, editedData, {
                 headers: {
                     'Content-Type': 'application/json',
                     authorization: `b ${token}`
                 }
             });
             if (!response.data.error) {
-                setSnackbarMessage('TripType Updated Successfully');
+                setSnackbarMessage('User Updated Successfully');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getTrip();
+                getUser();
                 setselected([]);
             } else {
                 setSnackbarMessage(`${response.data.message}`);
@@ -369,7 +399,7 @@ const TripList = () => {
     const handleDelete = async () => {
         try {
             const response = await axios.post(
-                `${url}/trip/deleteMultipleTripType`,
+                `${url}:8000/trip/deleteMultipleTripType`,
                 { ids: selected },
                 {
                     // Send the selected.id triptypes to be deleted
@@ -385,14 +415,14 @@ const TripList = () => {
                 setSnackbarMessage('TripType inactivated Successfully');
                 setOpenSnackbar(true);
                 setSnackMode('success');
-                getTrip();
+                getUser();
             } else {
                 setSnackbarMessage(`${response.data.message}`);
                 setOpenSnackbar(true);
                 setSnackMode('warning');
             }
             // You may also want to update your local state to remove the deleted triptypes
-            // getTrip();
+            // getUser();
             // Clear the selected.id checkboxes
             setselected([]);
             console.log(selected);
@@ -465,7 +495,7 @@ const TripList = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-            <MainCard title="Triptypes" content={false}>
+            <MainCard title="Users" content={false}>
                 <CardContent>
                     <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                         {/* <GridFilterForm filters={filter} onFilterChange={handleFilterChange} onFilterSubmit={handleFilterSubmit} /> */}
@@ -479,7 +509,7 @@ const TripList = () => {
                                     )
                                 }}
                                 onChange={handleSearch}
-                                placeholder="Search Triptypes"
+                                placeholder="Search user"
                                 value={search}
                                 size="small"
                             />
@@ -496,7 +526,7 @@ const TripList = () => {
                                     <FilterListIcon fontSize="small" />
                                 </Fab>
                             </Tooltip> */}
-                            <Tooltip title="Add Triptypes">
+                            <Tooltip title="Add New User">
                                 <Fab
                                     color="primary"
                                     size="small"
@@ -506,7 +536,7 @@ const TripList = () => {
                                     <AddIcon fontSize="small" />
                                 </Fab>
                             </Tooltip>
-                            <TripAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} getTrip={getTrip} />
+                            <UserAdd open={open} handleCloseDialog={handleCloseDialog} setOpen={setOpen} getUser={getUser} />
                             {isGridVisible && (
                                 <Container>
                                     <Grid container spacing={2}>
@@ -587,6 +617,7 @@ const TripList = () => {
                                             tabIndex={-1}
                                             key={index}
                                             selected={isItemselected}
+                                            sx={{ typography: 'body2' }}
                                         >
                                             <TableCell padding="checkbox" sx={{ pl: 3 }} onClick={(event) => handleClick(event, row.id)}>
                                                 <Checkbox
@@ -606,7 +637,7 @@ const TripList = () => {
                                                 sx={{ cursor: 'pointer' }}
                                             >
                                                 <Typography
-                                                    variant="subtitle1"
+                                                    variant="body2"
                                                     sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                 >
                                                     {' '}
@@ -620,13 +651,6 @@ const TripList = () => {
                                                 onClick={(event) => handleClick(event, row.id)}
                                                 sx={{ cursor: 'pointer' }}
                                             >
-                                                {/* <Typography
-                                                variant="subtitle1"
-                                                sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
-                                            >
-                                                {' '}
-                                                {row.type}{' '}
-                                            </Typography> */}
                                                 {isEditing ? (
                                                     <TextField
                                                         value={editedData.type}
@@ -634,10 +658,94 @@ const TripList = () => {
                                                     />
                                                 ) : (
                                                     <Typography
-                                                        variant="subtitle1"
+                                                        variant="body2"
                                                         sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
                                                     >
-                                                        {row.type}
+                                                        {row.firstname}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.lastname}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        NA
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.email}
+                                                    </Typography>
+                                                )}
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                onClick={(event) => handleClick(event, row.id)}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {isEditing ? (
+                                                    <TextField
+                                                        value={editedData.type}
+                                                        onChange={(e) => setEditedData({ ...editedData, type: e.target.value })}
+                                                    />
+                                                ) : (
+                                                    <Typography
+                                                        variant="body2"
+                                                        sx={{ color: theme.palette.mode === 'dark' ? 'grey.600' : 'grey.900' }}
+                                                    >
+                                                        {row.role}
                                                     </Typography>
                                                 )}
                                             </TableCell>
@@ -713,4 +821,4 @@ const TripList = () => {
     );
 };
 
-export default TripList;
+export default UserList;

@@ -34,6 +34,8 @@ const TripAdd = ({ open, handleCloseDialog, setOpen, getTrip }) => {
     });
     const [error, setError] = useState({});
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     const validationSchema = Yup.object({
         triptype: Yup.string()
             .min(3)

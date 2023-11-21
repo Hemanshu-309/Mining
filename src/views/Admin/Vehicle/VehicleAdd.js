@@ -33,6 +33,8 @@ const VehicleAdd = ({ open, handleCloseDialog, setOpen }) => {
     const [error, setError] = useState({});
     const [snackmode, setSnackMode] = useState('');
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     const validationSchema = Yup.object({
         name: Yup.string()
             .min(3)

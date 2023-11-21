@@ -286,6 +286,8 @@ const ReportList = () => {
 
     const navigate = useNavigate();
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     console.log(fromDate, formData, toDate);
     function stableSort(arr, comparator) {
         if (!Array.isArray(arr)) {

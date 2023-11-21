@@ -8,6 +8,7 @@ import AuthGuard from 'utils/route-guard/AuthGuard';
 const AdminTrip = Loadable(lazy(() => import('views/Admin/Trip/index')));
 const AdminVehicle = Loadable(lazy(() => import('views/Admin/Vehicle/index')));
 const AdminRoles = Loadable(lazy(() => import('views/Admin/Role/index')));
+const AdminUsers = Loadable(lazy(() => import('views/Admin/Users/index')));
 const AdminDailyReport = Loadable(lazy(() => import('views/Admin/DailyReport/index')));
 const AdminDailyReportView = Loadable(lazy(() => import('views/Admin/DailyReport/Invoice')));
 const AdminRate = Loadable(lazy(() => import('views/Admin/Rate/index')));
@@ -36,6 +37,10 @@ const MainRoutes = {
         {
             path: '/admin/roles',
             element: <AdminRoles />
+        },
+        {
+            path: '/admin/users',
+            element: <AdminUsers />
         },
         {
             path: '/admin/dailyreport',

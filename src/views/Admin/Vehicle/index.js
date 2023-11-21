@@ -223,6 +223,8 @@ const VehicleList = () => {
     // const { products } = useSelector((state) => state.customer);
     // const { triptypes } = useSelector((state) => state.triptypes.triptypes);
 
+    const url = process.env.REACT_APP_HOST_URL;
+
     const getVehicle = async () => {
         try {
             const response = await axios.post(
